@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">User Manual</string>
+    <string name="home">خانه</string>
+    <string name="news">اخبار</string>
+    <string name="favorites">علاقه مندی ها</string>
+    <string name="support">پشتیبانی</string>
 </resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/id_home"
+        android:title="@string/home" />
+
+    <item
+        android:id="@+id/id_news"
+        android:title="@string/news" />
+
+    <item
+        android:id="@+id/id_favs"
+        android:title="@string/favorites" />
+
+    <item
+        android:id="@+id/id_support"
+        android:title="@string/support" />
+
+
+</menu>
