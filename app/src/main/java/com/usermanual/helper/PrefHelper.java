@@ -25,4 +25,15 @@ public class PrefHelper {
         SharedPreferences prefs = getPrefs(context);
         return prefs.getString(key, def);
     }
+
+    public static void saveInt(Context context, String key, int value) {
+        SharedPreferences.Editor editor = getPrefs(context).edit();
+        editor.putInt(key, value);
+        editor.apply();
+    }
+
+    public static int getInt(Context context, String key, int def) {
+        SharedPreferences prefs = getPrefs(context);
+        return prefs.getInt(key, def);
+    }
 }
