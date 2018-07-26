@@ -5,6 +5,12 @@ public class Media {
     String url;
     int type;
 
+    public Media(String text, String url, int type) {
+        this.text = text;
+        this.url = url;
+        this.type = type;
+    }
+
     public String getText() {
         return text;
     }
