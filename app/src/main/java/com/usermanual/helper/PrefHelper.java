@@ -7,6 +7,10 @@ public class PrefHelper {
 
     private static final String PREFS = "prefs";
 
+    public static final String MEDIA_LIST_KEY = "medias";
+
+    public static final String MEDIA_KEY = "media";
+
     private static SharedPreferences prefs;
 
     private static SharedPreferences getPrefs(Context context) {
