@@ -3,19 +3,23 @@
 
     <item
         android:id="@+id/id_home"
-        android:title="@string/home" />
+        android:title="@string/home"
+        android:icon="@mipmap/home"/>
 
     <item
         android:id="@+id/id_news"
-        android:title="@string/news" />
+        android:title="@string/news"
+        android:icon="@mipmap/news"/>
 
     <item
         android:id="@+id/id_favs"
-        android:title="@string/favorites" />
+        android:title="@string/favorites"
+        android:icon="@mipmap/favorites"/>
 
     <item
         android:id="@+id/id_support"
-        android:title="@string/support" />
+        android:title="@string/support"
+        android:icon="@mipmap/support"/>
 
 
 </menu>
