@@ -19,7 +19,7 @@ import com.usermanual.model.Title;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.usermanual.helper.PrefHelper.MEDIA_KEY;
+import static com.usermanual.helper.PrefHelper.MEDIA_LIST_KEY;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                         List<Media> mediaList = DataBaseHelper.getMediaList(getApplicationContext(), title, subTitle);
                         Intent intent = new Intent(MainActivity.this, MediaActivity.class);
                         Bundle bundle = new Bundle();
-                        bundle.putParcelableArrayList(MEDIA_KEY, (ArrayList<Media>) mediaList);
+                        bundle.putParcelableArrayList(MEDIA_LIST_KEY, (ArrayList<Media>) mediaList);
                         intent.putExtras(bundle);
                         startActivity(intent);
                         break;
