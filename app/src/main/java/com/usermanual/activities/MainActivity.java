@@ -2,7 +2,11 @@ package com.usermanual.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,29 +25,20 @@ import java.util.List;
 
 import static com.usermanual.helper.PrefHelper.MEDIA_LIST_KEY;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
 
-    int state;
-    int title, subTitle;
 
-    ListView titlesListView;
-    ArrayAdapter<String> adapter;
 
-    TextView titleGuide, arrow, subtitleGuide;
 
-    List<String> titleList;
+    BottomNavigationView bottomNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        state = 0;
-        titlesListView = (ListView) findViewById(R.id.titles_list_view);
-        titleGuide = (TextView) findViewById(R.id.title_guide);
-        arrow = (TextView) findViewById(R.id.arrow);
-        subtitleGuide = (TextView) findViewById(R.id.subtitle_guide);
+        bottomNavigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
 
 //        for (int i = 0; i < 100; i++) { //todo delete it
 //            DownloadClass downloadClass = new DownloadClass();
@@ -169,44 +164,9 @@ public class MainActivity extends AppCompatActivity {
         List<Title> titles = gson.fromJson(json, new TypeToken<List<Title>>() {
         }.getType());
         DataBaseHelper.saveToDB(getApplicationContext(), titles);
-        titleList = DataBaseHelper.getTitlesList(getApplicationContext());
-        adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, titleList);
-        adapter.notifyDataSetChanged();
-        titlesListView.setAdapter(adapter);
 
-        titlesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                switch (state) {
-                    case 0:
-                        state = 1;
-                        title = position + 1;
-                        titleGuide.setText(titleList.get(position));
-                        titleGuide.setVisibility(View.VISIBLE);
-                        List<String> subtitles = DataBaseHelper.getSubtitleList(getApplicationContext(), position + 1);
-                        adapter.clear();
-                        adapter.addAll(subtitles);
-                        adapter.notifyDataSetChanged();
-                        break;
-                    case 1:
-                        state = 2;
-                        subTitle = position + 1;
-                        arrow.setVisibility(View.VISIBLE);
-                        subtitleGuide.setText(adapter.getItem(position));
-                        subtitleGuide.setVisibility(View.VISIBLE);
 
-                    case 2:
-                        List<Media> mediaList = DataBaseHelper.getMediaList(getApplicationContext(), title, subTitle);
-                        Intent intent = new Intent(MainActivity.this, MediaActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelableArrayList(MEDIA_LIST_KEY, (ArrayList<Media>) mediaList);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                        break;
-                }
-            }
-        });
+
     }
 
     @Override
@@ -228,5 +188,13 @@ public class MainActivity extends AppCompatActivity {
             titleGuide.setVisibility(View.GONE);
             state = 0;
         }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//        switch (item.getItemId()) {
+//            case
+//        }
+        return true;
     }
 }
