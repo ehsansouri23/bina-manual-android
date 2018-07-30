@@ -3,7 +3,6 @@ package com.usermanual.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,7 +16,10 @@ import com.usermanual.helper.DataBaseHelper;
 import com.usermanual.model.Media;
 import com.usermanual.model.Title;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.usermanual.helper.PrefHelper.MEDIA_KEY;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -197,7 +199,9 @@ public class MainActivity extends AppCompatActivity {
                     case 2:
                         List<Media> mediaList = DataBaseHelper.getMediaList(getApplicationContext(), title, subTitle);
                         Intent intent = new Intent(MainActivity.this, MediaActivity.class);
-                        Log.e(TAG, "onItemClick: " + mediaList.size());
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelableArrayList(MEDIA_KEY, (ArrayList<Media>) mediaList);
+                        intent.putExtras(bundle);
                         startActivity(intent);
                         break;
                 }
