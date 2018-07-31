@@ -1,44 +1,56 @@
 package com.usermanual.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.usermanual.R;
+import com.usermanual.fragments.AboutUsFragment;
+import com.usermanual.fragments.TitlesFragment;
 import com.usermanual.helper.DataBaseHelper;
-import com.usermanual.model.Media;
 import com.usermanual.model.Title;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.usermanual.helper.PrefHelper.MEDIA_LIST_KEY;
-
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
 
-
-
     BottomNavigationView bottomNavigation;
+    TitlesFragment titlesFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        titlesFragment = new TitlesFragment();
+        final FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.fragment_container, titlesFragment).commit();
+
         bottomNavigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.id_home:
+                        manager.beginTransaction().replace(R.id.fragment_container, titlesFragment).commit();
+                        break;
+                    case R.id.id_about:
+                        manager.beginTransaction().replace(R.id.fragment_container, new AboutUsFragment()).commit();
+                        break;
+                }
+                return true;
+            }
+        });
 
 //        for (int i = 0; i < 100; i++) { //todo delete it
 //            DownloadClass downloadClass = new DownloadClass();
@@ -166,35 +178,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DataBaseHelper.saveToDB(getApplicationContext(), titles);
 
 
-
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (state == 2)
-            state = 1;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (state == 0)
-            super.onBackPressed();
-        if (state == 1) {
-            titleList = DataBaseHelper.getTitlesList(getApplicationContext());
-            adapter.clear();
-            adapter.addAll(titleList);
-            adapter.notifyDataSetChanged();
-            titleGuide.setVisibility(View.GONE);
-            state = 0;
-        }
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//        switch (item.getItemId()) {
-//            case
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        if (state == 2)
+//            state = 1;
+//    }
+//
+//    @Override
+//    public void onBackPressed() {
+//        if (state == 0)
+//            super.onBackPressed();
+//        if (state == 1) {
+//            titleList = DataBaseHelper.getTitlesList(getApplicationContext());
+//            adapter.clear();
+//            adapter.addAll(titleList);
+//            adapter.notifyDataSetChanged();
+//            titleGuide.setVisibility(View.GONE);
+//            state = 0;
 //        }
-        return true;
-    }
+//    }
+
 }

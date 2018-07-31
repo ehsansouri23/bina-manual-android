@@ -39,7 +39,7 @@ public class TitlesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.media_fragment, container, false);
+        View view =  inflater.inflate(R.layout.titles_fragment, container, false);
         titlesListView = (ListView) view.findViewById(R.id.titles_list_view);
         titleGuide = (TextView) view.findViewById(R.id.title_guide);
         arrow = (TextView) view.findViewById(R.id.arrow);
@@ -74,11 +74,11 @@ public class TitlesFragment extends Fragment {
 
                     case 2:
                         List<Media> mediaList = DataBaseHelper.getMediaList(getContext(), title, subTitle);
-//                        Intent intent = new Intent(MainActivity.this, MediaActivity.class);
+                        Intent intent = new Intent(getActivity(), MediaActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putParcelableArrayList(MEDIA_LIST_KEY, (ArrayList<Media>) mediaList);
-//                        intent.putExtras(bundle);
-//                        startActivity(intent);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
                         break;
                 }
             }
@@ -86,6 +86,4 @@ public class TitlesFragment extends Fragment {
 
         return view;
     }
-
-
 }
