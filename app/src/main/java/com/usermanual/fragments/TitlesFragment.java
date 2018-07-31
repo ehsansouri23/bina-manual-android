@@ -86,4 +86,25 @@ public class TitlesFragment extends Fragment {
 
         return view;
     }
+
+    public boolean onBackPressed() {
+        if (state == 0)
+            return true;
+        if (state == 1) {
+            titleList = DataBaseHelper.getTitlesList(getContext());
+            adapter.clear();
+            adapter.addAll(titleList);
+            adapter.notifyDataSetChanged();
+            titleGuide.setVisibility(View.GONE);
+            state = 0;
+            return false;
+        }
+        return false;
+    }
+
+    public void onResume() {
+        super.onResume();
+        if (state == 2)
+            state = 1;
+    }
 }

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -42,10 +43,14 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (item.getItemId()) {
                     case R.id.id_home:
-                        manager.beginTransaction().replace(R.id.fragment_container, titlesFragment).commit();
+                        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+                        fragmentTransaction.replace(R.id.fragment_container, titlesFragment).commit();
+                        fragmentTransaction.addToBackStack(null);
                         break;
                     case R.id.id_about:
-                        manager.beginTransaction().replace(R.id.fragment_container, new AboutUsFragment()).commit();
+                        FragmentTransaction fragmentTransaction1 = manager.beginTransaction();
+                        fragmentTransaction1.addToBackStack(null);
+                        fragmentTransaction1.replace(R.id.fragment_container, new AboutUsFragment()).commit();
                         break;
                 }
                 return true;
@@ -180,25 +185,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        if (state == 2)
-//            state = 1;
-//    }
-//
-//    @Override
-//    public void onBackPressed() {
-//        if (state == 0)
-//            super.onBackPressed();
-//        if (state == 1) {
-//            titleList = DataBaseHelper.getTitlesList(getApplicationContext());
-//            adapter.clear();
-//            adapter.addAll(titleList);
-//            adapter.notifyDataSetChanged();
-//            titleGuide.setVisibility(View.GONE);
-//            state = 0;
-//        }
-//    }
-
+    @Override
+    public void onBackPressed() {
+        if (titlesFragment.isVisible())
+            if (titlesFragment.onBackPressed())
+                super.onBackPressed();
+    }
 }
