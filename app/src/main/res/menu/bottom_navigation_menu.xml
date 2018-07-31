@@ -12,14 +12,13 @@
         android:icon="@mipmap/news"/>
 
     <item
-        android:id="@+id/id_favs"
-        android:title="@string/favorites"
-        android:icon="@mipmap/favorites"/>
-
-    <item
         android:id="@+id/id_support"
         android:title="@string/support"
         android:icon="@mipmap/support"/>
 
+    <item
+        android:id="@+id/id_about"
+        android:title="@string/about"
+        android:icon="@mipmap/about"/>
 
 </menu>
