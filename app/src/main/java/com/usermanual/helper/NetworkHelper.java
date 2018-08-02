@@ -18,16 +18,31 @@ public class NetworkHelper {
         return cm.getActiveNetworkInfo() != null;
     }
 
-    public static String getJSON(String url, int timeout) {
+    public static HttpURLConnection getConnection(String url, String method, int timeout) {
         HttpURLConnection c = null;
+        URL u = null;
         try {
-            URL u = new URL(url);
+            u = new URL(url);
             c = (HttpURLConnection) u.openConnection();
             c.setRequestMethod("GET");
             c.setUseCaches(false);
             c.setAllowUserInteraction(false);
             c.setConnectTimeout(timeout);
             c.setReadTimeout(timeout);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return c;
+    }
+
+    public static String getJSON(String url, int timeout) {
+        HttpURLConnection c = null;
+        try {
+            c = getConnection(url, "GET", timeout);
             c.connect();
             int status = c.getResponseCode();
 
