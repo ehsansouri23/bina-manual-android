@@ -15,6 +15,7 @@ import com.google.gson.reflect.TypeToken;
 import com.usermanual.R;
 import com.usermanual.fragments.AboutUsFragment;
 import com.usermanual.fragments.TitlesFragment;
+import com.usermanual.helper.BottomNavigationViewHelper;
 import com.usermanual.helper.DataBaseHelper;
 import com.usermanual.model.Title;
 
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         manager.beginTransaction().replace(R.id.fragment_container, titlesFragment).commit();
 
         bottomNavigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        BottomNavigationViewHelper.removeShiftMode(bottomNavigation);
         bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
