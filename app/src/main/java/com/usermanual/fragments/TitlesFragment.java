@@ -14,7 +14,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.usermanual.R;
-import com.usermanual.activities.MainActivity;
 import com.usermanual.activities.MediaActivity;
 import com.usermanual.helper.DataBaseHelper;
 import com.usermanual.model.Media;
@@ -60,7 +59,7 @@ public class TitlesFragment extends Fragment {
                         title = position + 1;
                         titleGuide.setText(titleList.get(position));
                         titleGuide.setVisibility(View.VISIBLE);
-                        List<String> subtitles = DataBaseHelper.getSubtitleList(getContext(), position + 1);
+                        List<String> subtitles = DataBaseHelper.getSubtitleList(getContext(), titleList.get(position));
                         adapter.clear();
                         adapter.addAll(subtitles);
                         adapter.notifyDataSetChanged();
