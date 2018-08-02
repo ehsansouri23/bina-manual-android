@@ -6,10 +6,9 @@ import android.content.SharedPreferences;
 public class PrefHelper {
 
     private static final String PREFS = "prefs";
-
     public static final String MEDIA_LIST_KEY = "medias";
-
     public static final String MEDIA_KEY = "media";
+    public static final String BASE_URL = "https://s10.ghiasi.me/api/getdata";
 
     private static SharedPreferences prefs;
 
