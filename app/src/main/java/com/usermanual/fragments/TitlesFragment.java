@@ -34,6 +34,7 @@ public class TitlesFragment extends Fragment {
     TextView titleGuide, arrow, subtitleGuide;
 
     List<String> titleList;
+    List<String> subtitleList;
 
     @Nullable
     @Override
@@ -59,9 +60,9 @@ public class TitlesFragment extends Fragment {
                         title = position + 1;
                         titleGuide.setText(titleList.get(position));
                         titleGuide.setVisibility(View.VISIBLE);
-                        List<String> subtitles = DataBaseHelper.getSubtitleList(getContext(), titleList.get(position));
+                        subtitleList = DataBaseHelper.getSubtitleList(getContext(), titleList.get(position));
                         adapter.clear();
-                        adapter.addAll(subtitles);
+                        adapter.addAll(subtitleList);
                         adapter.notifyDataSetChanged();
                         break;
                     case 1:
@@ -72,7 +73,7 @@ public class TitlesFragment extends Fragment {
                         subtitleGuide.setVisibility(View.VISIBLE);
 
                     case 2:
-                        List<Media> mediaList = DataBaseHelper.getMediaList(getContext(), title, subTitle);
+                        List<Media> mediaList = DataBaseHelper.getMediaList(getContext(), subtitleList.get(position));
                         Intent intent = new Intent(getActivity(), MediaActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putParcelableArrayList(MEDIA_LIST_KEY, (ArrayList<Media>) mediaList);
