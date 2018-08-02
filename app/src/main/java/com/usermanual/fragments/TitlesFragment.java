@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -30,6 +32,7 @@ public class TitlesFragment extends Fragment {
     int title, subTitle;
 
     ListView titlesListView;
+    LayoutAnimationController listVeiwAnimation;
     ArrayAdapter<String> adapter;
 
     TextView titleGuide, arrow, subtitleGuide;
@@ -38,18 +41,22 @@ public class TitlesFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.titles_fragment, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.titles_fragment, container, false);
         titlesListView = (ListView) view.findViewById(R.id.titles_list_view);
         titleGuide = (TextView) view.findViewById(R.id.title_guide);
         arrow = (TextView) view.findViewById(R.id.arrow);
         subtitleGuide = (TextView) view.findViewById(R.id.subtitle_guide);
+
+        listVeiwAnimation =
+                AnimationUtils.loadLayoutAnimation(view.getContext(), R.anim.list_anim);
 
         titleList = DataBaseHelper.getTitlesList(getContext());
         adapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, titleList);
         adapter.notifyDataSetChanged();
         titlesListView.setAdapter(adapter);
+        titlesListView.setLayoutAnimation(listVeiwAnimation);
 
         titlesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -64,6 +71,7 @@ public class TitlesFragment extends Fragment {
                         adapter.clear();
                         adapter.addAll(subtitles);
                         adapter.notifyDataSetChanged();
+                        titlesListView.setLayoutAnimation(listVeiwAnimation);
                         break;
                     case 1:
                         state = 2;
@@ -95,6 +103,7 @@ public class TitlesFragment extends Fragment {
             adapter.clear();
             adapter.addAll(titleList);
             adapter.notifyDataSetChanged();
+            titlesListView.setLayoutAnimation(listVeiwAnimation);
             titleGuide.setVisibility(View.GONE);
             state = 0;
             return false;

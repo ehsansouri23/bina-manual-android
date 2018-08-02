@@ -45,6 +45,8 @@
         android:id="@+id/titles_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/guide_layout" />
+        android:persistentDrawingCache="animation|scrolling"
+        android:layout_below="@id/guide_layout"
+        android:layoutAnimation="@anim/list_anim"/>
 
 </RelativeLayout>
