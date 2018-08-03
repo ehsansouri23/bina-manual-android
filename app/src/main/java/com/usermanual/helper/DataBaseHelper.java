@@ -1,8 +1,13 @@
 package com.usermanual.helper;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.usermanual.helper.dbmodels.TableMedia;
+import com.usermanual.helper.dbmodels.TableSubTitle;
+import com.usermanual.helper.dbmodels.TableTitle;
 import com.usermanual.model.Media;
+import com.usermanual.model.SubTitle;
 import com.usermanual.model.Title;
 
 import java.util.ArrayList;
@@ -10,24 +15,49 @@ import java.util.List;
 
 import static com.usermanual.helper.PrefHelper.getInt;
 import static com.usermanual.helper.PrefHelper.getString;
-import static com.usermanual.helper.PrefHelper.saveInt;
 import static com.usermanual.helper.PrefHelper.saveString;
 
 public class DataBaseHelper {
 
-    public static void saveToDB(Context context, List<Title> titleList) {
+    public static void saveToDB(final Context context, List<Title> titleList) {
         for (int i = 0; i < titleList.size(); i++) {
-            saveString(context, i + 1 + "", titleList.get(i).getTitle());
-            for (int j = 0; j < titleList.get(i).getSubTitles().size(); j++) {
-                saveString(context, generateSubTitlesKey(i + 1, j + 1), titleList.get(i).getSubTitles().get(j).getSubTitle());
-                for (int k = 0; k < titleList.get(i).getSubTitles().get(j).getMedias().size(); k++) {
-                    saveString(context, generateMediaTextKey(i + 1, j + 1, k + 1), titleList.get(i).getSubTitles().get(j).getMedias().get(k).getText());
-                    saveString(context, generateMediaUrlKey(i + 1, j + 1, k + 1), titleList.get(i).getSubTitles().get(j).getMedias().get(k).getUrl());
-                    saveInt(context, generateMediaTypeKey(i + 1, j + 1, k + 1), titleList.get(i).getSubTitles().get(j).getMedias().get(k).getType());
+            TableTitle tableTitle = new TableTitle();
+            tableTitle.title = titleList.get(i).getTitle();
+            AppDatabase.getInstance(context).titleDao().insert(tableTitle);
+
+            final List<SubTitle> subTitles = titleList.get(i).getSubTitles();
+            List<TableSubTitle> tableSubTitles = new ArrayList<>();
+            for (int j = 0; j < subTitles.size(); j++) {
+                TableSubTitle tableSubTitle = new TableSubTitle();
+                tableSubTitle.title = titleList.get(i).getTitle();
+                tableSubTitle.subtitle = subTitles.get(j).getSubTitle();
+                tableSubTitles.add(tableSubTitle);
+            }
+            for (int j = 0; j < tableSubTitles.size(); j++) {
+                AppDatabase.getInstance(context).subtitleDao().insert(tableSubTitles.get(j));
+            }
+
+            for (int j = 0; j < subTitles.size(); j++) {
+                List<Media> mediaList = subTitles.get(j).getMedias();
+                List<TableMedia> tableMediaList = new ArrayList<>();
+
+                for (int k = 0; k < mediaList.size(); k++) {
+                    TableMedia tableMedia = new TableMedia();
+                    tableMedia.mediaText = mediaList.get(k).getText();
+                    tableMedia.mediaUrl = mediaList.get(k).getUrl();
+                    tableMedia.title = titleList.get(i).getTitle();
+                    tableMedia.subtitle = subTitles.get(j).getSubTitle();
+                    tableMediaList.add(tableMedia);
+                }
+                for (int k = 0; k < tableMediaList.size(); k++) {
+                    Log.e("tag", "saveToDB: " + AppDatabase.getInstance(context).mediaDao().insert(tableMediaList.get(k)));
                 }
             }
+
         }
     }
+//        }
+
 
     private static String generateSubTitlesKey(int title, int subTitle) {
         return title + "_" + subTitle;
@@ -46,44 +76,47 @@ public class DataBaseHelper {
     }
 
     public static List<String> getTitlesList(Context context) {
+        List<TableTitle> tableTitleList = AppDatabase.getInstance(context).titleDao().getAll();
         List<String> titles = new ArrayList<>();
-        int i = 1;
-        String title = getString(context, i + "", null);
-        while (title != null) {
-            titles.add(title);
-            i++;
-            title = getString(context, i + "", null);
+        for (int i = 0; i < tableTitleList.size(); i++) {
+            titles.add(tableTitleList.get(i).title);
         }
         return titles;
     }
 
-    public static List<String> getSubtitleList(Context context, int title) {
-        List<String> subtitles = new ArrayList<>();
-        int i = 1;
-        String key = generateSubTitlesKey(title, i);
-        String subtitle = getString(context, key, null);
-        while (subtitle != null) {
-            subtitles.add(subtitle);
-            i++;
-            key = generateSubTitlesKey(title, i);
-            subtitle = getString(context, key, null);
+    public static List<String> searchTitle(Context context, String titleRegex) {
+        List<TableTitle> tableTitleList = AppDatabase.getInstance(context).titleDao().search(titleRegex);
+        List<String> titles = new ArrayList<>();
+        for (int i = 0; i < tableTitleList.size(); i++) {
+            titles.add(tableTitleList.get(i).title);
         }
-        return subtitles;
+        return titles;
     }
 
-    public static List<Media> getMediaList(Context context, int title, int subTitle) {
+    public static List<String> getSubtitleList(Context context, String title) {
+        List<TableSubTitle> subTitles = AppDatabase.getInstance(context).subtitleDao().getSubtitles(title);
+        List<String> subtitleStrings = new ArrayList<>();
+        for (int i = 0; i < subTitles.size(); i++) {
+            subtitleStrings.add(subTitles.get(i).subtitle);
+        }
+        return subtitleStrings;
+    }
+
+    public static List<String> searchSubtitle(Context context, String subtitleRegex) {
+        List<TableSubTitle> subTitles = AppDatabase.getInstance(context).subtitleDao().search(subtitleRegex);
+        List<String> subtitleStrings = new ArrayList<>();
+        for (int i = 0; i < subTitles.size(); i++) {
+            subtitleStrings.add(subTitles.get(i).subtitle);
+        }
+        return subtitleStrings;
+    }
+
+    public static List<Media> getMediaList(Context context, String subTitle) {
+        List<TableMedia> medias = AppDatabase.getInstance(context).mediaDao().getMedias(subTitle);
         List<Media> mediaList = new ArrayList<>();
-        int i = 1;
-        String key = generateMediaTextKey(title, subTitle, i);
-        String media = getString(context, key, null);
-        while (media != null) {
-            Media media1 = new Media(getString(context, generateMediaTextKey(title, subTitle, i), null)
-                    , getString(context, generateMediaUrlKey(title, subTitle, i), null),
-                    getInt(context, generateMediaTypeKey(title, subTitle, i), -1));
-            mediaList.add(media1);
-            i++;
-            key = generateMediaTextKey(title, subTitle, i);
-            media = getString(context, key, null);
+        for (int i = 0; i < medias.size(); i++) {
+            Media media = new Media(medias.get(i).mediaText, medias.get(i).mediaUrl, 0);
+            mediaList.add(media);
         }
         return mediaList;
     }
