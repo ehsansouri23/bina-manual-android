@@ -7,11 +7,14 @@ import android.content.Context;
 
 import com.usermanual.helper.dbmodels.TableMedia;
 import com.usermanual.helper.dbmodels.TableSubTitle;
+import com.usermanual.helper.dbmodels.TableTitle;
 
-@Database(entities = {TableSubTitle.class, TableMedia.class}, version = 1)
+@Database(entities = {TableSubTitle.class, TableMedia.class, TableTitle.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase instance;
+
+    public abstract TitleDao titleDao();
 
     public abstract SubtitleDao subtitleDao();
 
