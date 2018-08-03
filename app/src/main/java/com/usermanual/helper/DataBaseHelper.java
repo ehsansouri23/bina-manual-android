@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.usermanual.helper.dbmodels.TableMedia;
 import com.usermanual.helper.dbmodels.TableSubTitle;
+import com.usermanual.helper.dbmodels.TableTitle;
 import com.usermanual.model.Media;
 import com.usermanual.model.SubTitle;
 import com.usermanual.model.Title;
@@ -20,7 +21,10 @@ public class DataBaseHelper {
 
     public static void saveToDB(final Context context, List<Title> titleList) {
         for (int i = 0; i < titleList.size(); i++) {
-            saveString(context, i + 1 + "", titleList.get(i).getTitle());
+            TableTitle tableTitle = new TableTitle();
+            tableTitle.title = titleList.get(i).getTitle();
+            AppDatabase.getInstance(context).titleDao().insert(tableTitle);
+
             final List<SubTitle> subTitles = titleList.get(i).getSubTitles();
             List<TableSubTitle> tableSubTitles = new ArrayList<>();
             for (int j = 0; j < subTitles.size(); j++) {
@@ -72,19 +76,34 @@ public class DataBaseHelper {
     }
 
     public static List<String> getTitlesList(Context context) {
+        List<TableTitle> tableTitleList = AppDatabase.getInstance(context).titleDao().getAll();
         List<String> titles = new ArrayList<>();
-        int i = 1;
-        String title = getString(context, i + "", null);
-        while (title != null) {
-            titles.add(title);
-            i++;
-            title = getString(context, i + "", null);
+        for (int i = 0; i < tableTitleList.size(); i++) {
+            titles.add(tableTitleList.get(i).title);
+        }
+        return titles;
+    }
+
+    public static List<String> searchTitle(Context context, String titleRegex) {
+        List<TableTitle> tableTitleList = AppDatabase.getInstance(context).titleDao().search(titleRegex);
+        List<String> titles = new ArrayList<>();
+        for (int i = 0; i < tableTitleList.size(); i++) {
+            titles.add(tableTitleList.get(i).title);
         }
         return titles;
     }
 
     public static List<String> getSubtitleList(Context context, String title) {
         List<TableSubTitle> subTitles = AppDatabase.getInstance(context).subtitleDao().getSubtitles(title);
+        List<String> subtitleStrings = new ArrayList<>();
+        for (int i = 0; i < subTitles.size(); i++) {
+            subtitleStrings.add(subTitles.get(i).subtitle);
+        }
+        return subtitleStrings;
+    }
+
+    public static List<String> searchSubtitle(Context context, String subtitleRegex) {
+        List<TableSubTitle> subTitles = AppDatabase.getInstance(context).subtitleDao().search(subtitleRegex);
         List<String> subtitleStrings = new ArrayList<>();
         for (int i = 0; i < subTitles.size(); i++) {
             subtitleStrings.add(subTitles.get(i).subtitle);
