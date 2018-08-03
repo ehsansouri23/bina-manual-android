@@ -8,11 +8,14 @@ import java.io.IOException;
 public class StorageHelper {
 
     public static String getDir() {
-        return Environment.getExternalStorageDirectory().toString() + "/.ttld/tyui/.loikjh/";
+        File dir = new File(Environment.getExternalStorageDirectory().toString() + "/.ttld/tyui/.loikjh/");
+        if (!dir.exists())
+            dir.mkdirs();
+        return dir.getAbsolutePath();
     }
 
     public static File getFile(String fileName) {
-        File file = new File(getDir() + fileName);
+        File file = new File(getDir() , "." + fileName);
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -24,7 +27,7 @@ public class StorageHelper {
     }
 
     public static void deleteFile(String fileName) {
-        File file = new File(getDir() + fileName);
+        File file = new File(getDir() , "." + fileName);
         if (file.exists())
             file.delete();
     }
