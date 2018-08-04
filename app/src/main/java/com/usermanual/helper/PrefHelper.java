@@ -8,7 +8,9 @@ public class PrefHelper {
     private static final String PREFS = "prefs";
     public static final String MEDIA_LIST_KEY = "medias";
     public static final String MEDIA_KEY = "media";
-    public static final String BASE_URL = "https://s10.ghiasi.me/api/getdata";
+    public static final String TITLES_URL = "https://s10.ghiasi.me/api/getdata";
+    public static final String SUBTITLES_URL = "";
+    public static final String MEDIAS_URL = "";
 
     private static SharedPreferences prefs;
 

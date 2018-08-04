@@ -5,4 +5,7 @@
     <string name="favorites">علاقه مندی ها</string>
     <string name="support">پشتیبانی</string>
     <string name="about">درباره ما</string>
+    <string name="settings">تنظیمات</string>
+
+    <string name="reciving_data">دریافت اطلاعات</string>
 </resources>

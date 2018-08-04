@@ -8,18 +8,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.usermanual.R;
 import com.usermanual.fragments.AboutUsFragment;
 import com.usermanual.fragments.TitlesFragment;
 import com.usermanual.helper.BottomNavigationViewHelper;
-import com.usermanual.helper.DataBaseHelper;
 import com.usermanual.helper.NetworkHelper;
-import com.usermanual.helper.PrefHelper;
-import com.usermanual.model.Title;
-
-import java.util.List;
+import com.usermanual.helper.SaveToDB;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -38,12 +32,7 @@ public class MainActivity extends AppCompatActivity {
         manager.beginTransaction().replace(R.id.fragment_container, titlesFragment).commit();
 
         if (NetworkHelper.isNetworkConnected(getApplicationContext())) {
-            String json = NetworkHelper.getJSON(PrefHelper.BASE_URL, 5000);
-            Log.e(TAG, "onCreate: json: " + json);
-            Gson gson = new Gson();
-            List<Title> titles = gson.fromJson(json, new TypeToken<List<Title>>() {
-            }.getType());
-            DataBaseHelper.saveToDB(getApplicationContext(), titles);
+            new SaveToDB(this).execute();
         }
 
         bottomNavigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);

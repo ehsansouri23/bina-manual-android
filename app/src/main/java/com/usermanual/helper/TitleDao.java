@@ -2,6 +2,7 @@ package com.usermanual.helper;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
 import com.usermanual.helper.dbmodels.TableTitle;
@@ -17,6 +18,9 @@ public interface TitleDao {
     @Query("SELECT * FROM TableTitle WHERE title LIKE :title")
     List<TableTitle> search(String title);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(TableTitle tableTitle);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insertAll(List<TableTitle> tableTitles);
 }
