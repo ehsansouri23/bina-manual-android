@@ -33,7 +33,7 @@ public class TitlesFragment extends Fragment {
     int title, subTitle;
 
     ListView titlesListView;
-    LayoutAnimationController listVeiwAnimation;
+    LayoutAnimationController listViewAnimation;
     ArrayAdapter<String> adapter;
 
     TextView titleGuide, arrow, subtitleGuide;
@@ -53,7 +53,7 @@ public class TitlesFragment extends Fragment {
         titleList = new ArrayList<>();
         subtitleList = new ArrayList<>();
 
-        listVeiwAnimation =
+        listViewAnimation =
                 AnimationUtils.loadLayoutAnimation(view.getContext(), R.anim.list_anim);
 
         titleList = getTitles();
@@ -62,7 +62,7 @@ public class TitlesFragment extends Fragment {
                 android.R.layout.simple_list_item_1, android.R.id.text1, titleList);
         adapter.notifyDataSetChanged();
         titlesListView.setAdapter(adapter);
-        titlesListView.setLayoutAnimation(listVeiwAnimation);
+        titlesListView.setLayoutAnimation(listViewAnimation);
 
         titlesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -77,7 +77,7 @@ public class TitlesFragment extends Fragment {
                         adapter.clear();
                         adapter.addAll(subtitleList);
                         adapter.notifyDataSetChanged();
-                        titlesListView.setLayoutAnimation(listVeiwAnimation);
+                        titlesListView.setLayoutAnimation(listViewAnimation);
                         break;
                     case 1:
                         state = 2;
@@ -109,7 +109,7 @@ public class TitlesFragment extends Fragment {
             adapter.clear();
             adapter.addAll(titleList);
             adapter.notifyDataSetChanged();
-            titlesListView.setLayoutAnimation(listVeiwAnimation);
+            titlesListView.setLayoutAnimation(listViewAnimation);
             titleGuide.setVisibility(View.GONE);
             state = 0;
             return false;
