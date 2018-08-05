@@ -13,6 +13,7 @@ import android.view.MenuItem;
 
 import com.usermanual.R;
 import com.usermanual.fragments.AboutUsFragment;
+import com.usermanual.fragments.NewsFragment;
 import com.usermanual.fragments.TitlesFragment;
 import com.usermanual.helper.BottomNavigationViewHelper;
 import com.usermanual.helper.NetworkHelper;
@@ -51,12 +52,17 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.id_home:
                         FragmentTransaction fragmentTransaction = manager.beginTransaction();
                         fragmentTransaction.replace(R.id.fragment_container, titlesFragment).commit();
-                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.addToBackStack("tag");
+                        break;
+                    case R.id.id_news:
+                        FragmentTransaction fragmentTransaction1 = manager.beginTransaction();
+                        fragmentTransaction1.addToBackStack("tag");
+                        fragmentTransaction1.replace(R.id.fragment_container, new NewsFragment()).commit();
                         break;
                     case R.id.id_about:
-                        FragmentTransaction fragmentTransaction1 = manager.beginTransaction();
-                        fragmentTransaction1.addToBackStack(null);
-                        fragmentTransaction1.replace(R.id.fragment_container, new AboutUsFragment()).commit();
+                        FragmentTransaction fragmentTransaction2 = manager.beginTransaction();
+                        fragmentTransaction2.addToBackStack("tag");
+                        fragmentTransaction2.replace(R.id.fragment_container, new AboutUsFragment()).commit();
                         break;
                 }
                 return true;
@@ -64,14 +70,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
     }
 
     @Override
     public void onBackPressed() {
-        if (titlesFragment.isVisible())
+        if (titlesFragment.isVisible()) {
             if (titlesFragment.onBackPressed())
                 super.onBackPressed();
+        }
+        else
+            super.onBackPressed();
     }
 
     @Override
