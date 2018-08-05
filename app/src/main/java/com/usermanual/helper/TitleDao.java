@@ -22,5 +22,5 @@ public interface TitleDao {
     long insert(TableTitle tableTitle);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insertAll(List<TableTitle> tableTitles);
+    long[] insertAll(List<TableTitle> tableTitles);
 }

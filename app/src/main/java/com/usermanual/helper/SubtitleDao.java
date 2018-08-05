@@ -22,6 +22,6 @@ public interface SubtitleDao {
     long insert(TableSubTitle subTitles);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insertAll(List<TableSubTitle> subTitles);
+    long[] insertAll(List<TableSubTitle> subTitles);
 
 }

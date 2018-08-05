@@ -19,5 +19,5 @@ public interface MediaDao {
     long insert(TableMedia media);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insertAll(List<TableMedia> medias);
+    long[] insertAll(List<TableMedia> medias);
 }
