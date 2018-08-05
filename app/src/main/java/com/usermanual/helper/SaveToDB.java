@@ -1,12 +1,12 @@
 package com.usermanual.helper;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.usermanual.R;
+import com.usermanual.activities.MainActivity;
 import com.usermanual.helper.dbmodels.TableMedia;
 import com.usermanual.helper.dbmodels.TableSubTitle;
 import com.usermanual.helper.dbmodels.TableTitle;
@@ -21,15 +21,15 @@ import static com.usermanual.helper.PrefHelper.TITLES_URL;
 public class SaveToDB extends AsyncTask<Void, Void, Boolean> {
 
     ProgressDialog progressDialog;
-    Activity activity;
+    MainActivity activity;
     List<TableTitle> titles;
     List<TableSubTitle> subTitles;
     List<TableMedia> medias;
     Gson gson;
 
-    public SaveToDB(Activity activity) {
+    public SaveToDB(MainActivity activity, ProgressDialog progressDialog) {
         this.activity = activity;
-        progressDialog = new ProgressDialog(activity.getApplicationContext());
+        this.progressDialog = progressDialog;
     }
 
     @Override
