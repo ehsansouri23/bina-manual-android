@@ -18,6 +18,10 @@ public class TableMedia implements Parcelable, Serializable {
     public String mediaText;
     public String mediaUrl;
 
+    public TableMedia(String title, String subtitle, String mediaText, String mediaUrl) {
+
+    }
+
     protected TableMedia(Parcel in) {
         id = in.readInt();
         title = in.readString();
