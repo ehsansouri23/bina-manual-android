@@ -1,6 +1,8 @@
 package com.usermanual.activities;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -199,6 +201,27 @@ public class MainActivity extends AppCompatActivity {
         if (progressDialog != null) {
             progressDialog.dismiss();
             progressDialog = null;
+        }
+    }
+
+    public void onDataLoaded(boolean success) {
+        if (!success) {
+            AlertDialog alertDialog = new AlertDialog.Builder(this)
+                    .setMessage(getResources().getString(R.string.reciving_data_failed))
+                    .setTitle(getResources().getString(R.string.failed_title))
+                    .setPositiveButton(getResources().getString(R.string.retry), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            new SaveToDB(MainActivity.this, progressDialog).execute();
+                        }
+                    })
+                    .setNegativeButton(getResources().getString(R.string.exit), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .show();
         }
     }
 }

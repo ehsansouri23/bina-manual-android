@@ -44,12 +44,16 @@ public class SaveToDB extends AsyncTask<Void, Void, Boolean> {
         String titlesJSON = getJSON(TITLES_URL, 5000);
         gson = new Gson();
         titles = gson.fromJson(titlesJSON, new TypeToken<List<TableTitle>>(){}.getType());
+        if (titles == null)
+            return false;
         DataBaseHelper.saveTitles(activity.getApplicationContext(), titles);
 
         for (int i = 0; i < titles.size(); i++) {
             String subtitleUrl = SUBTITLES_URL + "/" + titles.get(i).title;
             String subtitleJSON = getJSON(subtitleUrl, 5000);
             subTitles = gson.fromJson(subtitleJSON, new TypeToken<List<TableSubTitle>>(){}.getType());
+            if (subTitles == null)
+                return false;
             DataBaseHelper.saveSubtitles(activity.getApplicationContext(), subTitles);
         }
 
@@ -57,6 +61,8 @@ public class SaveToDB extends AsyncTask<Void, Void, Boolean> {
             String mediaUrl = MEDIAS_URL +  "/" + subTitles.get(i).subtitle;
             String mediaJSON = getJSON(mediaUrl, 5000);
             medias = gson.fromJson(mediaJSON, new TypeToken<List<TableSubTitle>>(){}.getType());
+            if (medias == null)
+                return false;
             DataBaseHelper.saveMedias(activity.getApplicationContext(), medias);
         }
         return true;
@@ -66,5 +72,6 @@ public class SaveToDB extends AsyncTask<Void, Void, Boolean> {
     protected void onPostExecute(Boolean aBoolean) {
         if (progressDialog.isShowing())
             progressDialog.dismiss();
+            activity.onDataLoaded(aBoolean);
     }
 }
