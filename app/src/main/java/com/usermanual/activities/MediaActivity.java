@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.usermanual.R;
 import com.usermanual.adapter.MediaFragmentsAdapter;
-import com.usermanual.model.Media;
+import com.usermanual.helper.dbmodels.TableMedia;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class MediaActivity extends AppCompatActivity {
 
     TabLayout tabLayout;
     ViewPager viewPager;
-    List<Media> mediaList;
+    List<TableMedia> mediaList;
     MediaFragmentsAdapter mediaFragmentsAdapter;
 
     @Override
