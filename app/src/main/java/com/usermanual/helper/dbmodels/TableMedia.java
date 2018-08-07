@@ -5,6 +5,8 @@ import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 @Entity
@@ -13,8 +15,16 @@ public class TableMedia implements Parcelable, Serializable {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
+    @SerializedName("Id")
+    public int mediaId;
+
+    @SerializedName("Subtitleid")
+    public int subtitleId;
+
     public String title;
     public String subtitle;
+
+    @SerializedName("Text")
     public String mediaText;
     public String mediaUrl;
 
