@@ -49,22 +49,23 @@ public class SaveToDB extends AsyncTask<Void, Void, Boolean> {
         DataBaseHelper.saveTitles(activity.getApplicationContext(), titles);
 
         for (int i = 0; i < titles.size(); i++) {
-            String subtitleUrl = SUBTITLES_URL + "/" + titles.get(i).title;
+            String subtitleUrl = SUBTITLES_URL + "/" + titles.get(i).titleId;
             String subtitleJSON = getJSON(subtitleUrl, 5000);
             subTitles = gson.fromJson(subtitleJSON, new TypeToken<List<TableSubTitle>>(){}.getType());
             if (subTitles == null)
                 return false;
             DataBaseHelper.saveSubtitles(activity.getApplicationContext(), subTitles);
+
+            for (int j = 0; j < subTitles.size(); j++) {
+                String mediaUrl = MEDIAS_URL +  "/" + subTitles.get(j).subtitleId;
+                String mediaJSON = getJSON(mediaUrl, 5000);
+                medias = gson.fromJson(mediaJSON, new TypeToken<List<TableSubTitle>>(){}.getType());
+                if (medias == null)
+                    return false;
+                DataBaseHelper.saveMedias(activity.getApplicationContext(), medias);
+            }
         }
 
-        for (int i = 0; i < subTitles.size(); i++) {
-            String mediaUrl = MEDIAS_URL +  "/" + subTitles.get(i).subtitle;
-            String mediaJSON = getJSON(mediaUrl, 5000);
-            medias = gson.fromJson(mediaJSON, new TypeToken<List<TableSubTitle>>(){}.getType());
-            if (medias == null)
-                return false;
-            DataBaseHelper.saveMedias(activity.getApplicationContext(), medias);
-        }
         return true;
     }
 
