@@ -18,7 +18,9 @@ import android.widget.TextView;
 import com.usermanual.R;
 import com.usermanual.activities.MediaActivity;
 import com.usermanual.helper.DataBaseHelper;
-import com.usermanual.model.Media;
+import com.usermanual.helper.dbmodels.TableMedia;
+import com.usermanual.helper.dbmodels.TableSubTitle;
+import com.usermanual.helper.dbmodels.TableTitle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,7 @@ public class TitlesFragment extends Fragment {
     int title, subTitle;
 
     ListView titlesListView;
-    LayoutAnimationController listVeiwAnimation;
+    LayoutAnimationController listViewAnimation;
     ArrayAdapter<String> adapter;
 
     TextView titleGuide, arrow, subtitleGuide;
@@ -48,15 +50,19 @@ public class TitlesFragment extends Fragment {
         arrow = (TextView) view.findViewById(R.id.arrow);
         subtitleGuide = (TextView) view.findViewById(R.id.subtitle_guide);
 
-        listVeiwAnimation =
+        titleList = new ArrayList<>();
+        subtitleList = new ArrayList<>();
+
+        listViewAnimation =
                 AnimationUtils.loadLayoutAnimation(view.getContext(), R.anim.list_anim);
 
-        titleList = DataBaseHelper.getTitlesList(getContext());
+        titleList = getTitles();
+
         adapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, titleList);
         adapter.notifyDataSetChanged();
         titlesListView.setAdapter(adapter);
-        titlesListView.setLayoutAnimation(listVeiwAnimation);
+        titlesListView.setLayoutAnimation(listViewAnimation);
 
         titlesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -67,11 +73,11 @@ public class TitlesFragment extends Fragment {
                         title = position + 1;
                         titleGuide.setText(titleList.get(position));
                         titleGuide.setVisibility(View.VISIBLE);
-                        subtitleList = DataBaseHelper.getSubtitleList(getContext(), titleList.get(position));
+                        subtitleList = getSubtitles(titleList.get(position));
                         adapter.clear();
                         adapter.addAll(subtitleList);
                         adapter.notifyDataSetChanged();
-                        titlesListView.setLayoutAnimation(listVeiwAnimation);
+                        titlesListView.setLayoutAnimation(listViewAnimation);
                         break;
                     case 1:
                         state = 2;
@@ -81,10 +87,10 @@ public class TitlesFragment extends Fragment {
                         subtitleGuide.setVisibility(View.VISIBLE);
 
                     case 2:
-                        List<Media> mediaList = DataBaseHelper.getMediaList(getContext(), subtitleList.get(position));
+                        List<TableMedia> mediaList = DataBaseHelper.getMediaList(getContext(), subtitleList.get(position));
                         Intent intent = new Intent(getActivity(), MediaActivity.class);
                         Bundle bundle = new Bundle();
-                        bundle.putParcelableArrayList(MEDIA_LIST_KEY, (ArrayList<Media>) mediaList);
+                        bundle.putParcelableArrayList(MEDIA_LIST_KEY, (ArrayList<TableMedia>) mediaList);
                         intent.putExtras(bundle);
                         startActivity(intent);
                         break;
@@ -99,11 +105,11 @@ public class TitlesFragment extends Fragment {
         if (state == 0)
             return true;
         if (state == 1) {
-            titleList = DataBaseHelper.getTitlesList(getContext());
+            titleList = getTitles();
             adapter.clear();
             adapter.addAll(titleList);
             adapter.notifyDataSetChanged();
-            titlesListView.setLayoutAnimation(listVeiwAnimation);
+            titlesListView.setLayoutAnimation(listViewAnimation);
             titleGuide.setVisibility(View.GONE);
             state = 0;
             return false;
@@ -115,5 +121,23 @@ public class TitlesFragment extends Fragment {
         super.onResume();
         if (state == 2)
             state = 1;
+    }
+
+    private List<String> getTitles() {
+        List<String> titleList = new ArrayList<>();
+        List<TableTitle> titles = DataBaseHelper.getTitlesList(getContext());
+        for (int i = 0; i < titles.size(); i++) {
+            titleList.add(titles.get(i).title);
+        }
+        return titleList;
+    }
+
+    private List<String> getSubtitles(String title) {
+        List<String> subtitleList = new ArrayList<>();
+        List<TableSubTitle> subTitles = DataBaseHelper.getSubtitlesList(getContext(), title);
+        for (int i = 0; i < subTitles.size(); i++) {
+            subtitleList.add(subTitles.get(i).title);
+        }
+        return subtitleList;
     }
 }

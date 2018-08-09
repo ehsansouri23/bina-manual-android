@@ -1,5 +1,8 @@
 package com.usermanual.activities;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -8,16 +11,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.usermanual.R;
 import com.usermanual.fragments.AboutUsFragment;
+import com.usermanual.fragments.NewsFragment;
 import com.usermanual.fragments.TitlesFragment;
 import com.usermanual.helper.BottomNavigationViewHelper;
-import com.usermanual.helper.DataBaseHelper;
-import com.usermanual.model.Title;
-
-import java.util.List;
+import com.usermanual.helper.NetworkHelper;
+import com.usermanual.helper.SaveToDB;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -25,15 +25,22 @@ public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigation;
     TitlesFragment titlesFragment;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        progressDialog = new ProgressDialog(MainActivity.this);
+
         titlesFragment = new TitlesFragment();
         final FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.fragment_container, titlesFragment).commit();
+
+        if (NetworkHelper.isNetworkConnected(getApplicationContext())) {
+            new SaveToDB(this, progressDialog).execute();
+        }
 
         bottomNavigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         BottomNavigationViewHelper.removeShiftMode(bottomNavigation);
@@ -45,150 +52,63 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.id_home:
                         FragmentTransaction fragmentTransaction = manager.beginTransaction();
                         fragmentTransaction.replace(R.id.fragment_container, titlesFragment).commit();
-                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.addToBackStack("tag");
+                        break;
+                    case R.id.id_news:
+                        FragmentTransaction fragmentTransaction1 = manager.beginTransaction();
+                        fragmentTransaction1.addToBackStack("tag");
+                        fragmentTransaction1.replace(R.id.fragment_container, new NewsFragment()).commit();
                         break;
                     case R.id.id_about:
-                        FragmentTransaction fragmentTransaction1 = manager.beginTransaction();
-                        fragmentTransaction1.addToBackStack(null);
-                        fragmentTransaction1.replace(R.id.fragment_container, new AboutUsFragment()).commit();
+                        FragmentTransaction fragmentTransaction2 = manager.beginTransaction();
+                        fragmentTransaction2.addToBackStack("tag");
+                        fragmentTransaction2.replace(R.id.fragment_container, new AboutUsFragment()).commit();
                         break;
                 }
                 return true;
             }
         });
 
-//        for (int i = 0; i < 100; i++) { //todo delete it
-//            DownloadClass downloadClass = new DownloadClass();
-//            downloadClass.execute(i + "");
-//        }
-
-
-        String json = "[\n" +
-                "  {\n" +
-                "    \"title\": \"title 1\",\n" +
-                "    \"sub\" : [\n" +
-                "      {\n" +
-                "        \"subTitle\": \"subtitle 1 1\",\n" +
-                "        \"medias\": [\n" +
-                "          {\n" +
-                "            \"text\": \"text 1\",\n" +
-                "            \"url\": \"url 1\",\n" +
-                "            \"type\": 1\n" +
-                "          },\n" +
-                "          {\n" +
-                "            \"text\": \"text 2\",\n" +
-                "            \"url\": \"url 1\",\n" +
-                "            \"type\": 1\n" +
-                "          },\n" +
-                "          {\n" +
-                "            \"text\": \"text 3\",\n" +
-                "            \"url\": \"url 1\",\n" +
-                "            \"type\": 1\n" +
-                "          }\n" +
-                "          ]\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"subTitle\": \"subtitle 1 2\",\n" +
-                "        \"medias\": [\n" +
-                "          {\n" +
-                "            \"text\": \"text1\",\n" +
-                "            \"url\": \"url 1\",\n" +
-                "            \"type\": 1\n" +
-                "          }\n" +
-                "          ]\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"subTitle\": \"subtitle 1 3\",\n" +
-                "        \"medias\": [\n" +
-                "          {\n" +
-                "            \"text\": \"text1\",\n" +
-                "            \"url\": \"url 1\",\n" +
-                "            \"type\": 1\n" +
-                "          }\n" +
-                "          ]\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"subTitle\": \"subtitle 1 4\",\n" +
-                "        \"medias\": [\n" +
-                "          {\n" +
-                "            \"text\": \"text1\",\n" +
-                "            \"url\": \"url 1\",\n" +
-                "            \"type\": 1\n" +
-                "          }\n" +
-                "          ]\n" +
-                "      }\n" +
-                "      ]\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"title\": \"title 2\",\n" +
-                "    \"sub\" : [\n" +
-                "      {\n" +
-                "        \"subTitle\": \"subtitle 2 1\",\n" +
-                "        \"medias\": [\n" +
-                "          {\n" +
-                "            \"text\": \"text1\",\n" +
-                "            \"url\": \"url 1\",\n" +
-                "            \"type\": 1\n" +
-                "          }\n" +
-                "          ]\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"subTitle\": \"subtitle 2 2\",\n" +
-                "        \"medias\": [\n" +
-                "          {\n" +
-                "            \"text\": \"text1\",\n" +
-                "            \"url\": \"url 1\",\n" +
-                "            \"type\": 1\n" +
-                "          }\n" +
-                "          ]\n" +
-                "      }\n" +
-                "      ]\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"title\": \"title 3\",\n" +
-                "    \"sub\" : [\n" +
-                "      {\n" +
-                "        \"subTitle\": \"subtitle\",\n" +
-                "        \"medias\": [\n" +
-                "          {\n" +
-                "            \"text\": \"text1\",\n" +
-                "            \"url\": \"url 1\",\n" +
-                "            \"type\": 1\n" +
-                "          }\n" +
-                "          ]\n" +
-                "      }\n" +
-                "      ]\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"title\": \"title 4\",\n" +
-                "    \"sub\" : [\n" +
-                "      {\n" +
-                "        \"subTitle\": \"subtitle\",\n" +
-                "        \"medias\": [\n" +
-                "          {\n" +
-                "            \"text\": \"text1\",\n" +
-                "            \"url\": \"url 1\",\n" +
-                "            \"type\": 1\n" +
-                "          }\n" +
-                "          ]\n" +
-                "      }\n" +
-                "      ]\n" +
-                "  }\n" +
-                "  \n" +
-                "]";
-
-        Gson gson = new Gson();
-        List<Title> titles = gson.fromJson(json, new TypeToken<List<Title>>() {
-        }.getType());
-        DataBaseHelper.saveToDB(getApplicationContext(), titles);
-
 
     }
 
     @Override
     public void onBackPressed() {
-        if (titlesFragment.isVisible())
+        if (titlesFragment.isVisible()) {
             if (titlesFragment.onBackPressed())
                 super.onBackPressed();
+        }
+        else
+            super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+            progressDialog = null;
+        }
+    }
+
+    public void onDataLoaded(boolean success) {
+        if (!success) {
+            AlertDialog alertDialog = new AlertDialog.Builder(this)
+                    .setMessage(getResources().getString(R.string.reciving_data_failed))
+                    .setTitle(getResources().getString(R.string.failed_title))
+                    .setPositiveButton(getResources().getString(R.string.retry), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            new SaveToDB(MainActivity.this, progressDialog).execute();
+                        }
+                    })
+                    .setNegativeButton(getResources().getString(R.string.exit), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .show();
+        }
     }
 }

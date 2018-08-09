@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.usermanual.fragments.MediaFragment;
-import com.usermanual.model.Media;
+import com.usermanual.helper.dbmodels.TableMedia;
 
 import java.util.List;
 
@@ -17,9 +17,9 @@ import static com.usermanual.helper.PrefHelper.MEDIA_KEY;
 public class MediaFragmentsAdapter extends FragmentPagerAdapter {
 
     Context context;
-    List<Media> mediaList;
+    List<TableMedia> mediaList;
 
-    public MediaFragmentsAdapter(Context context, FragmentManager fm, List<Media> mediaList) {
+    public MediaFragmentsAdapter(Context context, FragmentManager fm, List<TableMedia> mediaList) {
         super(fm);
         this.context = context;
         this.mediaList = mediaList;
@@ -42,6 +42,6 @@ public class MediaFragmentsAdapter extends FragmentPagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        return mediaList.get(position).getText();
+        return mediaList.get(position).mediaText;
     }
 }
