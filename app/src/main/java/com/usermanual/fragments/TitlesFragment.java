@@ -29,6 +29,10 @@ import static com.usermanual.helper.PrefHelper.MEDIA_LIST_KEY;
 
 public class TitlesFragment extends Fragment {
 
+    private static final int TITLES = 0;
+    private static final int SUBTITLES = 1;
+    private static final int MEDIAS = 2;
+
     int state;
     int title, subTitle;
 
@@ -68,8 +72,8 @@ public class TitlesFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (state) {
-                    case 0:
-                        state = 1;
+                    case TITLES:
+                        state = SUBTITLES;
                         title = position + 1;
                         titleGuide.setText(titleList.get(position));
                         titleGuide.setVisibility(View.VISIBLE);
@@ -79,14 +83,14 @@ public class TitlesFragment extends Fragment {
                         adapter.notifyDataSetChanged();
                         titlesListView.setLayoutAnimation(listViewAnimation);
                         break;
-                    case 1:
+                    case SUBTITLES:
                         state = 2;
                         subTitle = position + 1;
                         arrow.setVisibility(View.VISIBLE);
                         subtitleGuide.setText(adapter.getItem(position));
                         subtitleGuide.setVisibility(View.VISIBLE);
 
-                    case 2:
+                    case MEDIAS:
                         List<TableMedia> mediaList = DataBaseHelper.getMediaList(getContext(), subtitleList.get(position));
                         Intent intent = new Intent(getActivity(), MediaActivity.class);
                         Bundle bundle = new Bundle();
@@ -98,20 +102,33 @@ public class TitlesFragment extends Fragment {
             }
         });
 
+        titleGuide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                state = TITLES;
+                titleList = getTitles();
+                adapter.clear();
+                adapter.addAll(titleList);
+                adapter.notifyDataSetChanged();
+                titlesListView.setLayoutAnimation(listViewAnimation);
+                titleGuide.setVisibility(View.GONE);
+            }
+        });
+
         return view;
     }
 
     public boolean onBackPressed() {
-        if (state == 0)
+        if (state == TITLES)
             return true;
-        if (state == 1) {
+        if (state == SUBTITLES) {
             titleList = getTitles();
             adapter.clear();
             adapter.addAll(titleList);
             adapter.notifyDataSetChanged();
             titlesListView.setLayoutAnimation(listViewAnimation);
             titleGuide.setVisibility(View.GONE);
-            state = 0;
+            state = TITLES;
             return false;
         }
         return false;
@@ -119,8 +136,8 @@ public class TitlesFragment extends Fragment {
 
     public void onResume() {
         super.onResume();
-        if (state == 2)
-            state = 1;
+        if (state == MEDIAS)
+            state = SUBTITLES;
     }
 
     private List<String> getTitles() {
