@@ -12,8 +12,8 @@ import java.util.List;
 @Dao
 public interface MediaDao {
 
-    @Query("SELECT * FROM tablemedia WHERE subtitle = :subtitle")
-    List<TableMedia> getMedias(String subtitle);
+    @Query("SELECT * FROM tablemedia WHERE subtitleId = :subtitleId")
+    List<TableMedia> getMedias(int subtitleId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(TableMedia media);

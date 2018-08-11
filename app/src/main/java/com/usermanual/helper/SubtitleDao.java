@@ -12,8 +12,11 @@ import java.util.List;
 @Dao
 public interface SubtitleDao {
 
-    @Query("SELECT * FROM tablesubtitle WHERE title = :title")
-    List<TableSubTitle> getSubtitles(String title);
+    @Query("SELECT * FROM tablesubtitle WHERE titleId LIKE :titleId")
+    List<TableSubTitle> getSubtitles(int titleId);
+
+    @Query("SELECT * FROM tablesubtitle")
+    List<TableSubTitle> getAll();
 
     @Query("SELECT * FROM tablesubtitle WHERE subtitle LIKE :subtitle")
     List<TableSubTitle> search(String subtitle);
