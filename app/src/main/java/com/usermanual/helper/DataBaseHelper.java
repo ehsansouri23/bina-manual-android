@@ -27,19 +27,19 @@ public class DataBaseHelper {
     }
 
     public static List<TableTitle> searchTitle(Context context, String titleRegex) {
-        return AppDatabase.getInstance(context).titleDao().search(titleRegex);
+        return AppDatabase.getInstance(context).titleDao().search("%" + titleRegex + "%");
     }
 
-    public static List<TableSubTitle> getSubtitlesList(Context context, String title) {
-        return AppDatabase.getInstance(context).subtitleDao().getSubtitles(title);
+    public static List<TableSubTitle> getSubtitlesList(Context context, int titleId) {
+        return AppDatabase.getInstance(context).subtitleDao().getSubtitles(titleId);
     }
 
     public static List<TableSubTitle> searchSubtitle(Context context, String subtitleRegex) {
         return AppDatabase.getInstance(context).subtitleDao().search(subtitleRegex);
     }
 
-    public static List<TableMedia> getMediaList(Context context, String subTitle) {
-        return AppDatabase.getInstance(context).mediaDao().getMedias(subTitle);
+    public static List<TableMedia> getMediaList(Context context, int subtitleId) {
+        return AppDatabase.getInstance(context).mediaDao().getMedias(subtitleId);
     }
 
 }
