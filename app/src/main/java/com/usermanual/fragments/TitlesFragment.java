@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -34,16 +37,20 @@ public class TitlesFragment extends Fragment {
     private static final int MEDIAS = 2;
 
     int state;
-    int title, subTitle;
+    int selectedTitleId, selectedSubtitleId;
 
     ListView titlesListView;
     LayoutAnimationController listViewAnimation;
     ArrayAdapter<String> adapter;
 
     TextView titleGuide, arrow, subtitleGuide;
+    EditText search;
+    Button submit;
 
-    List<String> titleList;
-    List<String> subtitleList;
+    List<TableTitle> titleList;
+    List<TableSubTitle> subtitleList;
+    List<String> titlesString;
+    List<String> subtitlesString;
 
     @Nullable
     @Override
@@ -53,6 +60,21 @@ public class TitlesFragment extends Fragment {
         titleGuide = (TextView) view.findViewById(R.id.title_guide);
         arrow = (TextView) view.findViewById(R.id.arrow);
         subtitleGuide = (TextView) view.findViewById(R.id.subtitle_guide);
+        search = (EditText) view.findViewById(R.id.search);
+        submit = (Button) view.findViewById(R.id.submit);
+        submit.setOnClickListener(new View.OnClickListener() {//todo should handle search like this
+            @Override
+            public void onClick(View v) {
+                String s = search.getText().toString();
+                Log.e("tag", "onClick: " + s);
+                titleList = DataBaseHelper.searchTitle(getContext(), s);
+                adapter.clear();
+                titlesString = getTitles(titleList);
+                adapter.addAll(titlesString
+                );
+                adapter.notifyDataSetChanged();
+            }
+        });
 
         titleList = new ArrayList<>();
         subtitleList = new ArrayList<>();
@@ -60,10 +82,11 @@ public class TitlesFragment extends Fragment {
         listViewAnimation =
                 AnimationUtils.loadLayoutAnimation(view.getContext(), R.anim.list_anim);
 
-        titleList = getTitles();
+        titleList = DataBaseHelper.getTitlesList(getContext());
+        titlesString = getTitles(titleList);
 
         adapter = new ArrayAdapter<String>(getContext(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, titleList);
+                android.R.layout.simple_list_item_1, android.R.id.text1, titlesString);
         adapter.notifyDataSetChanged();
         titlesListView.setAdapter(adapter);
         titlesListView.setLayoutAnimation(listViewAnimation);
@@ -74,24 +97,26 @@ public class TitlesFragment extends Fragment {
                 switch (state) {
                     case TITLES:
                         state = SUBTITLES;
-                        title = position + 1;
-                        titleGuide.setText(titleList.get(position));
+                        selectedTitleId = titleList.get(position).titleId;
+                        Log.e("tag", "onItemClick: " + selectedTitleId + " title: " + titleList.get(position).title);
+                        titleGuide.setText(titleList.get(position).title);
                         titleGuide.setVisibility(View.VISIBLE);
-                        subtitleList = getSubtitles(titleList.get(position));
+                        subtitleList = DataBaseHelper.getSubtitlesList(getContext(), selectedTitleId);
+                        subtitlesString = getSubtitles(subtitleList);
                         adapter.clear();
-                        adapter.addAll(subtitleList);
+                        adapter.addAll(subtitlesString);
                         adapter.notifyDataSetChanged();
                         titlesListView.setLayoutAnimation(listViewAnimation);
                         break;
                     case SUBTITLES:
-                        state = 2;
-                        subTitle = position + 1;
+                        state = MEDIAS;
+                        selectedSubtitleId = subtitleList.get(position).subtitleId;
                         arrow.setVisibility(View.VISIBLE);
                         subtitleGuide.setText(adapter.getItem(position));
                         subtitleGuide.setVisibility(View.VISIBLE);
 
                     case MEDIAS:
-                        List<TableMedia> mediaList = DataBaseHelper.getMediaList(getContext(), subtitleList.get(position));
+                        List<TableMedia> mediaList = DataBaseHelper.getMediaList(getContext(), selectedSubtitleId);
                         Intent intent = new Intent(getActivity(), MediaActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putParcelableArrayList(MEDIA_LIST_KEY, (ArrayList<TableMedia>) mediaList);
@@ -106,9 +131,8 @@ public class TitlesFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 state = TITLES;
-                titleList = getTitles();
                 adapter.clear();
-                adapter.addAll(titleList);
+                adapter.addAll(titlesString);
                 adapter.notifyDataSetChanged();
                 titlesListView.setLayoutAnimation(listViewAnimation);
                 titleGuide.setVisibility(View.GONE);
@@ -122,9 +146,9 @@ public class TitlesFragment extends Fragment {
         if (state == TITLES)
             return true;
         if (state == SUBTITLES) {
-            titleList = getTitles();
             adapter.clear();
-            adapter.addAll(titleList);
+            titlesString = getTitles(DataBaseHelper.getTitlesList(getContext()));
+            adapter.addAll(titlesString);
             adapter.notifyDataSetChanged();
             titlesListView.setLayoutAnimation(listViewAnimation);
             titleGuide.setVisibility(View.GONE);
@@ -140,20 +164,18 @@ public class TitlesFragment extends Fragment {
             state = SUBTITLES;
     }
 
-    private List<String> getTitles() {
+    private List<String> getTitles(List<TableTitle> tableTitles) {
         List<String> titleList = new ArrayList<>();
-        List<TableTitle> titles = DataBaseHelper.getTitlesList(getContext());
-        for (int i = 0; i < titles.size(); i++) {
-            titleList.add(titles.get(i).title);
+        for (int i = 0; i < tableTitles.size(); i++) {
+            titleList.add(tableTitles.get(i).title);
         }
         return titleList;
     }
 
-    private List<String> getSubtitles(String title) {
+    private List<String> getSubtitles(List<TableSubTitle> tableSubTitles) {
         List<String> subtitleList = new ArrayList<>();
-        List<TableSubTitle> subTitles = DataBaseHelper.getSubtitlesList(getContext(), title);
-        for (int i = 0; i < subTitles.size(); i++) {
-            subtitleList.add(subTitles.get(i).title);
+        for (int i = 0; i < tableSubTitles.size(); i++) {
+            subtitleList.add(tableSubTitles.get(i).subtitle);
         }
         return subtitleList;
     }
