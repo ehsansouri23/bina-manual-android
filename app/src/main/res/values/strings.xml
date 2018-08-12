@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">User Manual</string>
+    <string name="app_name">ماشین</string>
     <string name="home">خانه</string>
     <string name="news">اخبار</string>
     <string name="favorites">علاقه مندی ها</string>
@@ -14,4 +14,6 @@
     <string name="retry">تلاش دوباره</string>
     <string name="search">جستجو</string>
     <string name="added_to_favs">به علاقه مندی ها اضافه شد</string>
+    <string name="navigation_drawer_open">Open</string>
+    <string name="navigation_drawer_close">Close</string>
 </resources>
