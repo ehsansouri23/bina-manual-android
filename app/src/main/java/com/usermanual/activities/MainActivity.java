@@ -17,6 +17,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,12 +25,20 @@ import android.view.MenuItem;
 import com.usermanual.R;
 import com.usermanual.fragments.AboutUsFragment;
 import com.usermanual.fragments.NewsFragment;
+import com.usermanual.fragments.SearchFragment;
 import com.usermanual.fragments.TitlesFragment;
 import com.usermanual.helper.BottomNavigationViewHelper;
+import com.usermanual.helper.DataBaseHelper;
 import com.usermanual.helper.NetworkHelper;
+import com.usermanual.helper.PrefHelper;
 import com.usermanual.helper.SaveToDB;
+import com.usermanual.helper.dbmodels.TableSubTitle;
+import com.usermanual.helper.dbmodels.TableTitle;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+ SearchView.OnQueryTextListener{
     private static final String TAG = "MainActivity";
 
 
@@ -63,7 +72,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (NetworkHelper.isNetworkConnected(getApplicationContext())) {
             loadingData = true;
-            new SaveToDB(this, progressDialog).execute();
+            AlertDialog alertDialog = new AlertDialog.Builder(this)
+                    .setMessage(getResources().getString(R.string.receiving_data_from_server))
+                    .setTitle(getResources().getString(R.string.receiving_data))
+                    .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            new SaveToDB(MainActivity.this, progressDialog).execute();
+                        }
+                    })
+                    .setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .show();
         } else
             manager.beginTransaction().replace(R.id.fragment_container, titlesFragment).commit();
 
@@ -121,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         if (!success) {
             AlertDialog alertDialog = new AlertDialog.Builder(this)
-                    .setMessage(getResources().getString(R.string.reciving_data_failed))
+                    .setMessage(getResources().getString(R.string.receiving_data_failed))
                     .setTitle(getResources().getString(R.string.failed_title))
                     .setPositiveButton(getResources().getString(R.string.retry), new DialogInterface.OnClickListener() {
                         @Override
@@ -148,15 +172,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
 
-        SearchView searchView = null;
-        if (searchItem != null) {
-            searchView = (SearchView) searchItem.getActionView();
-        }
-        if (searchView != null) {
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
-        }
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setQueryHint(getResources().getString(R.string.search));
+        searchView.setOnQueryTextListener(this);
         return super.onCreateOptionsMenu(menu);
     }
+
+
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -168,5 +190,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        Log.e(TAG, "onQueryTextSubmit: " + query);
+        List<TableTitle> tableTitles = DataBaseHelper.searchTitle(getApplicationContext(), query);
+        List<TableSubTitle> tableSubTitles = DataBaseHelper.searchSubtitle(getApplicationContext(), query);
+        SearchFragment searchFragment = new SearchFragment();
+        Bundle args = new Bundle();
+        args.putString(PrefHelper.SEARCH_QUERY, query);
+        searchFragment.setArguments(args);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, searchFragment).commit();
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
     }
 }
