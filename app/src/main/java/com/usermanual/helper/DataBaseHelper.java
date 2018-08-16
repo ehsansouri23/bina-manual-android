@@ -35,11 +35,26 @@ public class DataBaseHelper {
     }
 
     public static List<TableSubTitle> searchSubtitle(Context context, String subtitleRegex) {
-        return AppDatabase.getInstance(context).subtitleDao().search(subtitleRegex);
+        return AppDatabase.getInstance(context).subtitleDao().search("%" + subtitleRegex + "%");
+    }
+
+    public static List<TableSubTitle> searchSubtitle(Context context, int titleId, String subtitleRegex) {
+        return AppDatabase.getInstance(context).subtitleDao().search(titleId, "%" + subtitleRegex + "%");
     }
 
     public static List<TableMedia> getMediaList(Context context, int subtitleId) {
         return AppDatabase.getInstance(context).mediaDao().getMedias(subtitleId);
     }
 
+    public static void deleteAllTitles(Context context) {
+        AppDatabase.getInstance(context).titleDao().deleteAll();
+    }
+
+    public static void deleteAllSubtitles(Context context) {
+        AppDatabase.getInstance(context).subtitleDao().deleteAll();
+    }
+
+    public static void deleteAllMedias(Context context) {
+        AppDatabase.getInstance(context).mediaDao().deleteAll();
+    }
 }

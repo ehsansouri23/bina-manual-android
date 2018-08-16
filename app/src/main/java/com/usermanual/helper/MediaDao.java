@@ -20,4 +20,7 @@ public interface MediaDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long[] insertAll(List<TableMedia> medias);
+
+    @Query("DELETE FROM TableMedia")
+    void deleteAll();
 }

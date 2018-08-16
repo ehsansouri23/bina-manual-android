@@ -23,4 +23,7 @@ public interface TitleDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long[] insertAll(List<TableTitle> tableTitles);
+
+    @Query("DELETE FROM TableTitle")
+    void deleteAll();
 }

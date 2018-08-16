@@ -21,10 +21,15 @@ public interface SubtitleDao {
     @Query("SELECT * FROM tablesubtitle WHERE subtitle LIKE :subtitle")
     List<TableSubTitle> search(String subtitle);
 
+    @Query("SELECT * FROM tablesubtitle WHERE subtitle LIKE :subtitle AND titleId = :titleId")
+    List<TableSubTitle> search(int titleId, String subtitle);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(TableSubTitle subTitles);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long[] insertAll(List<TableSubTitle> subTitles);
 
+    @Query("DELETE FROM TableSubTitle")
+    void deleteAll();
 }
