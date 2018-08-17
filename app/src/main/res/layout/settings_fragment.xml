@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#e2e2e2">
+
+        <TextView
+            android:id="@+id/font_size_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:text="@string/font_size"
+            android:textSize="15sp" />
+
+        <com.warkiz.widget.IndicatorSeekBar
+            android:id="@+id/seek_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/font_size_text_view"
+            android:background="@color/white"
+            android:elevation="7dp"
+            android:padding="20dp"
+            app:isb_max="40"
+            app:isb_min="10"
+            app:isb_seek_smoothly="false"
+            app:isb_show_tick_texts="false"
+            app:isb_ticks_count="4" />
+
+        <TextView
+            android:id="@+id/font_sample_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/seek_bar"
+            android:layout_marginTop="20dp"
+            android:background="@color/white"
+            android:elevation="7dp"
+            android:padding="20dp"
+            android:text="@string/sample_string"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/animations_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:layout_below="@id/font_sample_text_view"
+            android:text="@string/animations"/>
+
+        <RadioGroup
+            android:id="@+id/animation_radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:background="@color/white"
+            android:layout_below="@id/animations_text_view"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/anim_on"
+                android:layout_width="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_height="wrap_content"
+                android:text="@string/on"/>
+            <RadioButton
+                android:id="@+id/anim_off"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/off"/>
+        </RadioGroup>
+
+    </RelativeLayout>
+
+</ScrollView>
