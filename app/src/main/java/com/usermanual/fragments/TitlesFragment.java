@@ -13,14 +13,13 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.usermanual.R;
 import com.usermanual.activities.MediaActivity;
 import com.usermanual.helper.DataBaseHelper;
+import com.usermanual.helper.PrefHelper;
 import com.usermanual.helper.dbmodels.TableMedia;
 import com.usermanual.helper.dbmodels.TableSubTitle;
 import com.usermanual.helper.dbmodels.TableTitle;
@@ -31,6 +30,7 @@ import java.util.List;
 import static com.usermanual.helper.PrefHelper.MEDIA_LIST_KEY;
 
 public class TitlesFragment extends Fragment {
+    private static final String TAG = "TitlesFragment";
 
     private static final int TITLES = 0;
     private static final int SUBTITLES = 1;
@@ -43,9 +43,7 @@ public class TitlesFragment extends Fragment {
     LayoutAnimationController listViewAnimation;
     ArrayAdapter<String> adapter;
 
-    TextView titleGuide, arrow, subtitleGuide;
-    EditText search;
-    Button submit;
+    TextView titleGuide, arrow;
 
     List<TableTitle> titleList;
     List<TableSubTitle> subtitleList;
@@ -55,32 +53,21 @@ public class TitlesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.e(TAG, "onCreateView: " );
         View view = inflater.inflate(R.layout.titles_fragment, container, false);
         titlesListView = (ListView) view.findViewById(R.id.titles_list_view);
         titleGuide = (TextView) view.findViewById(R.id.title_guide);
         arrow = (TextView) view.findViewById(R.id.arrow);
-        subtitleGuide = (TextView) view.findViewById(R.id.subtitle_guide);
-        search = (EditText) view.findViewById(R.id.search);
-        submit = (Button) view.findViewById(R.id.submit);
-        submit.setOnClickListener(new View.OnClickListener() {//todo should handle search like this
-            @Override
-            public void onClick(View v) {
-                String s = search.getText().toString();
-                Log.e("tag", "onClick: " + s);
-                titleList = DataBaseHelper.searchTitle(getContext(), s);
-                adapter.clear();
-                titlesString = getTitles(titleList);
-                adapter.addAll(titlesString
-                );
-                adapter.notifyDataSetChanged();
-            }
-        });
 
+        state = TITLES;
         titleList = new ArrayList<>();
         subtitleList = new ArrayList<>();
 
-        listViewAnimation =
-                AnimationUtils.loadLayoutAnimation(view.getContext(), R.anim.list_anim);
+        if (PrefHelper.getBoolean(getContext(), PrefHelper.PREF_ANIMATIONS, true))
+            listViewAnimation =
+                    AnimationUtils.loadLayoutAnimation(view.getContext(), R.anim.list_anim);
+        else
+            listViewAnimation = null;
 
         titleList = DataBaseHelper.getTitlesList(getContext());
         titlesString = getTitles(titleList);
@@ -98,7 +85,7 @@ public class TitlesFragment extends Fragment {
                     case TITLES:
                         state = SUBTITLES;
                         selectedTitleId = titleList.get(position).titleId;
-                        Log.e("tag", "onItemClick: " + selectedTitleId + " title: " + titleList.get(position).title);
+                        Log.e(TAG, "onItemClick: " + selectedTitleId + " title: " + titleList.get(position).title);
                         titleGuide.setText(titleList.get(position).title);
                         titleGuide.setVisibility(View.VISIBLE);
                         subtitleList = DataBaseHelper.getSubtitlesList(getContext(), selectedTitleId);
@@ -112,8 +99,6 @@ public class TitlesFragment extends Fragment {
                         state = MEDIAS;
                         selectedSubtitleId = subtitleList.get(position).subtitleId;
                         arrow.setVisibility(View.VISIBLE);
-                        subtitleGuide.setText(adapter.getItem(position));
-                        subtitleGuide.setVisibility(View.VISIBLE);
 
                     case MEDIAS:
                         List<TableMedia> mediaList = DataBaseHelper.getMediaList(getContext(), selectedSubtitleId);
@@ -132,10 +117,12 @@ public class TitlesFragment extends Fragment {
             public void onClick(View v) {
                 state = TITLES;
                 adapter.clear();
+                titlesString = getTitles(DataBaseHelper.getTitlesList(getContext()));
                 adapter.addAll(titlesString);
                 adapter.notifyDataSetChanged();
                 titlesListView.setLayoutAnimation(listViewAnimation);
                 titleGuide.setVisibility(View.GONE);
+                arrow.setVisibility(View.GONE);
             }
         });
 
