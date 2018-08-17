@@ -9,9 +9,12 @@ public class PrefHelper {
     public static final String MEDIA_LIST_KEY = "medias";
     public static final String MEDIA_KEY = "media";
     public static final String SEARCH_QUERY = "search_query";
-    public static final String TITLES_URL = "https://s10.ghiasi.me/api/titles";
-    public static final String SUBTITLES_URL = "https://s10.ghiasi.me/api/subtitles";
-    public static final String MEDIAS_URL = "https://s10.ghiasi.me/api/medias";
+    public static final String TITLES_URL = "http://s8.ghiasi.me/api/titles";
+    public static final String SUBTITLES_URL = "http://s8.ghiasi.me/api/subtitle/";
+    public static final String MEDIAS_URL = "http://s8.ghiasi.me/api/media";
+
+    public static final String PREF_FONT_SIZE = "pref_font_size";
+    public static final String PREF_ANIMATIONS = "pref_animations";
 
     private static SharedPreferences prefs;
 
@@ -41,5 +44,16 @@ public class PrefHelper {
     public static int getInt(Context context, String key, int def) {
         SharedPreferences prefs = getPrefs(context);
         return prefs.getInt(key, def);
+    }
+
+    public static void saveBoolean(Context context, String key, boolean value) {
+        SharedPreferences.Editor editor = getPrefs(context).edit();
+        editor.putBoolean(key, value);
+        editor.apply();
+    }
+
+    public static boolean getBoolean(Context context, String key, boolean def) {
+        SharedPreferences prefs = getPrefs(context);
+        return prefs.getBoolean(key, def);
     }
 }
