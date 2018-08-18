@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView android:layout_height="match_parent"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-<LinearLayout android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical">
-
-    <ImageView
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <VideoView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_launcher" />
 
-    <TextView
-        android:id="@+id/info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="here is the description"/>
+        <VideoView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="here is the description" />
+
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
