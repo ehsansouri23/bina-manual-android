@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:hint="@string/new_question"
+        android:inputType="textMultiLine"
+        android:lines="8"
+        android:padding="10dp"
+        android:maxLines="10"
+        android:minLines="6"
+        android:scrollbars="vertical" />
+
+    <Button
+        android:id="@+id/send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/question"
+        android:background="@drawable/ripple_effect"
+        android:clickable="true"
+        android:gravity="center"
+        android:padding="17dp"
+        android:text="@string/send_question"
+        android:textAlignment="center"
+        android:textColor="@color/black" />
+
+</RelativeLayout>

@@ -22,6 +22,8 @@
     <string name="animations">انیمیشن ها</string>
     <string name="on">روشن</string>
     <string name="off">خاموش</string>
+    <string name="new_question">سوال جدید</string>
+    <string name="send_question">ارسال سوال</string>
     <string name="navigation_drawer_open">Open</string>
     <string name="navigation_drawer_close">Close</string>
 </resources>
