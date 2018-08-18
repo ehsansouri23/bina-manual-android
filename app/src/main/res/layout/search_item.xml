@@ -11,20 +11,14 @@
         android:id="@+id/title_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="9dp"
+        android:layout_marginTop="5dp"
+        android:padding="15dp"
+        android:background="@drawable/gray_ripple_effect"
         android:text="عنوان"
+        android:textColor="@color/black"
         android:textSize="20sp"
-        android:visibility="gone" />
-
-    <ListView
-        android:nestedScrollingEnabled="true"
-        android:id="@+id/subtitles_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginRight="40dp"
-        android:layoutDirection="rtl"
-        android:textDirection="rtl"
-        android:theme="@style/Base.TextAppearance.AppCompat.Light.Widget.PopupMenu.Small"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </LinearLayout>
 

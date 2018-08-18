@@ -28,6 +28,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     ArrayAdapter<String> adapter;
 
     public SearchAdapter(Context context, List<SearchModel> searchModelList) {
+        this.context = context;
         this.searchModelList = searchModelList;
     }
 
@@ -51,22 +52,39 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         for (int j = 0; j < holder.mainLayout.getChildCount(); j++) {
             holder.mainLayout.getChildAt(j).setVisibility(View.GONE);
         }
         if (searchModelList.get(position).title != null) {
             holder.titleString.setText(searchModelList.get(position).title.title);
             holder.titleString.setVisibility(View.VISIBLE);
+            holder.titleString.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
             Log.e(TAG, "onBindViewHolder: we have title for search list");
         }
         if (searchModelList.get(position).subtitles != null) { //todo handle click and some buity here
             List<String> subtitlesString = getString(searchModelList.get(position).subtitles);
             for (int i = 0; i < subtitlesString.size(); i++) {
                 Log.e(TAG, "onBindViewHolder: " + subtitlesString.get(i));
-                TextView subtitleTextView = new TextView(holder.itemView.getContext());
-                subtitleTextView.setText(subtitlesString.get(i));
-                holder.mainLayout.addView(subtitleTextView);
+                TextView subtitleTextView = new TextView(context);
+                subtitleTextView.setBackground(context.getResources().getDrawable(R.drawable.gray_ripple_effect));
+                subtitleTextView.setPadding(40, 40,40,40);
+                subtitleTextView.setText(searchModelList.get(position).subtitles.get(i).subtitle);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(0, 5, 65, 5);
+                holder.mainLayout.addView(subtitleTextView, layoutParams);
+                final int finalI = i;
+                subtitleTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.e(TAG, "onClick: " + searchModelList.get(position).subtitles.get(finalI).subtitle);
+                    }
+                });
             }
         }
     }
