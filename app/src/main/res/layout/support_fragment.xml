@@ -7,13 +7,16 @@
         android:id="@+id/question"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="20dp"
         android:gravity="top"
         android:hint="@string/new_question"
         android:inputType="textMultiLine"
         android:lines="8"
-        android:padding="10dp"
         android:maxLines="10"
         android:minLines="6"
+        android:padding="10dp"
         android:scrollbars="vertical" />
 
     <Button
@@ -21,6 +24,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/question"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/ripple_effect"
         android:clickable="true"
         android:gravity="center"
