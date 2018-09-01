@@ -5,8 +5,6 @@ import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 
 @Entity
@@ -15,29 +13,30 @@ public class TableMedia implements Parcelable, Serializable {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
-    @SerializedName("Id")
-    public int mediaId;
-
-    @SerializedName("Subtitleid")
     public int subtitleId;
 
     public String title;
-    public String subtitle;
 
-    @SerializedName("Text")
+    public int num;
+
     public String mediaText;
+
     public String mediaUrl;
 
-    public TableMedia(String title, String subtitle, String mediaText, String mediaUrl) {
+    public String type;
+
+    public TableMedia() {
 
     }
 
     protected TableMedia(Parcel in) {
         id = in.readInt();
+        subtitleId = in.readInt();
         title = in.readString();
-        subtitle = in.readString();
+        num = in.readInt();
         mediaText = in.readString();
         mediaUrl = in.readString();
+        type = in.readString();
     }
 
     public static final Creator<TableMedia> CREATOR = new Creator<TableMedia>() {
@@ -60,9 +59,11 @@ public class TableMedia implements Parcelable, Serializable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
+        dest.writeInt(subtitleId);
         dest.writeString(title);
-        dest.writeString(subtitle);
+        dest.writeInt(num);
         dest.writeString(mediaText);
         dest.writeString(mediaUrl);
+        dest.writeString(type);
     }
 }
