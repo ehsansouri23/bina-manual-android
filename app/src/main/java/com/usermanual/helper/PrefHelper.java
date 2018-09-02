@@ -12,9 +12,12 @@ public class PrefHelper {
     public static final String TITLES_URL = "http://s8.ghiasi.me/api/titles";
     public static final String SUBTITLES_URL = "http://s8.ghiasi.me/api/subtitle/";
     public static final String MEDIAS_URL = "http://s8.ghiasi.me/api/media";
+    public static final String FULL_NEWS_URL = "http://s8.ghiasi.me/api/news/";
 
     public static final String PREF_FONT_SIZE = "pref_font_size";
     public static final String PREF_ANIMATIONS = "pref_animations";
+
+    public static final String PREF_NEWS_ID = "pref_news_id";
 
     private static SharedPreferences prefs;
 
