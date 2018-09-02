@@ -1,5 +1,6 @@
 package com.usermanual.network;
 
+import com.usermanual.helper.dbmodels.FullNewsModel;
 import com.usermanual.helper.dbmodels.TableSubTitle;
 import com.usermanual.helper.dbmodels.TableTitle;
 
@@ -16,4 +17,7 @@ public interface GetData {
 
     @GET()
     Call<List<TableSubTitle>> getSubtitles(@Url String s);
+
+    @GET()
+    Call<FullNewsModel> getHtmlNews(@Url String url);
 }
