@@ -5,6 +5,9 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+import com.usermanual.daos.MediaDao;
+import com.usermanual.daos.SubtitleDao;
+import com.usermanual.daos.TitleDao;
 import com.usermanual.helper.dbmodels.TableMedia;
 import com.usermanual.helper.dbmodels.TableSubTitle;
 import com.usermanual.helper.dbmodels.TableTitle;
