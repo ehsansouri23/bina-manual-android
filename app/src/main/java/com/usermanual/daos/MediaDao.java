@@ -1,4 +1,4 @@
-package com.usermanual.helper;
+package com.usermanual.daos;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
