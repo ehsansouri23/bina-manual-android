@@ -11,5 +11,5 @@ public class NewsModel {
     public String title;
 
     @SerializedName("Url")
-    public String url;
+    public String picUrl;
 }
