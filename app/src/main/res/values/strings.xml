@@ -11,6 +11,9 @@
     <string name="failed_title">خطا</string>
     <string name="receiving_data_failed">دریافت اطلاعات با خطار مواج شد. لطفا دوباره تلاش کنید</string>
     <string name="receiving_data_from_server">دریافت اطلاعات از سرور. این داده ها جایگزین داده های فعلی میشوند. آیا مایلید؟</string>
+    <string name="getting_titles">گرفتن عنوان ها</string>
+    <string name="getting_subtitles">گرفتن زیر عنوان ها</string>
+    <string name="retry_restart_again">مشکلی رخ داده است. دوباره تلاش کنید</string>
     <string name="yes">بله</string>
     <string name="no">خیر</string>
     <string name="exit">خروج</string>
