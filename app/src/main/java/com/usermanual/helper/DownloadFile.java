@@ -79,7 +79,7 @@ public class DownloadFile extends AsyncTask<Void, Void, Boolean> {
 
     private boolean writeResponseBodyToDisk(ResponseBody body,  String fileName) {
         try {
-            File file = new File(StorageHelper.getDir(context), fileName);
+            File file = new File(StorageHelper.getFile(context, fileName), fileName);
             if (!file.exists())
                 file.mkdirs();
 

@@ -1,33 +1,22 @@
 package com.usermanual.helper;
 
-import android.os.Environment;
+import android.content.Context;
 
 import java.io.File;
-import java.io.IOException;
 
 public class StorageHelper {
 
-    public static String getDir() {
-        File dir = new File(Environment.getExternalStorageDirectory().toString() + "/.ttld/tyui/.loikjh/");
+    public static File getFile(Context context, String fileName) {
+        File baseFile = context.getDir("hello", Context.MODE_PRIVATE);
+        File dir = new File(baseFile, fileName);
         if (!dir.exists())
             dir.mkdirs();
-        return dir.getAbsolutePath();
+        return dir;
     }
 
-    public static File getFile(String fileName) {
-        File file = new File(getDir() , "." + fileName);
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return file;
-    }
-
-    public static void deleteFile(String fileName) {
-        File file = new File(getDir() , "." + fileName);
+    public static void deleteFile(Context context, String fileName) {
+        File baseFile = getFile(context, fileName);
+        File file = new File(baseFile, fileName);
         if (file.exists())
             file.delete();
     }
