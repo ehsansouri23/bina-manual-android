@@ -27,14 +27,14 @@ import com.usermanual.helper.dbmodels.TableTitle;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.usermanual.helper.PrefHelper.MEDIA_LIST_KEY;
+import static com.usermanual.helper.PrefHelper.PREF_TITLE_ID;
 
 public class TitlesFragment extends Fragment {
     private static final String TAG = "TitlesFragment";
 
-    private static final int TITLES = 0;
-    private static final int SUBTITLES = 1;
-    private static final int MEDIAS = 2;
+    public static final int TITLES = 0;
+    public static final int SUBTITLES = 1;
+    public static final int MEDIAS = 2;
 
     int state;
     int selectedTitleId, selectedSubtitleId;
@@ -53,7 +53,7 @@ public class TitlesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.e(TAG, "onCreateView: " );
+        Log.e(TAG, "onCreateView: creating titles fragment");
         View view = inflater.inflate(R.layout.titles_fragment, container, false);
         titlesListView = (ListView) view.findViewById(R.id.titles_list_view);
         titleGuide = (TextView) view.findViewById(R.id.title_guide);
@@ -69,14 +69,32 @@ public class TitlesFragment extends Fragment {
         else
             listViewAnimation = null;
 
-        titleList = DataBaseHelper.getTitlesList(getContext());
-        titlesString = getTitles(titleList);
+        //only showing subtitles. (in search mode)
+        Bundle args = getArguments();
+        if (args != null) {
+            int showingState = args.getInt(PrefHelper.PREF_STATE);
+            if (showingState == SUBTITLES) {
+                selectedTitleId = args.getInt(PREF_TITLE_ID);
+                subtitleList = DataBaseHelper.getSubtitlesList(getContext(), selectedTitleId);
+                subtitlesString = getSubtitles(subtitleList);
+                adapter = new ArrayAdapter<String>(getContext(),
+                        android.R.layout.simple_list_item_1, android.R.id.text1, subtitlesString);
+                adapter.clear();
+                adapter.addAll(subtitlesString);
+                adapter.notifyDataSetChanged();
+                titlesListView.setLayoutAnimation(listViewAnimation);
+            }
+        } else {
+            titleList = DataBaseHelper.getTitlesList(getContext());
+            titlesString = getTitles(titleList);
 
-        adapter = new ArrayAdapter<String>(getContext(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, titlesString);
-        adapter.notifyDataSetChanged();
-        titlesListView.setAdapter(adapter);
-        titlesListView.setLayoutAnimation(listViewAnimation);
+            adapter = new ArrayAdapter<String>(getContext(),
+                    android.R.layout.simple_list_item_1, android.R.id.text1, titlesString);
+            adapter.notifyDataSetChanged();
+            titlesListView.setAdapter(adapter);
+            titlesListView.setLayoutAnimation(listViewAnimation);
+
+        }
 
         titlesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -104,7 +122,7 @@ public class TitlesFragment extends Fragment {
                         List<TableMedia> mediaList = DataBaseHelper.getMediaList(getContext(), selectedSubtitleId);
                         Intent intent = new Intent(getActivity(), MediaActivity.class);
                         Bundle bundle = new Bundle();
-                        bundle.putParcelableArrayList(MEDIA_LIST_KEY, (ArrayList<TableMedia>) mediaList);
+                        bundle.putInt(PrefHelper.PREF_SUBTITLE_ID, selectedSubtitleId);
                         intent.putExtras(bundle);
                         startActivity(intent);
                         break;
