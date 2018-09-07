@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.usermanual.R;
+import com.usermanual.fragments.SearchFragment;
 import com.usermanual.helper.dbmodels.SearchModel;
 import com.usermanual.helper.dbmodels.TableSubTitle;
 
@@ -24,12 +25,14 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     Context context;
 
     List<SearchModel> searchModelList;
+    SearchFragment.SearchDelegate SearchDelegate;
 
     ArrayAdapter<String> adapter;
 
-    public SearchAdapter(Context context, List<SearchModel> searchModelList) {
+    public SearchAdapter(Context context, List<SearchModel> searchModelList, SearchFragment.SearchDelegate SearchDelegate) {
         this.context = context;
         this.searchModelList = searchModelList;
+        this.SearchDelegate = SearchDelegate;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -48,11 +51,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_item, parent, false);
         return new ViewHolder(v);
-
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        final int fixedPosition = position;
         for (int j = 0; j < holder.mainLayout.getChildCount(); j++) {
             holder.mainLayout.getChildAt(j).setVisibility(View.GONE);
         }
@@ -62,10 +65,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             holder.titleString.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    SearchDelegate.clicked(searchModelList.get(fixedPosition).title);
                 }
             });
-            Log.e(TAG, "onBindViewHolder: we have title for search list");
         }
         if (searchModelList.get(position).subtitles != null) { //todo handle click and some buity here
             List<String> subtitlesString = getString(searchModelList.get(position).subtitles);
@@ -82,7 +84,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                 subtitleTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.e(TAG, "onClick: " + searchModelList.get(position).subtitles.get(finalI).subtitle);
+                        Log.e(TAG, "onClick: " + searchModelList.get(fixedPosition).subtitles.get(finalI).subtitle);
                     }
                 });
             }
