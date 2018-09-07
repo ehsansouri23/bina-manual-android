@@ -1,80 +1,131 @@
 package com.usermanual.helper;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.usermanual.R;
 import com.usermanual.activities.MainActivity;
+import com.usermanual.network.GetData;
+import com.usermanual.network.RetrofitClientInstance;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
+import java.io.OutputStream;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DownloadFile extends AsyncTask<Void, Void, Boolean> {
     private static final String TAG = "DownloadFile";
 
     List<String> urls;
+    List<String> fileNames;
     Context context;
-    MainActivity.DownloadingMediaDelegate delegate;
+    ProgressDialog progressDialog;
+    MainActivity.DownFilesDelegate delegate;
 
-    public DownloadFile(List<String> urls, Context context, MainActivity.DownloadingMediaDelegate delegate) {
+    public DownloadFile(List<String> urls, List<String> fileNames, Context context, MainActivity.DownFilesDelegate downFilesDelegate) {
         this.urls = urls;
+        this.fileNames = fileNames;
         this.context = context;
-        this.delegate = delegate;
+        this.delegate = downFilesDelegate;
+        this.progressDialog = new ProgressDialog(context);
     }
+
+    @Override
+    protected void onPreExecute() {
+        progressDialog.setMessage(context.getResources().getString(R.string.receiving_data));
+        progressDialog.show();
+    }
+
     @Override
     protected Boolean doInBackground(Void... voids) {
-        boolean result = true;
+        final boolean[] success = {true};
+        final GetData data = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
         for (int i = 0; i < urls.size(); i++) {
-            String url = urls.get(i);
-            delegate.update(i + "");
-            result = downloadFile(url, i);
-            Log.e(TAG, "doInBackground: result: " + result);
-        }
-        return result;
-    }
+            Call<ResponseBody> call = data.downloadFile(urls.get(i));
+            final int finalI = i;
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    success[0] = writeResponseBodyToDisk(response.body(), fileNames.get(finalI));
+                    if (finalI == urls.size() - 1) {
+                        progressDialog.dismiss();
+                        delegate.finished(success[0]);
+                    }
+                }
 
-    @Override
-    protected void onPostExecute(Boolean aBoolean) {
-        delegate.finished();
-        File baseFile = context.getFilesDir();
-        String[] names = baseFile.list();
-        for (int i = 0; i < names.length; i++) {
-            Log.e(TAG, "onPostExecute: downloaded name: " + names[i]);
-        }
-    }
-
-    private boolean downloadFile(String url, int i) {
-        Log.e(TAG, "downloadFile: downloading file " + url);
-        HttpURLConnection connection = null;
-        InputStream is = null;
-        FileOutputStream fos = null;
-        File file = null;
-        File tempFile = null;
-        try {
-            file = StorageHelper.getFile(context, i + ".mp4");
-            connection = NetworkHelper.openConnection("GET", url);
-            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                return false; // expect HTTP 200 OK, so we don't mistakenly save error report instead of the file
-            }
-
-            is = connection.getInputStream();
-            fos = new FileOutputStream(file);
-
-            byte data[] = new byte[4096];
-            int count;
-            while ((count = is.read(data)) != -1) {
-                fos.write(data, 0, count);
-            }
-            fos.flush();
-            fos.close();
-            is.close();
-            if (connection != null)
-                connection.disconnect();
-        } catch (Exception ignored) {
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(context, context.getResources().getString(R.string.receiving_data_failed), Toast.LENGTH_SHORT).show();
+                    success[0] = false;
+                    if (finalI == urls.size() - 1) {
+                        progressDialog.dismiss();
+                        delegate.finished(success[0]);
+                    }
+                }
+            });
         }
         return true;
+    }
+
+    private boolean writeResponseBodyToDisk(ResponseBody body,  String fileName) {
+        try {
+            File file = new File(StorageHelper.getDir(context), fileName);
+            if (!file.exists())
+                file.mkdirs();
+
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+
+            try {
+                byte[] fileReader = new byte[4096];
+
+                long fileSize = body.contentLength();
+                long fileSizeDownloaded = 0;
+
+                inputStream = body.byteStream();
+                outputStream = new FileOutputStream(file);
+
+                while (true) {
+                    int read = inputStream.read(fileReader);
+
+                    if (read == -1) {
+                        break;
+                    }
+
+                    outputStream.write(fileReader, 0, read);
+
+                    fileSizeDownloaded += read;
+
+                    Log.d(TAG, "file download: " + fileSizeDownloaded + " of " + fileSize);
+                }
+
+                outputStream.flush();
+
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+        } catch (IOException e) {
+            return false;
+        }
     }
 }
