@@ -193,6 +193,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 bottomNavigation.getMenu().findItem(R.id.id_news).setChecked(true);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new NewsFragment()).commit();
                 break;
+            case R.id.id_support:
+                bottomNavigation.getMenu().findItem(R.id.id_support).setChecked(true);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SupportFragment()).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
