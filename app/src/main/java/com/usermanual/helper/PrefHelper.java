@@ -19,6 +19,10 @@ public class PrefHelper {
 
     public static final String PREF_NEWS_ID = "pref_news_id";
 
+    public static final String PREF_STATE = "state";
+    public static final String PREF_TITLE_ID = "title";
+    public static final String PREF_SUBTITLE_ID = "subtitle_id";
+
     private static SharedPreferences prefs;
 
     private static SharedPreferences getPrefs(Context context) {
