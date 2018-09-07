@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.usermanual.R;
+import com.usermanual.activities.MainActivity;
 import com.usermanual.adapter.SearchAdapter;
 import com.usermanual.helper.DataBaseHelper;
 import com.usermanual.helper.PrefHelper;
@@ -31,6 +32,7 @@ public class SearchFragment extends Fragment {
     List<SearchModel> searchModelList;
 
     String searchQuery;
+    MainActivity activity;
 
     @Nullable
     @Override
@@ -40,7 +42,7 @@ public class SearchFragment extends Fragment {
         Bundle args = getArguments();
         searchQuery = args.getString(PrefHelper.SEARCH_QUERY);
         searchModelList = prepareSearchModelList(searchQuery);
-        searchAdapter = new SearchAdapter(getContext(), searchModelList);
+        searchAdapter = new SearchAdapter(getContext(), searchModelList, new SearchDelegate());
         searchList.setAdapter(searchAdapter);
         searchList.setLayoutManager(new LinearLayoutManager(getContext()));
         return view;
@@ -63,5 +65,16 @@ public class SearchFragment extends Fragment {
             searchModelList.add(searchModel);
         }
         return searchModelList;
+    }
+
+    public class SearchDelegate {
+        public void clicked(TableTitle tableTitle) {
+            Log.e(TAG, "clicked: " + tableTitle.title);
+            activity.change(tableTitle.titleId);
+        }
+    }
+
+    public void setActivity(MainActivity mainActivity) {
+        this.activity = mainActivity;
     }
 }
