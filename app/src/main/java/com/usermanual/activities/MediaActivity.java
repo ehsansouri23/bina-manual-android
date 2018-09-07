@@ -57,6 +57,11 @@ public class MediaActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home)
             finish();
         if (item.getItemId() == R.id.id_favs) {
+            String s = PrefHelper.getString(getApplicationContext(), PrefHelper.PREF_FAV_SUBTITLES, "");
+            if (!s.equals(""))
+                s += ",";
+            s += subtitleId;
+            PrefHelper.saveString(getApplicationContext(),PrefHelper.PREF_FAV_SUBTITLES, s);
             Toast.makeText(getApplicationContext(), getResources().getString(R.string.added_to_favs), Toast.LENGTH_SHORT).show();
         }
 

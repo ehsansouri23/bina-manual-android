@@ -23,6 +23,8 @@ public class PrefHelper {
     public static final String PREF_TITLE_ID = "title";
     public static final String PREF_SUBTITLE_ID = "subtitle_id";
 
+    public static final String PREF_FAV_SUBTITLES = "fav_subtitles";
+
     private static SharedPreferences prefs;
 
     private static SharedPreferences getPrefs(Context context) {
