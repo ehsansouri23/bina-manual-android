@@ -10,6 +10,9 @@ public class NewsModel {
     @SerializedName("Title")
     public String title;
 
-    @SerializedName("Url")
+    @SerializedName("FileName")
     public String picUrl;
+
+    @SerializedName("Text")
+    public String fullHtml;
 }

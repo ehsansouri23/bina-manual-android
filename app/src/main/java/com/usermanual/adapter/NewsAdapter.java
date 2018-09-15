@@ -9,11 +9,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.usermanual.R;
 import com.usermanual.fragments.NewsFragment;
 import com.usermanual.helper.dbmodels.NewsModel;
 
 import java.util.List;
+
+import static com.usermanual.helper.PrefHelper.BASE_URL;
+import static com.usermanual.helper.PrefHelper.FILE_URL;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     private static final String TAG = "NewsAdapter";
@@ -49,11 +53,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.newsTitle.setText(newsModelList.get(position).title);
-        //todo show image here
-        holder.newsTitle.setOnClickListener(new View.OnClickListener() {
+        String imageUrl = BASE_URL + FILE_URL + newsModelList.get(position).picUrl;
+        Picasso.get().load(imageUrl).placeholder(R.mipmap.car).into(holder.newsImage);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                delegate.onClick(newsModelList.get(position).newsId);
+                delegate.onClick(newsModelList.get(position).fullHtml);
             }
         });
     }
