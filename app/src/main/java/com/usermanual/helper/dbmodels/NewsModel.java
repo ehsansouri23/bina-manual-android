@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class NewsModel {
 
-    @SerializedName("ID")
+    @SerializedName("Id")
     public int newsId;
 
-    @SerializedName("Title")
-    public String title;
+    @SerializedName("txt")
+    public String title = "";
 
     @SerializedName("FileName")
     public String picUrl;

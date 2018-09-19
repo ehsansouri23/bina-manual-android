@@ -11,12 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
 import com.eyalbira.loadingdots.LoadingDots;
 import com.usermanual.R;
 import com.usermanual.activities.WebViewActivity;
 import com.usermanual.adapter.NewsAdapter;
+import com.usermanual.auth.Auth;
 import com.usermanual.helper.PrefHelper;
 import com.usermanual.helper.dbmodels.NewsModel;
 import com.usermanual.network.GetData;
@@ -28,10 +29,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.usermanual.helper.Consts.*;
+
 public class NewsFragment extends Fragment {
     private static final String TAG = "NewsFragment";
 
     LoadingDots loading;
+    LinearLayout noNet;
     RecyclerView newsList;
     NewsAdapter newsAdapter;
 
@@ -40,9 +44,10 @@ public class NewsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.news_fragment, container, false);
         loading = (LoadingDots) v.findViewById(R.id.loading);
+        noNet = (LinearLayout) v.findViewById(R.id.no_net);
         newsList = (RecyclerView) v.findViewById(R.id.news_list);
         final GetData data = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
-        Call<List<NewsModel>> newsListCall = data.getNewsList();
+        Call<List<NewsModel>> newsListCall = data.getNewsList(Auth.getToken(getContext()));
         newsListCall.enqueue(new Callback<List<NewsModel>>() {
             @Override
             public void onResponse(Call<List<NewsModel>> call, Response<List<NewsModel>> response) {
@@ -61,7 +66,8 @@ public class NewsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<NewsModel>> call, Throwable t) {
-                Toast.makeText(getContext(), "مشکلی به وجود امده است", Toast.LENGTH_SHORT).show();
+                loading.setVisibility(View.GONE);
+                noNet.setVisibility(View.VISIBLE);
             }
         });
 
@@ -72,7 +78,7 @@ public class NewsFragment extends Fragment {
     public class NewsClickDelegate {
         public void onClick(String fullHtml) {
             Intent webViewIntent = new Intent(getActivity(), WebViewActivity.class);
-            webViewIntent.putExtra(PrefHelper.NEWS_FULL_HTML, fullHtml);
+            webViewIntent.putExtra(NEWS_FULL_HTML, fullHtml);
             startActivity(webViewIntent);
         }
     }
