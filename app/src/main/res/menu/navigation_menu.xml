@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/id_support"
+        android:title="@string/support"
+        android:icon="@mipmap/support"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/id_answers"
+        android:title="@string/answers"
+        android:icon="@mipmap/answers"
+        app:showAsAction="always" />
+
+
+    <item
+        android:id="@+id/id_favs"
+        android:title="@string/favorites"
+        android:icon="@mipmap/favorites"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/id_settings"
+        android:title="@string/settings"
+        android:icon="@mipmap/settings"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/id_sync"
+        android:title="@string/sync_data"
+        android:icon="@mipmap/sync"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/id_about"
+        android:title="@string/about"
+        android:icon="@mipmap/about"
+        app:showAsAction="always" />
+
+    <item android:id="@+id/id_logout"
+        android:title="@string/logout"
+        android:icon="@mipmap/logout"
+        app:showAsAction="always" />
+
+</menu>
