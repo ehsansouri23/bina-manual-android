@@ -3,6 +3,14 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     defaultConfig {
+
+//        javaCompileOptions {
+//            annotationProcessorOptions {
+//                includeCompileClasspath = true
+//            }
+//        }
+
+
         applicationId "com.usermanual"
         minSdkVersion 15
         targetSdkVersion 27
@@ -31,10 +39,19 @@ dependencies {
     implementation 'com.github.warkiz.widget:indicatorseekbar:2.0.9'
 
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.okhttp:okhttp:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 
     def room_version = "1.1.1"
     implementation "android.arch.persistence.room:runtime:$room_version"
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
 
+//    implementation 'com.github.bumptech.glide:glide:4.7.1'
+//    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
+
+    implementation 'com.nononsenseapps:filepicker:4.1.0'
 }
+
+

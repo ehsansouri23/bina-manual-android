@@ -18,6 +18,8 @@ import com.warkiz.widget.IndicatorSeekBar;
 import com.warkiz.widget.OnSeekChangeListener;
 import com.warkiz.widget.SeekParams;
 
+import static com.usermanual.helper.Consts.*;
+
 public class SettingsFragment extends Fragment implements OnSeekChangeListener, RadioGroup.OnCheckedChangeListener {
     private static final String TAG = "SettingsFragment";
 
@@ -35,7 +37,7 @@ public class SettingsFragment extends Fragment implements OnSeekChangeListener, 
         animationRadioGroup = (RadioGroup) view.findViewById(R.id.animation_radio_group);
         animOn = (RadioButton) view.findViewById(R.id.anim_on);
         animOff = (RadioButton) view.findViewById(R.id.anim_off);
-        if (PrefHelper.getBoolean(getContext(), PrefHelper.PREF_ANIMATIONS, true)) {
+        if (PrefHelper.getBoolean(getContext(), PREF_ANIMATIONS, true)) {
             animOn.setChecked(true);
             animOff.setChecked(false);
         } else {
@@ -51,7 +53,7 @@ public class SettingsFragment extends Fragment implements OnSeekChangeListener, 
     public void onSeeking(SeekParams seekParams) {
         Log.e(TAG, "onSeeking: " + seekParams.progress);
         sampleTextView.setTextSize(seekParams.progress);
-        PrefHelper.saveInt(getContext(), PrefHelper.PREF_FONT_SIZE, seekParams.progress);
+        PrefHelper.saveInt(getContext(), PREF_FONT_SIZE, seekParams.progress);
     }
 
     @Override
@@ -67,8 +69,8 @@ public class SettingsFragment extends Fragment implements OnSeekChangeListener, 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         if (checkedId == R.id.anim_on)
-            PrefHelper.saveBoolean(getContext(), PrefHelper.PREF_ANIMATIONS, true);
+            PrefHelper.saveBoolean(getContext(), PREF_ANIMATIONS, true);
         if (checkedId == R.id.anim_off)
-            PrefHelper.saveBoolean(getContext(), PrefHelper.PREF_ANIMATIONS, false);
+            PrefHelper.saveBoolean(getContext(), PREF_ANIMATIONS, false);
     }
 }

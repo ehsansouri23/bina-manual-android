@@ -1,44 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/guide_layout"
-        android:layout_width="match_parent"
+        android:id="@+id/no_item"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layoutDirection="rtl">
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:src="@mipmap/no_item" />
 
         <TextView
-            android:id="@+id/title_guide"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="5dp"
-            android:text="title"
-            android:textSize="17dp"
-            android:visibility="invisible" />
-
-        <TextView
-            android:id="@+id/arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:text="..."
-            android:textSize="17dp"
-            android:visibility="invisible" />
+            android:layout_marginTop="20dp"
+            android:text="@string/no_item"
+            android:textSize="20sp" />
 
     </LinearLayout>
+
+    <com.eyalbira.loadingdots.LoadingDots
+        android:id="@+id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        app:LoadingDots_auto_play="true"
+        app:LoadingDots_dots_color="@android:color/holo_blue_light"
+        app:LoadingDots_dots_count="4"
+        app:LoadingDots_dots_size="15dp"
+        app:LoadingDots_dots_space="10dp"
+        app:LoadingDots_jump_duration="200"
+        app:LoadingDots_jump_height="10dp"
+        app:LoadingDots_loop_duration="600"
+        app:LoadingDots_loop_start_delay="50" />
+
+    <ImageView
+        android:id="@+id/header_image"
+        android:layout_width="match_parent"
+        android:layout_height="225dp"
+        android:src="@mipmap/ic_launcher" />
 
 
     <ListView
         android:id="@+id/titles_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/guide_layout"
+        android:layout_below="@id/header_image"
+        android:layout_marginTop="3dp"
         android:layoutAnimation="@anim/list_anim"
-        android:persistentDrawingCache="animation|scrolling" />
+        android:persistentDrawingCache="animation|scrolling"
+        android:visibility="visible" />
 
 </RelativeLayout>

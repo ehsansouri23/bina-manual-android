@@ -15,13 +15,14 @@ import com.usermanual.R;
 import com.usermanual.activities.MainActivity;
 import com.usermanual.adapter.SearchAdapter;
 import com.usermanual.helper.DataBaseHelper;
-import com.usermanual.helper.PrefHelper;
 import com.usermanual.helper.dbmodels.SearchModel;
 import com.usermanual.helper.dbmodels.TableSubTitle;
 import com.usermanual.helper.dbmodels.TableTitle;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.usermanual.helper.Consts.*;
 
 public class SearchFragment extends Fragment {
     private static final String TAG = "SearchFragment";
@@ -40,7 +41,7 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.search_fragment, container, false);
         searchList = (RecyclerView) view.findViewById(R.id.search_list);
         Bundle args = getArguments();
-        searchQuery = args.getString(PrefHelper.SEARCH_QUERY);
+        searchQuery = args.getString(SEARCH_QUERY);
         searchModelList = prepareSearchModelList(searchQuery);
         searchAdapter = new SearchAdapter(getContext(), searchModelList, new SearchDelegate());
         searchList.setAdapter(searchAdapter);
@@ -57,7 +58,7 @@ public class SearchFragment extends Fragment {
                 searchModel.title = tableTitleList.get(i);
                 Log.e(TAG, "prepareSearchModelList: title contains query. " + tableTitleList.get(i).title);
             }
-            List<TableSubTitle> tableSubTitles = DataBaseHelper.searchSubtitle(getContext(), tableTitleList.get(i).titleId, query);
+            List<TableSubTitle> tableSubTitles = DataBaseHelper.searchSubtitles(getContext(), tableTitleList.get(i).titleId, query);
             for (int j = 0; j < tableSubTitles.size(); j++) {
                 Log.e(TAG, "prepareSearchModelList: sub for " + tableTitleList.get(i).title + " : " + tableSubTitles.get(j).subtitle);
             }
@@ -70,7 +71,7 @@ public class SearchFragment extends Fragment {
     public class SearchDelegate {
         public void clicked(TableTitle tableTitle) {
             Log.e(TAG, "clicked: " + tableTitle.title);
-            activity.change(tableTitle.titleId);
+            activity.openFragment(tableTitle.titleId);
         }
     }
 

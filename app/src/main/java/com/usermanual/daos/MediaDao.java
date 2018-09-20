@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface MediaDao {
 
-    @Query("SELECT * FROM tablemedia WHERE subtitleId = :subtitleId")
+    @Query("SELECT * FROM tablemedia WHERE parentSubtitleId LIKE :subtitleId")
     List<TableMedia> getMedias(int subtitleId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

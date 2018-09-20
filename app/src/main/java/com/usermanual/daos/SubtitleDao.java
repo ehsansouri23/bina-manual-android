@@ -12,8 +12,11 @@ import java.util.List;
 @Dao
 public interface SubtitleDao {
 
-    @Query("SELECT * FROM tablesubtitle WHERE titleId LIKE :titleId")
+    @Query("SELECT * FROM tablesubtitle WHERE parentTitleId LIKE :titleId")
     List<TableSubTitle> getSubtitles(int titleId);
+
+    @Query("SELECT * FROM TableSubTitle WHERE subtitleId LIKE :subtitleId")
+    TableSubTitle getSubtitle(int subtitleId);
 
     @Query("SELECT * FROM tablesubtitle")
     List<TableSubTitle> getAll();
@@ -21,7 +24,7 @@ public interface SubtitleDao {
     @Query("SELECT * FROM tablesubtitle WHERE subtitle LIKE :subtitle")
     List<TableSubTitle> search(String subtitle);
 
-    @Query("SELECT * FROM tablesubtitle WHERE subtitle LIKE :subtitle AND titleId = :titleId")
+    @Query("SELECT * FROM tablesubtitle WHERE subtitle LIKE :subtitle AND parentTitleId = :titleId")
     List<TableSubTitle> search(int titleId, String subtitle);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

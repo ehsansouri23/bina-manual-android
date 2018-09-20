@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Explode;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -39,6 +41,14 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         context = getApplicationContext();
+
+        // inside your activity (if you did not enable transitions in your theme)
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+
+        // set an exit transition
+        getWindow().setExitTransition(new Explode());
+        getWindow().setEnterTransition(new Explode());
+
 
         if (Auth.isLoggedIn(context)) {
             startMainActivity();

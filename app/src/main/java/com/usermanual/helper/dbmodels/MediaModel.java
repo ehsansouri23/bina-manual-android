@@ -6,7 +6,7 @@ import java.util.List;
 
 public class MediaModel {
 
-    @SerializedName("SubtitleID")
+    @SerializedName("SubtitleId")
     public int subtitleId;
 
     @SerializedName("Title")

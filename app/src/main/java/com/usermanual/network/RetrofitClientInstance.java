@@ -3,14 +3,16 @@ package com.usermanual.network;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.usermanual.helper.Consts.API;
+import static com.usermanual.helper.Consts.BASE_URL;
+
 public class RetrofitClientInstance {
     private static Retrofit retrofit;
-    private static final String BASE_URL = "http://s8.ghiasi.me/api/";
 
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
             retrofit = new retrofit2.Retrofit.Builder()
-                    .baseUrl(BASE_URL)
+                    .baseUrl(BASE_URL + API)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }

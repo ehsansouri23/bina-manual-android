@@ -15,16 +15,17 @@ public class TableSubTitle implements Serializable, Parcelable {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
-    @SerializedName("Titleid")
-    public int titleId;
+    @SerializedName("Pid")
+    public int parentTitleId;
 
     @SerializedName("Id")
     public int subtitleId;
 
-    public String title;
-
     @SerializedName("Title")
     public String subtitle;
+
+    @SerializedName("Picture")
+    public String picUrl;
 
     public TableSubTitle() {
 
@@ -32,10 +33,10 @@ public class TableSubTitle implements Serializable, Parcelable {
 
     protected TableSubTitle(Parcel in) {
         id = in.readInt();
-        titleId = in.readInt();
+        parentTitleId = in.readInt();
         subtitleId = in.readInt();
-        title = in.readString();
         subtitle = in.readString();
+        picUrl = in.readString();
     }
 
     public static final Creator<TableSubTitle> CREATOR = new Creator<TableSubTitle>() {
@@ -58,9 +59,9 @@ public class TableSubTitle implements Serializable, Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
-        dest.writeInt(titleId);
+        dest.writeInt(parentTitleId);
         dest.writeInt(subtitleId);
-        dest.writeString(title);
         dest.writeString(subtitle);
+        dest.writeString(picUrl);
     }
 }

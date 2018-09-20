@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -26,40 +27,44 @@ import retrofit2.Response;
 public class DownloadFile extends AsyncTask<Void, Void, Boolean> {
     private static final String TAG = "DownloadFile";
 
-    List<String> urls;
-    List<String> fileNames;
     Context context;
+    List<StorageHelper.FileSpec> fileSpecs;
     ProgressDialog progressDialog;
-    MainActivity.DownFilesDelegate delegate;
+//    MainActivity.DownFilesDelegate delegate;
 
-    public DownloadFile(List<String> urls, List<String> fileNames, Context context, MainActivity.DownFilesDelegate downFilesDelegate) {
-        this.urls = urls;
-        this.fileNames = fileNames;
+    public DownloadFile(Context context, List<StorageHelper.FileSpec> fileSpecs/*, MainActivity.DownFilesDelegate downFilesDelegate*/) {
         this.context = context;
-        this.delegate = downFilesDelegate;
+        this.fileSpecs = fileSpecs;
+//        this.delegate = downFilesDelegate;
         this.progressDialog = new ProgressDialog(context);
     }
 
     @Override
     protected void onPreExecute() {
-        progressDialog.setMessage(context.getResources().getString(R.string.receiving_data));
-        progressDialog.show();
+        if (progressDialog != null) {
+            progressDialog.setMessage(context.getResources().getString(R.string.receiving_data));
+            if (!progressDialog.isShowing())
+                progressDialog.show();
+        }
     }
 
     @Override
     protected Boolean doInBackground(Void... voids) {
         final boolean[] success = {true};
         final GetData data = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
-        for (int i = 0; i < urls.size(); i++) {
-            Call<ResponseBody> call = data.downloadFile(urls.get(i));
+        for (int i = 0; i < fileSpecs.size(); i++) {
+            if (fileSpecs.get(i).getFile().exists())
+                continue;
+            Call<ResponseBody> call = data.downloadFile(fileSpecs.get(i).getUrl());
             final int finalI = i;
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    success[0] = writeResponseBodyToDisk(response.body(), fileNames.get(finalI));
-                    if (finalI == urls.size() - 1) {
+                    success[0] = writeResponseBodyToDisk(response.body(), fileSpecs.get(finalI).getFile());
+                    if (finalI == fileSpecs.size() - 1) {
                         progressDialog.dismiss();
-                        delegate.finished(success[0]);
+//                        if (delegate != null)
+//                            delegate.finished(success[0]);
                     }
                 }
 
@@ -67,9 +72,10 @@ public class DownloadFile extends AsyncTask<Void, Void, Boolean> {
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Toast.makeText(context, context.getResources().getString(R.string.receiving_data_failed), Toast.LENGTH_SHORT).show();
                     success[0] = false;
-                    if (finalI == urls.size() - 1) {
+                    if (finalI == fileSpecs.size() - 1) {
                         progressDialog.dismiss();
-                        delegate.finished(success[0]);
+//                        if (delegate != null)
+//                            delegate.finished(success[0]);
                     }
                 }
             });
@@ -77,9 +83,8 @@ public class DownloadFile extends AsyncTask<Void, Void, Boolean> {
         return true;
     }
 
-    private boolean writeResponseBodyToDisk(ResponseBody body,  String fileName) {
+    private boolean writeResponseBodyToDisk(ResponseBody body, File file) {
         try {
-            File file = new File(StorageHelper.getFile(context, fileName), fileName);
             if (!file.exists())
                 file.mkdirs();
 

@@ -16,61 +16,55 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.usermanual.helper.PrefHelper.MEDIA_KEY;
+import static com.usermanual.helper.Consts.*;
 
 public class MediaFragmentsAdapter extends FragmentPagerAdapter {
 
     Context context;
     int subtitleId;
     List<TableMedia> tableMediaList;
-    HashMap<Integer, List<TableMedia>> mediasMap;
 
     public MediaFragmentsAdapter(Context context, FragmentManager fm, int subtitleId) {
         super(fm);
         this.context = context;
         this.subtitleId = subtitleId;
         tableMediaList = DataBaseHelper.getMediaList(context, subtitleId);
-        mediasMap = prepareMedias(tableMediaList);
     }
 
     @Override
     public Fragment getItem(int position) {
-        MediaFragment mediaFragment = new MediaFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(MEDIA_KEY, (Parcelable) mediasMap.get(position));
-        mediaFragment.setArguments(bundle);
-        return mediaFragment;
+        return MediaFragment.newInstance(tableMediaList.get(position).mediaId);
     }
 
     @Override
     public int getCount() {
-        return mediasMap.size();
+        return tableMediaList.size();
     }
 
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        return mediasMap.get(position).get(0).title;
+        return tableMediaList.get(position).mediaTitle;
     }
 
-    private HashMap<Integer, List<TableMedia>> prepareMedias(List<TableMedia> tableMediaList) { //todo check it
-        HashMap<Integer, List<TableMedia>> mediasMap = new HashMap<>();
-        String title = tableMediaList.get(0).title;
-        List<TableMedia> tableMedia = new ArrayList<>();
-        tableMedia.add(tableMediaList.get(0));
-        int index = 0;
-        if (tableMedia.size() == 1)
-            mediasMap.put(index, tableMediaList);
-        for (int i = 1; i < tableMediaList.size(); i++) {
-            if (tableMediaList.get(i).title.equals(title)) {
-                tableMedia.add(tableMediaList.get(i));
-            } else {
-                mediasMap.put(index, tableMedia);
-                index++;
-                tableMedia.clear();
-                tableMedia.add(tableMediaList.get(i));
-            }
-        }
-        return mediasMap;
-    }
+//    private HashMap<Integer, List<TableMedia>> prepareMedias(List<TableMedia> tableMediaList) {
+//        HashMap<Integer, List<TableMedia>> mediasMap = new HashMap<>();
+//        String title = tableMediaList.get(0).title;
+//        List<TableMedia> tableMedia = new ArrayList<>();
+//        tableMedia.add(tableMediaList.get(0));
+//        int index = 0;
+//        if (tableMedia.size() == 1)
+//            mediasMap.put(index, tableMediaList);
+//        for (int i = 1; i < tableMediaList.size(); i++) {
+//            if (tableMediaList.get(i).title.equals(title)) {
+//                tableMedia.add(tableMediaList.get(i));
+//            } else {
+//                mediasMap.put(index, tableMedia);
+//                index++;
+//                tableMedia.clear();
+//                tableMedia.add(tableMediaList.get(i));
+//            }
+//        }
+//        return mediasMap;
+//    }
 }

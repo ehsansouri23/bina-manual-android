@@ -5,6 +5,8 @@ import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 @Entity
@@ -13,30 +15,29 @@ public class TableMedia implements Parcelable, Serializable {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
-    public int subtitleId;
+    @SerializedName("Id")
+    public int mediaId;
 
-    public String title;
+    @SerializedName("Pid")
+    public int parentSubtitleId;
 
-    public int num;
+    @SerializedName("Title")
+    public String mediaTitle;
 
-    public String mediaText;
-
-    public String mediaUrl;
-
-    public String type;
+    @SerializedName("Picture")
+    public String picUrl;
 
     public TableMedia() {
 
     }
 
+
     protected TableMedia(Parcel in) {
         id = in.readInt();
-        subtitleId = in.readInt();
-        title = in.readString();
-        num = in.readInt();
-        mediaText = in.readString();
-        mediaUrl = in.readString();
-        type = in.readString();
+        mediaId = in.readInt();
+        parentSubtitleId = in.readInt();
+        mediaTitle = in.readString();
+        picUrl = in.readString();
     }
 
     public static final Creator<TableMedia> CREATOR = new Creator<TableMedia>() {
@@ -59,11 +60,9 @@ public class TableMedia implements Parcelable, Serializable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
-        dest.writeInt(subtitleId);
-        dest.writeString(title);
-        dest.writeInt(num);
-        dest.writeString(mediaText);
-        dest.writeString(mediaUrl);
-        dest.writeString(type);
+        dest.writeInt(mediaId);
+        dest.writeInt(parentSubtitleId);
+        dest.writeString(mediaTitle);
+        dest.writeString(picUrl);
     }
 }

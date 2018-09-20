@@ -6,24 +6,6 @@ import android.content.SharedPreferences;
 public class PrefHelper {
 
     private static final String PREFS = "prefs";
-    public static final String MEDIA_LIST_KEY = "medias";
-    public static final String MEDIA_KEY = "media";
-    public static final String SEARCH_QUERY = "search_query";
-    public static final String TITLES_URL = "http://s8.ghiasi.me/api/titles";
-    public static final String SUBTITLES_URL = "http://s8.ghiasi.me/api/subtitle/";
-    public static final String MEDIAS_URL = "http://s8.ghiasi.me/api/media";
-    public static final String FULL_NEWS_URL = "http://s8.ghiasi.me/api/news/";
-
-    public static final String PREF_FONT_SIZE = "pref_font_size";
-    public static final String PREF_ANIMATIONS = "pref_animations";
-
-    public static final String PREF_NEWS_ID = "pref_news_id";
-
-    public static final String PREF_STATE = "state";
-    public static final String PREF_TITLE_ID = "title";
-    public static final String PREF_SUBTITLE_ID = "subtitle_id";
-
-    public static final String PREF_FAV_SUBTITLES = "fav_subtitles";
 
     private static SharedPreferences prefs;
 

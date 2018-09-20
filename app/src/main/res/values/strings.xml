@@ -1,18 +1,19 @@
 <resources>
-    <string name="app_name">ماشین</string>
+    <string name="app_name">بینا</string>
     <string name="home">خانه</string>
     <string name="news">اخبار</string>
     <string name="favorites">علاقه مندی ها</string>
     <string name="support">پشتیبانی</string>
     <string name="about">درباره ما</string>
     <string name="settings">تنظیمات</string>
-
+    <string name="answers">پاسخ ها</string>
     <string name="receiving_data">دریافت اطلاعات</string>
     <string name="failed_title">خطا</string>
     <string name="receiving_data_failed">دریافت اطلاعات با خطار مواج شد. لطفا دوباره تلاش کنید</string>
     <string name="receiving_data_from_server">دریافت اطلاعات از سرور. این داده ها جایگزین داده های فعلی میشوند. آیا مایلید؟</string>
     <string name="getting_titles">گرفتن عنوان ها</string>
     <string name="getting_subtitles">گرفتن زیر عنوان ها</string>
+    <string name="getting_medias">گرفتن عنوان مدیا ها</string>
     <string name="retry_restart_again">مشکلی رخ داده است. دوباره تلاش کنید</string>
     <string name="yes">بله</string>
     <string name="no">خیر</string>
@@ -39,5 +40,6 @@
     <string name="no_item">آیتمی موجود نیست</string>
     <string name="sync_data">همگام سازی اطلاعات با سرور</string>
     <string name="should_not_empty">نباید خالی باشد</string>
+    <string name="select_file">انتخاب فایل از گالری</string>
 
 </resources>
