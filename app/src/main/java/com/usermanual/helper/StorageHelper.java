@@ -12,6 +12,7 @@ public class StorageHelper {
         String fileKey;
         String url;
         File file;
+
         public FileSpec(Context context, String fileKey, FileType fileType) {
             this.url = BASE_URL + FILE_URL + fileKey;
             this.fileKey = fileKey;

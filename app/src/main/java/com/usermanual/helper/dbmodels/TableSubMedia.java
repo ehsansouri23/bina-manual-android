@@ -15,20 +15,17 @@ public class TableSubMedia implements Parcelable, Serializable {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
-    @SerializedName("id")
+    @SerializedName("Id")
     public int subMediaId;
 
-    @SerializedName("pid")
+    @SerializedName("Pid")
     public int parentSubMediaId;
 
-    @SerializedName("txt")
+    @SerializedName("Text")
     public String text;
 
-    @SerializedName("url")
+    @SerializedName("Url")
     public String url;
-
-    @SerializedName("type")
-    public int type;
 
     protected TableSubMedia(Parcel in) {
         id = in.readInt();
@@ -36,7 +33,6 @@ public class TableSubMedia implements Parcelable, Serializable {
         parentSubMediaId = in.readInt();
         text = in.readString();
         url = in.readString();
-        type = in.readInt();
     }
 
     public static final Creator<TableSubMedia> CREATOR = new Creator<TableSubMedia>() {
@@ -63,6 +59,5 @@ public class TableSubMedia implements Parcelable, Serializable {
         dest.writeInt(parentSubMediaId);
         dest.writeString(text);
         dest.writeString(url);
-        dest.writeInt(type);
     }
 }

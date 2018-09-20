@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.usermanual.R;
 import com.usermanual.activities.MainActivity;
+import com.usermanual.helper.dbmodels.TableToDownloadFiles;
 import com.usermanual.network.GetData;
 import com.usermanual.network.RetrofitClientInstance;
 
@@ -16,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
@@ -30,13 +32,24 @@ public class DownloadFile extends AsyncTask<Void, Void, Boolean> {
     Context context;
     List<StorageHelper.FileSpec> fileSpecs;
     ProgressDialog progressDialog;
-//    MainActivity.DownFilesDelegate delegate;
 
-    public DownloadFile(Context context, List<StorageHelper.FileSpec> fileSpecs/*, MainActivity.DownFilesDelegate downFilesDelegate*/) {
+    boolean downloadFromDB = false;
+
+    public DownloadFile(Context context, List<StorageHelper.FileSpec> fileSpecs) {
         this.context = context;
         this.fileSpecs = fileSpecs;
-//        this.delegate = downFilesDelegate;
         this.progressDialog = new ProgressDialog(context);
+    }
+
+    public DownloadFile(Context context) {
+        this.context = context;
+        downloadFromDB = true;
+        fileSpecs = new ArrayList<>();
+        List<TableToDownloadFiles> tableToDownloadFiles = DataBaseHelper.getToDownloadFiles(context);
+        for (int i = 0; i < tableToDownloadFiles.size(); i++) {
+            StorageHelper.FileSpec fileSpec = new StorageHelper.FileSpec(context, tableToDownloadFiles.get(i).fileKey, StorageHelper.FileType.MEDIAS);
+            fileSpecs.add(fileSpec);
+        }
     }
 
     @Override
@@ -61,6 +74,8 @@ public class DownloadFile extends AsyncTask<Void, Void, Boolean> {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     success[0] = writeResponseBodyToDisk(response.body(), fileSpecs.get(finalI).getFile());
+                    if (downloadFromDB)
+                        DataBaseHelper.deleteToDownlaodFile(context, fileSpecs.get(finalI).getFileKey());
                     if (finalI == fileSpecs.size() - 1) {
                         progressDialog.dismiss();
 //                        if (delegate != null)

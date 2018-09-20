@@ -71,7 +71,7 @@ public class SearchFragment extends Fragment {
     public class SearchDelegate {
         public void clicked(TableTitle tableTitle) {
             Log.e(TAG, "clicked: " + tableTitle.title);
-            activity.openFragment(tableTitle.titleId);
+            activity.openTitlesFragment(tableTitle.titleId);
         }
     }
 

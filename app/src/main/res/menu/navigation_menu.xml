@@ -34,6 +34,12 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/id_download"
+        android:title="@string/download_files"
+        android:icon="@mipmap/download"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/id_about"
         android:title="@string/about"
         android:icon="@mipmap/about"

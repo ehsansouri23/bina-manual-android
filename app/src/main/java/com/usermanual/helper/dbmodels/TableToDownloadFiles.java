@@ -19,6 +19,10 @@ public class TableToDownloadFiles implements Serializable, Parcelable {
         fileKey = in.readString();
     }
 
+    public TableToDownloadFiles() {
+
+    }
+
     public static final Creator<TableToDownloadFiles> CREATOR = new Creator<TableToDownloadFiles>() {
         @Override
         public TableToDownloadFiles createFromParcel(Parcel in) {

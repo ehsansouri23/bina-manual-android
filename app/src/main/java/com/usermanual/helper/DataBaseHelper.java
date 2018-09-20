@@ -72,6 +72,10 @@ public class DataBaseHelper {
         return AppDatabase.getInstance(context).subMediaDao().getSubMedias(mediaId);
     }
 
+    public static List<TableToDownloadFiles> getToDownloadFiles(Context context) {
+        return AppDatabase.getInstance(context).toDownloadFilesDao().getAll();
+    }
+
     public static void deleteAllTitles(Context context) {
         AppDatabase.getInstance(context).titleDao().deleteAll();
     }
@@ -94,5 +98,9 @@ public class DataBaseHelper {
 
     public static void deleteToDownloadFile(Context context, TableToDownloadFiles toDownloadFiles) {
         AppDatabase.getInstance(context).toDownloadFilesDao().delete(toDownloadFiles);
+    }
+
+    public static void deleteToDownlaodFile(Context context, String fileKey) {
+        AppDatabase.getInstance(context).toDownloadFilesDao().delete(fileKey);
     }
 }

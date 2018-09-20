@@ -19,27 +19,29 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Url;
 
+import static com.usermanual.helper.Consts.*;
+
 public interface GetData {
 
-    @POST("login")
+    @POST(LOGIN_URL)
     Call<LoginResponse> login(@Body LoginModel loginModel);
 
-    @GET("titles")
+    @GET(TITLES_URL)
     Call<List<TableTitle>> getTitles(@Header("token") String token);
 
-    @GET("subtitles")
+    @GET(SUBTITLES_URL)
     Call<List<TableSubTitle>> getSubtitles(@Header("token") String token);
 
-    @GET("medias")
+    @GET(MEDIAS_URL)
     Call<List<TableMedia>> getMedias(@Header("token") String token);
 
-    @GET("submedias")
-    Call<List<TableSubMedia>> getAllSubMedias(@Header("token") String token);
+    @GET
+    Call<List<TableSubMedia>> getSubMedia(@Header("token") String token, @Url String url);
 
-    @GET("news")
+    @GET(NEWS_URL)
     Call<List<NewsModel>> getNewsList(@Header("token") String token);
 
-    @POST("ticket/sendMessage")
+    @POST(SEND_MESSAGE_URL)
     Call<MessageModel> sendQuestion(@Body MessageModel messageModel);
 
     @POST

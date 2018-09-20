@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -36,8 +35,10 @@ import com.usermanual.helper.DownloadFile;
 import com.usermanual.helper.NetworkHelper;
 import com.usermanual.helper.StorageHelper;
 import com.usermanual.helper.dbmodels.TableMedia;
+import com.usermanual.helper.dbmodels.TableSubMedia;
 import com.usermanual.helper.dbmodels.TableSubTitle;
 import com.usermanual.helper.dbmodels.TableTitle;
+import com.usermanual.helper.dbmodels.TableToDownloadFiles;
 import com.usermanual.network.GetData;
 import com.usermanual.network.RetrofitClientInstance;
 
@@ -48,9 +49,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.usermanual.helper.Consts.PREF_STATE;
-import static com.usermanual.helper.Consts.PREF_TITLE_ID;
+import static com.usermanual.helper.Consts.API;
+import static com.usermanual.helper.Consts.BASE_URL;
 import static com.usermanual.helper.Consts.SEARCH_QUERY;
+import static com.usermanual.helper.Consts.SUBMEDIA_URL;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         SearchView.OnQueryTextListener {
@@ -76,11 +78,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toDownloadImages = new ArrayList<>();
 
         context = getApplicationContext();
+        titlesFragment = TitlesFragment.newInstance(TitlesFragment.TITLES);
         fmanager = getSupportFragmentManager();
-        fmanager.beginTransaction().replace(R.id.fragment_container, new TitlesFragment()).commit();
+        fmanager.beginTransaction().replace(R.id.fragment_container, titlesFragment).commit();
+
+        toDownloadImages = new ArrayList<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -162,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -195,6 +198,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.id_sync:
                 syncData();
+                break;
+            case R.id.id_download:
+                downloadFiles();
                 break;
             case R.id.id_about:
                 setToolbarTitle(getResources().getString(R.string.about));
@@ -240,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            getSubtitles();
 //            getMedias();
         }
-        
+
     }
 
     /**
@@ -330,27 +336,57 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    private void getSubmedias(final List<TableMedia> tableMediaList) {
+        final GetData data = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
+        for (int i = 0; i < tableMediaList.size(); i++) {
+            String url = BASE_URL + API + SUBMEDIA_URL + tableMediaList.get(i).mediaId;
+            Call<List<TableSubMedia>> getSubmediaCall = data.getSubMedia(Auth.getToken(context), url);
+            final int finalI = i;
+            getSubmediaCall.enqueue(new Callback<List<TableSubMedia>>() {
+                @Override
+                public void onResponse(Call<List<TableSubMedia>> call, Response<List<TableSubMedia>> response) {
+                    if (response.body() != null) {
+                        DataBaseHelper.saveSubmedias(context, response.body());
+                        for (int j = 0; j < response.body().size(); j++) {
+                            TableToDownloadFiles tableToDownloadFiles = new TableToDownloadFiles();
+                            tableToDownloadFiles.fileKey = response.body().get(j).url;
+                            DataBaseHelper.savetoDownloadFile(context, tableToDownloadFiles);
+                        }
+                        if (finalI == tableMediaList.size() - 1) {
+                            // getting submedias done
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<TableSubMedia>> call, Throwable t) {
+
+                }
+            });
+        }
+    }
+
     /**
      * downloading medias
      */
     private void downloadFiles(List<StorageHelper.FileSpec> fileSpecs) {
         new DownloadFile(context, fileSpecs).execute();
+    }
 
+    private void downloadFiles() {
+        new DownloadFile(context).execute();
     }
 
     private void flushDataBase() {
         DataBaseHelper.deleteAllTitles(context);
         DataBaseHelper.deleteAllSubtitles(context);
         DataBaseHelper.deleteAllMedias(context);
+        DataBaseHelper.deleteAllSubtitles(context);
     }
 
-    public void openFragment(int titleId) {
-        Fragment titleFragment = new TitlesFragment();
-        Bundle args = new Bundle();
-        args.putInt(PREF_STATE, TitlesFragment.SUBTITLES);
-        args.putInt(PREF_TITLE_ID, titleId);
-        titleFragment.setArguments(args);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, titleFragment).commit();
+    public void openTitlesFragment(int titleId) {
+        TitlesFragment titlesFragment = TitlesFragment.newInstance(TitlesFragment.SUBTITLES, titleId);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, titlesFragment).commit();
     }
 
 //    public class DownFilesDelegate {

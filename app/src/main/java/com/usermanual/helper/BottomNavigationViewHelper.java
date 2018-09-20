@@ -29,7 +29,7 @@ public class BottomNavigationViewHelper {
         } catch (NoSuchFieldException e) {
             Log.e("BottomNav", "Unable to get shift mode field", e);
         } catch (IllegalAccessException e) {
-            Log.e("BottomNav", "Unable to openFragment value of shift mode", e);
+            Log.e("BottomNav", "Unable to openTitlesFragment value of shift mode", e);
         }
     }
 }

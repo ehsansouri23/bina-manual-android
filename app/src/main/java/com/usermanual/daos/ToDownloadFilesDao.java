@@ -25,6 +25,9 @@ public interface ToDownloadFilesDao {
     @Delete
     void delete(TableToDownloadFiles tableToDownloadFiles);
 
+    @Query("DELETE FROM TableToDownloadFiles WHERE fileKey LIKE :fileKey")
+    void delete(String fileKey);
+
     @Query("DELETE FROM TableToDownloadFiles")
     void deleteAll();
 }

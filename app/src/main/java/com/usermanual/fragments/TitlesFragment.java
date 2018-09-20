@@ -1,5 +1,6 @@
 package com.usermanual.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -44,6 +45,8 @@ public class TitlesFragment extends Fragment {
     int state;
     int selectedTitleId, selectedSubtitleId;
 
+    Context context;
+    
     LoadingDots loading;
     LinearLayout noItems;
     ImageView headerImage;
@@ -61,6 +64,8 @@ public class TitlesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.titles_fragment, container, false);
+        context = getContext();
+
         loading = (LoadingDots) view.findViewById(R.id.loading);
         noItems = (LinearLayout) view.findViewById(R.id.no_item);
         headerImage = (ImageView) view.findViewById(R.id.header_image);
@@ -71,9 +76,9 @@ public class TitlesFragment extends Fragment {
         titleList = new ArrayList<>();
         subtitleList = new ArrayList<>();
 
-        if (PrefHelper.getBoolean(getContext(), PREF_ANIMATIONS, true))
+        if (PrefHelper.getBoolean(context, PREF_ANIMATIONS, true))
             listViewAnimation =
-                    AnimationUtils.loadLayoutAnimation(view.getContext(), R.anim.list_anim);
+                    AnimationUtils.loadLayoutAnimation(context, R.anim.list_anim);
         else
             listViewAnimation = null;
 
@@ -95,14 +100,14 @@ public class TitlesFragment extends Fragment {
             if (showingState == SUBTITLES) {
                 selectedTitleId = args.getInt(PREF_TITLE_ID);
                 //showing image in header of list
-                TableTitle tableTitle = DataBaseHelper.getTitle(getContext(), selectedTitleId);
-                StorageHelper.FileSpec imageFile = new StorageHelper.FileSpec(getContext(), tableTitle.picUrl, StorageHelper.FileType.TITLES);
+                TableTitle tableTitle = DataBaseHelper.getTitle(context, selectedTitleId);
+                StorageHelper.FileSpec imageFile = new StorageHelper.FileSpec(context, tableTitle.picUrl, StorageHelper.FileType.TITLES);
                 Picasso.get().load(imageFile.getFile()).placeholder(R.mipmap.car).into(headerImage);
-                subtitleList = DataBaseHelper.getSubtitlesList(getContext(), selectedTitleId);
+                subtitleList = DataBaseHelper.getSubtitlesList(context, selectedTitleId);
                 subtitlesString = getSubtitles(subtitleList);
                 showList(subtitlesString);
             } else if (showingState == TITLES) {
-                titleList = DataBaseHelper.getTitlesList(getContext());
+                titleList = DataBaseHelper.getTitlesList(context);
                 titlesString = getTitles(titleList);
                 showList(titlesString);
             }
@@ -115,12 +120,12 @@ public class TitlesFragment extends Fragment {
                     case TITLES:
                         state = SUBTITLES;
                         selectedTitleId = titleList.get(position).titleId;
-                        TableTitle tableTitle = DataBaseHelper.getTitle(getContext(), selectedTitleId);
-                        StorageHelper.FileSpec imageFile = new StorageHelper.FileSpec(getContext(), tableTitle.picUrl, StorageHelper.FileType.TITLES);
+                        TableTitle tableTitle = DataBaseHelper.getTitle(context, selectedTitleId);
+                        StorageHelper.FileSpec imageFile = new StorageHelper.FileSpec(context, tableTitle.picUrl, StorageHelper.FileType.TITLES);
                         Picasso.get().load(imageFile.getFile()).placeholder(R.mipmap.car).into(headerImage);
                         Log.e(TAG, "onItemClick: " + selectedTitleId + " title: " + titleList.get(position).title);
                         ((MainActivity) (getActivity())).setToolbarTitle(titleList.get(position).title);
-                        subtitleList = DataBaseHelper.getSubtitlesList(getContext(), selectedTitleId);
+                        subtitleList = DataBaseHelper.getSubtitlesList(context, selectedTitleId);
                         subtitlesString = getSubtitles(subtitleList);
                         showList(subtitlesString);
                         break;
@@ -150,12 +155,21 @@ public class TitlesFragment extends Fragment {
         return titlesFragment;
     }
 
+    public static TitlesFragment newInstance(int state, int selectedTitleId) {
+        TitlesFragment titlesFragment = new TitlesFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(PREF_STATE, state);
+        bundle.putInt(PREF_TITLE_ID, selectedTitleId);
+        titlesFragment.setArguments(bundle);
+        return titlesFragment;
+    }
+
     public boolean onBackPressed() {
         if (state == TITLES)
             return true;
         if (state == SUBTITLES) {
             adapter.clear();
-            titlesString = getTitles(DataBaseHelper.getTitlesList(getContext()));
+            titlesString = getTitles(DataBaseHelper.getTitlesList(context));
             adapter.addAll(titlesString);
             adapter.notifyDataSetChanged();
             listView.setLayoutAnimation(listViewAnimation);
@@ -193,7 +207,7 @@ public class TitlesFragment extends Fragment {
         } else {
             noItems.setVisibility(View.GONE);
         }
-        adapter = new ArrayAdapter<String>(getContext(),
+        adapter = new ArrayAdapter<String>(context,
                 android.R.layout.simple_list_item_1, android.R.id.text1, strings);
         adapter.clear();
         adapter.notifyDataSetChanged();
