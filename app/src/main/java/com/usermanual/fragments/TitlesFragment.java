@@ -33,7 +33,10 @@ import com.usermanual.helper.dbmodels.TableTitle;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.usermanual.helper.Consts.*;
+import static com.usermanual.helper.Consts.PREF_ANIMATIONS;
+import static com.usermanual.helper.Consts.PREF_STATE;
+import static com.usermanual.helper.Consts.PREF_SUBTITLE_ID;
+import static com.usermanual.helper.Consts.PREF_TITLE_ID;
 
 public class TitlesFragment extends Fragment {
     private static final String TAG = "TitlesFragment";
@@ -46,7 +49,7 @@ public class TitlesFragment extends Fragment {
     int selectedTitleId, selectedSubtitleId;
 
     Context context;
-    
+
     LoadingDots loading;
     LinearLayout noItems;
     ImageView headerImage;
@@ -75,6 +78,9 @@ public class TitlesFragment extends Fragment {
         state = TITLES;
         titleList = new ArrayList<>();
         subtitleList = new ArrayList<>();
+        List<String> strings = new ArrayList<>();
+        adapter = new ArrayAdapter<String>(context,
+                android.R.layout.simple_list_item_1, android.R.id.text1, strings);
 
         if (PrefHelper.getBoolean(context, PREF_ANIMATIONS, true))
             listViewAnimation =
@@ -89,6 +95,7 @@ public class TitlesFragment extends Fragment {
             public void run() {
                 loading.setVisibility(View.GONE);
                 listView.setVisibility(View.VISIBLE);
+                headerImage.setVisibility(View.VISIBLE);
             }
         };
         handler.postDelayed(runnable, 1400);
@@ -202,14 +209,15 @@ public class TitlesFragment extends Fragment {
     }
 
     private void showList(List<String> strings) {
+        if (adapter != null)
+            adapter.clear();
         if (strings.isEmpty()) {
             noItems.setVisibility(View.VISIBLE);
+            headerImage.setVisibility(View.GONE);
         } else {
             noItems.setVisibility(View.GONE);
         }
-        adapter = new ArrayAdapter<String>(context,
-                android.R.layout.simple_list_item_1, android.R.id.text1, strings);
-        adapter.clear();
+        adapter.addAll(strings);
         adapter.notifyDataSetChanged();
         listView.setAdapter(adapter);
         listView.setLayoutAnimation(listViewAnimation);

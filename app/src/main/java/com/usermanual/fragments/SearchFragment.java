@@ -14,15 +14,11 @@ import android.view.ViewGroup;
 import com.usermanual.R;
 import com.usermanual.activities.MainActivity;
 import com.usermanual.adapter.SearchAdapter;
-import com.usermanual.helper.DataBaseHelper;
 import com.usermanual.helper.dbmodels.SearchModel;
-import com.usermanual.helper.dbmodels.TableSubTitle;
-import com.usermanual.helper.dbmodels.TableTitle;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.usermanual.helper.Consts.*;
+import static com.usermanual.helper.Consts.SEARCH_QUERY;
 
 public class SearchFragment extends Fragment {
     private static final String TAG = "SearchFragment";
@@ -42,36 +38,25 @@ public class SearchFragment extends Fragment {
         searchList = (RecyclerView) view.findViewById(R.id.search_list);
         Bundle args = getArguments();
         searchQuery = args.getString(SEARCH_QUERY);
-        searchModelList = prepareSearchModelList(searchQuery);
-        searchAdapter = new SearchAdapter(getContext(), searchModelList, new SearchDelegate());
+        searchAdapter = new SearchAdapter(getContext(), searchQuery, new SearchDelegate());
         searchList.setAdapter(searchAdapter);
         searchList.setLayoutManager(new LinearLayoutManager(getContext()));
         return view;
     }
 
-    List<SearchModel> prepareSearchModelList(String query) {
-        searchModelList = new ArrayList<>();
-        List<TableTitle> tableTitleList = DataBaseHelper.getTitlesList(getContext());
-        for (int i = 0; i < tableTitleList.size(); i++) {
-            SearchModel searchModel = new SearchModel();
-            if (tableTitleList.get(i).title.contains(query)) {
-                searchModel.title = tableTitleList.get(i);
-                Log.e(TAG, "prepareSearchModelList: title contains query. " + tableTitleList.get(i).title);
-            }
-            List<TableSubTitle> tableSubTitles = DataBaseHelper.searchSubtitles(getContext(), tableTitleList.get(i).titleId, query);
-            for (int j = 0; j < tableSubTitles.size(); j++) {
-                Log.e(TAG, "prepareSearchModelList: sub for " + tableTitleList.get(i).title + " : " + tableSubTitles.get(j).subtitle);
-            }
-            searchModel.subtitles = tableSubTitles;
-            searchModelList.add(searchModel);
-        }
-        return searchModelList;
+    public static SearchFragment newInstance(String searchQuery, MainActivity activity) {
+        SearchFragment searchFragment = new SearchFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(SEARCH_QUERY, searchQuery);
+        searchFragment.setArguments(bundle);
+        searchFragment.setActivity(activity);
+        return searchFragment;
     }
 
     public class SearchDelegate {
-        public void clicked(TableTitle tableTitle) {
-            Log.e(TAG, "clicked: " + tableTitle.title);
-            activity.openTitlesFragment(tableTitle.titleId);
+        public void clicked(int titleId) {
+            Log.e(TAG, "clicked: " + titleId);
+            activity.openTitlesFragment(titleId);
         }
     }
 

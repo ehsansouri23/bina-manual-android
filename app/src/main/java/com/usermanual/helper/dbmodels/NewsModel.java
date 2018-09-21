@@ -7,7 +7,7 @@ public class NewsModel {
     @SerializedName("Id")
     public int newsId;
 
-    @SerializedName("txt")
+    @SerializedName("Title")
     public String title = "";
 
     @SerializedName("FileName")

@@ -16,9 +16,11 @@ public class Consts {
     public static final String TITLES_URL = "titles";
     public static final String SUBTITLES_URL = "subtitles";
     public static final String MEDIAS_URL = "medias";
-    public static final String SUBMEDIA_URL =  "submedia/";
+    public static final String SUBMEDIA_URL = "submedia/";
+    public static final String SUBMEDIAS_URL = "submedias";
     public static final String NEWS_URL = "news";
     public static final String SEND_MESSAGE_URL = "ticket/sendMessage";
+    public static final String UPDOAD_FILE = "ticket/upload/picture";
     public static final String FILE_URL = "file/?file=";
 
     public static final String PREF_FONT_SIZE = "pref_font_size";

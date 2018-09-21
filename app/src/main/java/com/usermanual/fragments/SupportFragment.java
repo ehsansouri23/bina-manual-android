@@ -1,10 +1,7 @@
 package com.usermanual.fragments;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,23 +11,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import com.nononsenseapps.filepicker.FilePickerActivity;
-import com.nononsenseapps.filepicker.Utils;
 import com.usermanual.R;
 import com.usermanual.auth.Auth;
+import com.usermanual.helper.FileUtils;
 import com.usermanual.helper.dbmodels.MessageModel;
+import com.usermanual.helper.dbmodels.UploadResponse;
 import com.usermanual.network.GetData;
 import com.usermanual.network.RetrofitClientInstance;
 
 import java.io.File;
-import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SupportFragment extends Fragment implements View.OnClickListener {
+public class SupportFragment extends Fragment {
     private static final String TAG = "SupportFragment";
 
     private final int RESULT_LOAD_IMAGE = 100;
@@ -38,6 +38,7 @@ public class SupportFragment extends Fragment implements View.OnClickListener {
     Button gallery;
     Button send;
     EditText question;
+    String filePath = null;
 
     @Nullable
     @Override
@@ -50,61 +51,100 @@ public class SupportFragment extends Fragment implements View.OnClickListener {
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getContext(), FilePickerActivity.class);
-                // This works if you defined the intent filter
-                // Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                Intent intent = new Intent();
+                intent.setType("*/*");
+                intent.setAction(Intent.ACTION_PICK);
 
-                // Set these depending on your use case. These are the defaults.
-                i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
-                i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
-                i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
+                startActivityForResult(intent, RESULT_LOAD_IMAGE);
+            }
+        });
 
-                // Configure initial directory by specifying a String.
-                // You could specify a String like "/storage/emulated/0/", but that can
-                // dangerous. Always use Android's API calls to get paths to the SD-card or
-                // internal memory.
-                i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final GetData data = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
+                if (filePath != null) {
+                    File file = new File(filePath);
+                    final RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), filePath);
+                    MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+                    RequestBody description =
+                            RequestBody.create(
+                                    okhttp3.MultipartBody.FORM, "File");
+                    Call<UploadResponse> responseBodyCall = data.upload(description, multipartBody);
+                    responseBodyCall.enqueue(new Callback<UploadResponse>() {
+                        @Override
+                        public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
+                            if (response.body() != null && response.body().result) {
+                                Toast.makeText(getContext(), response.body().error, Toast.LENGTH_SHORT).show();
 
-                startActivityForResult(i, RESULT_LOAD_IMAGE);
+                                MessageModel messageModel = new MessageModel();
+                                messageModel.text = question.getText().toString();
+                                messageModel.token = Auth.getToken(getContext());
+                                messageModel.url = response.body().fileName;
+                                Log.e(TAG, "onResponse: " + messageModel.text + "   " + messageModel.url + "   " + messageModel.token);
+                                Call<UploadResponse> sendQuestionCall = data.sendQuestion(messageModel);
+                                sendQuestionCall.enqueue(new Callback<UploadResponse>() {
+                                    @Override
+                                    public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
+                                        if (response.body() != null) {
+                                            Log.e(TAG, "onResponse: " + response.body().error);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<UploadResponse> call, Throwable t) {
+
+                                    }
+                                });
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<UploadResponse> call, Throwable t) {
+                            Log.d(TAG, "message = " + t.getMessage());
+                            Log.d(TAG, "cause = " + t.getCause());
+                        }
+                    });
+
+                } else if (filePath == null) {
+                    MessageModel messageModel = new MessageModel();
+                    messageModel.text = question.getText().toString();
+                    messageModel.token = Auth.getToken(getContext());
+                    messageModel.url = "";
+                    Log.e(TAG, "onResponse: " + messageModel.text + "   " + messageModel.url + "   " + messageModel.token);
+                    Call<UploadResponse> sendQuestionCall = data.sendQuestion(messageModel);
+                    sendQuestionCall.enqueue(new Callback<UploadResponse>() {
+                        @Override
+                        public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
+                            if (response.body() != null) {
+                                Log.e(TAG, "onResponse: " + response.body().error);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<UploadResponse> call, Throwable t) {
+
+                        }
+                    });
+                }
             }
         });
 
         return view;
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.send) { //todo check it
-            MessageModel messageModel = new MessageModel();
-            String questionText = question.getText().toString();
-            messageModel.text = questionText;
-            messageModel.token = Auth.getToken(getContext());
-            final GetData data = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
-            Call<MessageModel> sendQuestionCall = data.sendQuestion(messageModel);
-            sendQuestionCall.enqueue(new Callback<MessageModel>() {
-                @Override
-                public void onResponse(Call<MessageModel> call, Response<MessageModel> response) {
-
-                }
-
-                @Override
-                public void onFailure(Call<MessageModel> call, Throwable t) {
-
-                }
-            });
-        }
+    public static SupportFragment newInstance() {
+        SupportFragment supportFragment = new SupportFragment();
+        return supportFragment;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK) {
-            // Use the provided utility method to parse the result
-            List<Uri> files = Utils.getSelectedFilesFromResult(data);
-            for (Uri uri : files) {
-                File file = Utils.getFileForUri(uri);
-                Log.e(TAG, "onActivityResult: " + file.getAbsolutePath());
-                // Do something with the result...
-            }
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == getActivity().RESULT_OK) {
+            filePath = FileUtils.getRealPathFromURI(getContext(), data.getData());
+            Log.e(TAG, "onActivityResult: " + filePath);
         }
     }
 }

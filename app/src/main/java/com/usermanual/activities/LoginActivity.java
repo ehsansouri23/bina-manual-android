@@ -7,11 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Explode;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.eyalbira.loadingdots.LoadingDots;
@@ -21,8 +19,6 @@ import com.usermanual.helper.dbmodels.LoginModel;
 import com.usermanual.helper.dbmodels.LoginResponse;
 import com.usermanual.network.GetData;
 import com.usermanual.network.RetrofitClientInstance;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,16 +34,18 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        context = getApplicationContext();
-
         // inside your activity (if you did not enable transitions in your theme)
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 
         // set an exit transition
         getWindow().setExitTransition(new Explode());
         getWindow().setEnterTransition(new Explode());
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+        context = getApplicationContext();
+
+
 
 
         if (Auth.isLoggedIn(context)) {

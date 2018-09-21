@@ -18,7 +18,6 @@ import com.usermanual.R;
 import com.usermanual.activities.WebViewActivity;
 import com.usermanual.adapter.NewsAdapter;
 import com.usermanual.auth.Auth;
-import com.usermanual.helper.PrefHelper;
 import com.usermanual.helper.dbmodels.NewsModel;
 import com.usermanual.network.GetData;
 import com.usermanual.network.RetrofitClientInstance;
@@ -29,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.usermanual.helper.Consts.*;
+import static com.usermanual.helper.Consts.NEWS_FULL_HTML;
 
 public class NewsFragment extends Fragment {
     private static final String TAG = "NewsFragment";
@@ -70,9 +69,12 @@ public class NewsFragment extends Fragment {
                 noNet.setVisibility(View.VISIBLE);
             }
         });
-
-
         return v;
+    }
+
+    public static NewsFragment newInstance() {
+        NewsFragment newsFragment = new NewsFragment();
+        return newsFragment;
     }
 
     public class NewsClickDelegate {

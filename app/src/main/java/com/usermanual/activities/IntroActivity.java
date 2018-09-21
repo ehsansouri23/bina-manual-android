@@ -26,15 +26,17 @@ public class IntroActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_intro);
-
         // inside your activity (if you did not enable transitions in your theme)
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 
         // set an exit transition
         getWindow().setExitTransition(new Explode());
         getWindow().setEnterTransition(new Explode());
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_intro);
+
+
 
         logoImage = (ImageView) findViewById(R.id.logo);
         logoText = (TextView) findViewById(R.id.logo_text);
@@ -51,7 +53,7 @@ public class IntroActivity extends AppCompatActivity {
                     Intent intent = new Intent(context, LoginActivity.class);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         startActivity(intent,
-                                ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+                                ActivityOptions.makeSceneTransitionAnimation(IntroActivity.this).toBundle());
                     } else
                         startActivity(intent);
                     finish();

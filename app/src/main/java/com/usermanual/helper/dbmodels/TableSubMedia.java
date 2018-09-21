@@ -34,6 +34,9 @@ public class TableSubMedia implements Parcelable, Serializable {
         text = in.readString();
         url = in.readString();
     }
+    public TableSubMedia() {
+
+    }
 
     public static final Creator<TableSubMedia> CREATOR = new Creator<TableSubMedia>() {
         @Override

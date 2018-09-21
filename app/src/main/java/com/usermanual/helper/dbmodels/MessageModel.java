@@ -15,7 +15,7 @@ public class MessageModel implements Parcelable, Serializable {
     @SerializedName("Text")
     public String text = "";
 
-    @SerializedName("fileAddress")
+    @SerializedName("FileName")
     public String url = "";
 
     protected MessageModel(Parcel in) {

@@ -48,7 +48,8 @@
         android:id="@+id/header_image"
         android:layout_width="match_parent"
         android:layout_height="225dp"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@mipmap/car"
+        android:visibility="gone"/>
 
 
     <ListView
@@ -59,6 +60,6 @@
         android:layout_marginTop="3dp"
         android:layoutAnimation="@anim/list_anim"
         android:persistentDrawingCache="animation|scrolling"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 </RelativeLayout>

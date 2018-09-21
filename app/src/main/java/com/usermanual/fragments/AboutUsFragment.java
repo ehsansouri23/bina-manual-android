@@ -27,4 +27,9 @@ public class AboutUsFragment extends Fragment {
 //        Picasso.get().
         return v;
     }
+
+    public static AboutUsFragment newInstance() {
+        AboutUsFragment aboutUsFragment = new AboutUsFragment();
+        return aboutUsFragment;
+    }
 }

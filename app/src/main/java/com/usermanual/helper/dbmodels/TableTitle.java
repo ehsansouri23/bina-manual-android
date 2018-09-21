@@ -22,7 +22,7 @@ public class TableTitle implements Serializable, Parcelable {
     public String title;
 
     @SerializedName("Picture")
-    public String picUrl;
+    public String picUrl = "";
 
     public TableTitle() {
 

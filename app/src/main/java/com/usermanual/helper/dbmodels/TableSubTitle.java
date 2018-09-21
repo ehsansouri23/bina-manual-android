@@ -25,7 +25,7 @@ public class TableSubTitle implements Serializable, Parcelable {
     public String subtitle;
 
     @SerializedName("Picture")
-    public String picUrl;
+    public String picUrl = "";
 
     public TableSubTitle() {
 

@@ -7,7 +7,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.usermanual.R;
-import com.usermanual.activities.MainActivity;
 import com.usermanual.helper.dbmodels.TableToDownloadFiles;
 import com.usermanual.network.GetData;
 import com.usermanual.network.RetrofitClientInstance;
@@ -18,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -39,6 +37,7 @@ public class DownloadFile extends AsyncTask<Void, Void, Boolean> {
         this.context = context;
         this.fileSpecs = fileSpecs;
         this.progressDialog = new ProgressDialog(context);
+        printDownloadList(fileSpecs);
     }
 
     public DownloadFile(Context context) {
@@ -49,6 +48,13 @@ public class DownloadFile extends AsyncTask<Void, Void, Boolean> {
         for (int i = 0; i < tableToDownloadFiles.size(); i++) {
             StorageHelper.FileSpec fileSpec = new StorageHelper.FileSpec(context, tableToDownloadFiles.get(i).fileKey, StorageHelper.FileType.MEDIAS);
             fileSpecs.add(fileSpec);
+        }
+        printDownloadList(fileSpecs);
+    }
+
+    private void printDownloadList(List<StorageHelper.FileSpec> fileSpecList) {
+        for (int i = 0; i < fileSpecList.size(); i++) {
+            Log.d(TAG, "to download: " + fileSpecList.get(i).getFile().getAbsolutePath() + " url: " + fileSpecList.get(i).getUrl());
         }
     }
 
@@ -73,7 +79,8 @@ public class DownloadFile extends AsyncTask<Void, Void, Boolean> {
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    success[0] = writeResponseBodyToDisk(response.body(), fileSpecs.get(finalI).getFile());
+                    if (response.body() != null)
+                        success[0] = writeResponseBodyToDisk(response.body(), fileSpecs.get(finalI).getFile());
                     if (downloadFromDB)
                         DataBaseHelper.deleteToDownlaodFile(context, fileSpecs.get(finalI).getFileKey());
                     if (finalI == fileSpecs.size() - 1) {

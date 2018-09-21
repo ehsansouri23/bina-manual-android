@@ -51,7 +51,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
 
-    implementation 'com.nononsenseapps:filepicker:4.1.0'
+//    implementation 'com.nbsp:library:1.8'
 }
 
 
