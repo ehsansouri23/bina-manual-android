@@ -3,11 +3,13 @@ package com.usermanual.network;
 import com.usermanual.helper.dbmodels.LoginModel;
 import com.usermanual.helper.dbmodels.LoginResponse;
 import com.usermanual.helper.dbmodels.MessageModel;
+import com.usermanual.helper.dbmodels.MessageResponse;
 import com.usermanual.helper.dbmodels.NewsModel;
 import com.usermanual.helper.dbmodels.TableMedia;
 import com.usermanual.helper.dbmodels.TableSubMedia;
 import com.usermanual.helper.dbmodels.TableSubTitle;
 import com.usermanual.helper.dbmodels.TableTitle;
+import com.usermanual.helper.dbmodels.Token;
 import com.usermanual.helper.dbmodels.UploadResponse;
 
 import java.util.List;
@@ -24,6 +26,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Url;
 
+import static com.usermanual.helper.Consts.GET_MESSAGE_URL;
 import static com.usermanual.helper.Consts.LOGIN_URL;
 import static com.usermanual.helper.Consts.MEDIAS_URL;
 import static com.usermanual.helper.Consts.NEWS_URL;
@@ -55,6 +58,9 @@ public interface GetData {
 
     @GET(NEWS_URL)
     Call<List<NewsModel>> getNewsList(@Header("token") String token);
+
+    @POST(GET_MESSAGE_URL)
+    Call<MessageResponse> getMessages(@Body Token token);
 
     @POST(SEND_MESSAGE_URL)
     Call<UploadResponse> sendQuestion(@Body MessageModel messageModel);

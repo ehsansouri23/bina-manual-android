@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fmanager.beginTransaction().replace(R.id.fragment_container, titlesFragment).commit();
 
         toDownloadImages = new ArrayList<>();
+        Log.e(TAG, "onCreate: token: " + Auth.getToken(context));
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

@@ -20,6 +20,7 @@ public class Consts {
     public static final String SUBMEDIAS_URL = "submedias";
     public static final String NEWS_URL = "news";
     public static final String SEND_MESSAGE_URL = "ticket/sendMessage";
+    public static final String GET_MESSAGE_URL = "ticket/getMessage";
     public static final String UPDOAD_FILE = "ticket/upload/picture";
     public static final String FILE_URL = "file/?file=";
 

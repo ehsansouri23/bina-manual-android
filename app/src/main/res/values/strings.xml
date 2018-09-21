@@ -41,6 +41,6 @@
     <string name="sync_data">همگام سازی اطلاعات با سرور</string>
     <string name="download_files">دانلود فایل ها</string>
     <string name="should_not_empty">نباید خالی باشد</string>
-    <string name="select_file">انتخاب فایل از گالری</string>
+    <string name="select_file">آپلود فایل</string>
     <string name="download_files_from_slide_menu">برای دانلود فایل ها از منوی کناری دانلود فایل ها را انتخاب کنید</string>
 </resources>
