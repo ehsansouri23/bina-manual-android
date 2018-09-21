@@ -21,6 +21,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -62,6 +63,7 @@ public interface GetData {
     @POST(GET_MESSAGE_URL)
     Call<MessageResponse> getMessages(@Body Token token);
 
+    @Headers("Content-type: application/json")
     @POST(SEND_MESSAGE_URL)
     Call<UploadResponse> sendQuestion(@Body MessageModel messageModel);
 

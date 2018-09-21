@@ -26,6 +26,7 @@ import com.usermanual.network.RetrofitClientInstance;
 
 import java.io.File;
 
+import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -83,54 +84,6 @@ public class SupportFragment extends Fragment {
                     return;
                 }
                 final GetData data = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
-                if (filePath != null) {
-                    File file = new File(filePath);
-                    final RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), filePath);
-                    MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-                    RequestBody description =
-                            RequestBody.create(
-                                    okhttp3.MultipartBody.FORM, "File");
-                    Call<UploadResponse> responseBodyCall = data.upload(description, multipartBody);
-                    if (!progressDialog.isShowing())
-                        progressDialog.show();
-                    progressDialog.setMessage(getResources().getString(R.string.select_file));
-                    responseBodyCall.enqueue(new Callback<UploadResponse>() {
-                        @Override
-                        public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
-                            if (response.body() != null && response.body().result) {
-                                MessageModel messageModel = new MessageModel();
-                                messageModel.text = question.getText().toString();
-                                messageModel.token = Auth.getToken(getContext());
-                                messageModel.url = response.body().fileName;
-                                Log.e(TAG, "onResponse: " + messageModel.text + "   " + messageModel.url + "   " + messageModel.token);
-                                Call<UploadResponse> sendQuestionCall = data.sendQuestion(messageModel);
-                                sendQuestionCall.enqueue(new Callback<UploadResponse>() {
-                                    @Override
-                                    public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
-                                        if (response.body() != null && response.body().result) {
-                                            Log.e(TAG, "onResponse: " + response.body().error);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<UploadResponse> call, Throwable t) {
-                                        Toast.makeText(getContext(), getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-
-                            } else  if (response.body() != null && !response.body().result)
-                                Toast.makeText(getContext(), response.body().error, Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
-                        }
-
-                        @Override
-                        public void onFailure(Call<UploadResponse> call, Throwable t) {
-                            Log.d(TAG, "message = " + t.getMessage());
-                            Log.d(TAG, "cause = " + t.getCause());
-                        }
-                    });
-
-                } else if (filePath == null) {
                     if (!progressDialog.isShowing())
                         progressDialog.show();
                     progressDialog.setMessage(getResources().getString(R.string.send_question));
@@ -144,6 +97,8 @@ public class SupportFragment extends Fragment {
                         @Override
                         public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
                             if (response.body() != null && response.body().result) {
+                                Headers headers = response.headers();
+                                Log.e(TAG, "onResponse: " + headers.get("Content-Type"));
                                 Toast.makeText(getContext(), "ارسال شد", Toast.LENGTH_SHORT).show();
                             } else if (response.body() != null && !response.body().result)
                                 Toast.makeText(getContext(), response.body().error, Toast.LENGTH_SHORT).show();
@@ -156,7 +111,7 @@ public class SupportFragment extends Fragment {
                             progressDialog.dismiss();
                         }
                     });
-                }
+
             }
         });
 
@@ -173,6 +128,41 @@ public class SupportFragment extends Fragment {
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == getActivity().RESULT_OK) {
             filePath = FileUtils.getRealPathFromURI(getContext(), data.getData());
             Log.e(TAG, "onActivityResult: " + filePath);
+            if (filePath == null || filePath.equals(""))
+                return;
+            final GetData retroData = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
+            File file = new File(filePath);
+            final RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), filePath);
+            MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+            RequestBody description =
+                    RequestBody.create(
+                            okhttp3.MultipartBody.FORM, "File");
+            Call<UploadResponse> responseBodyCall = retroData.upload(description, multipartBody);
+            if (!progressDialog.isShowing())
+                progressDialog.show();
+            progressDialog.setMessage(getResources().getString(R.string.select_file));
+            responseBodyCall.enqueue(new Callback<UploadResponse>() {
+                @Override
+                public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
+                    if (response.body() != null && response.body().result) {
+                        MessageModel messageModel = new MessageModel();
+                        messageModel.text = question.getText().toString();
+                        messageModel.token = Auth.getToken(getContext());
+                        messageModel.url = response.body().fileName;
+                        Log.e(TAG, "onResponse: " + messageModel.text + "   " + messageModel.url + "   " + messageModel.token);
+
+                    } else  if (response.body() != null && !response.body().result)
+                        Toast.makeText(getContext(), response.body().error, Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                }
+
+                @Override
+                public void onFailure(Call<UploadResponse> call, Throwable t) {
+                    Toast.makeText(getContext(), getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "onFailure: " + t.getMessage());
+                    progressDialog.dismiss();
+                }
+            });
         }
     }
 }

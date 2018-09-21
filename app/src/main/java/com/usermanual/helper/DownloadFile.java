@@ -49,6 +49,7 @@ public class DownloadFile extends AsyncTask<Void, Void, Boolean> {
             StorageHelper.FileSpec fileSpec = new StorageHelper.FileSpec(context, tableToDownloadFiles.get(i).fileKey, StorageHelper.FileType.MEDIAS);
             fileSpecs.add(fileSpec);
         }
+        this.progressDialog = new ProgressDialog(context);
         printDownloadList(fileSpecs);
     }
 

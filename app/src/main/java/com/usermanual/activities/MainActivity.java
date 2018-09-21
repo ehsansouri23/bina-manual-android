@@ -333,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     DataBaseHelper.saveMedias(context, response.body());
                     getSubmedias();
                     //download image files of titles and subtitles
-//                    downloadFiles(toDownloadImages);
+                    downloadFiles(toDownloadImages);
                     progressDialog.dismiss();
                 }
             }
