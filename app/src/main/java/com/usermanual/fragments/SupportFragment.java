@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -42,10 +43,14 @@ public class SupportFragment extends Fragment {
     LinearLayout noNet;
     Button gallery;
     Button send;
+    ImageView deleteFile;
     EditText question;
     String filePath = null;
+    String fileUrl = null;
 
     ProgressDialog progressDialog;
+
+    boolean uploadSuccess = false;
 
 
     @Nullable
@@ -55,6 +60,7 @@ public class SupportFragment extends Fragment {
         noNet = (LinearLayout) view.findViewById(R.id.no_net);
         question = (EditText) view.findViewById(R.id.question);
         gallery = (Button) view.findViewById(R.id.gallery);
+        deleteFile = (ImageView) view.findViewById(R.id.delete_file);
         send = (Button) view.findViewById(R.id.send);
         progressDialog = new ProgressDialog(getActivity());
 
@@ -76,6 +82,15 @@ public class SupportFragment extends Fragment {
             }
         });
 
+        deleteFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), getResources().getString(R.string.file_deleted), Toast.LENGTH_SHORT).show();
+                deleteFile.setVisibility(View.GONE);
+                fileUrl = null;
+            }
+        });
+
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,34 +98,38 @@ public class SupportFragment extends Fragment {
                     Toast.makeText(getContext(), getResources().getString(R.string.should_not_empty), Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if (!uploadSuccess) {
+                    Toast.makeText(getContext(), getResources().getString(R.string.no_uploaded), Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 final GetData data = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
-                    if (!progressDialog.isShowing())
-                        progressDialog.show();
-                    progressDialog.setMessage(getResources().getString(R.string.send_question));
-                    MessageModel messageModel = new MessageModel();
-                    messageModel.text = question.getText().toString();
-                    messageModel.token = Auth.getToken(getContext());
+                if (!progressDialog.isShowing())
+                    progressDialog.show();
+                progressDialog.setMessage(getResources().getString(R.string.send_question));
+                MessageModel messageModel = new MessageModel();
+                messageModel.text = question.getText().toString();
+                messageModel.token = Auth.getToken(getContext());
+                if (fileUrl == null || fileUrl.equals(""))
                     messageModel.url = "";
-                    Log.e(TAG, "onResponse: " + messageModel.text + "   " + messageModel.url + "   " + messageModel.token);
-                    Call<UploadResponse> sendQuestionCall = data.sendQuestion(messageModel);
-                    sendQuestionCall.enqueue(new Callback<UploadResponse>() {
-                        @Override
-                        public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
-                            if (response.body() != null && response.body().result) {
-                                Headers headers = response.headers();
-                                Log.e(TAG, "onResponse: " + headers.get("Content-Type"));
-                                Toast.makeText(getContext(), "ارسال شد", Toast.LENGTH_SHORT).show();
-                            } else if (response.body() != null && !response.body().result)
-                                Toast.makeText(getContext(), response.body().error, Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
-                        }
+                else messageModel.url = fileUrl;
+                Log.d(TAG,  "sending message: text: " + messageModel.text + " fileKey: " + messageModel.url + " token: " + messageModel.token);
+                Call<UploadResponse> sendQuestionCall = data.sendQuestion(messageModel);
+                sendQuestionCall.enqueue(new Callback<UploadResponse>() {
+                    @Override
+                    public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
+                        if (response.body() != null && response.body().result) {
+                            Toast.makeText(getContext(), getResources().getString(R.string.sent), Toast.LENGTH_SHORT).show();
+                        } else if (response.body() != null && !response.body().result)
+                            Toast.makeText(getContext(), response.body().error, Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    }
 
-                        @Override
-                        public void onFailure(Call<UploadResponse> call, Throwable t) {
-                            Toast.makeText(getContext(), getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
-                        }
-                    });
+                    @Override
+                    public void onFailure(Call<UploadResponse> call, Throwable t) {
+                        Toast.makeText(getContext(), getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    }
+                });
 
             }
         });
@@ -127,40 +146,42 @@ public class SupportFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == getActivity().RESULT_OK) {
             filePath = FileUtils.getRealPathFromURI(getContext(), data.getData());
-            Log.e(TAG, "onActivityResult: " + filePath);
+            Log.d(TAG, "onActivityResult: filePath: " + filePath);
             if (filePath == null || filePath.equals(""))
                 return;
             final GetData retroData = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
             File file = new File(filePath);
+            if (!file.exists())
+                Log.e(TAG, "onActivityResult: file not exists");
             final RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), filePath);
             MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-            RequestBody description =
-                    RequestBody.create(
-                            okhttp3.MultipartBody.FORM, "File");
-            Call<UploadResponse> responseBodyCall = retroData.upload(description, multipartBody);
+            RequestBody description = RequestBody.create(okhttp3.MultipartBody.FORM, Auth.getToken(getContext()));
+            final Call<UploadResponse> uploadCall = retroData.upload(description, multipartBody);
             if (!progressDialog.isShowing())
                 progressDialog.show();
             progressDialog.setMessage(getResources().getString(R.string.select_file));
-            responseBodyCall.enqueue(new Callback<UploadResponse>() {
+            uploadCall.enqueue(new Callback<UploadResponse>() {
                 @Override
                 public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
                     if (response.body() != null && response.body().result) {
-                        MessageModel messageModel = new MessageModel();
-                        messageModel.text = question.getText().toString();
-                        messageModel.token = Auth.getToken(getContext());
-                        messageModel.url = response.body().fileName;
-                        Log.e(TAG, "onResponse: " + messageModel.text + "   " + messageModel.url + "   " + messageModel.token);
-
-                    } else  if (response.body() != null && !response.body().result)
+                        Toast.makeText(getContext(), getResources().getString(R.string.uploaded), Toast.LENGTH_SHORT).show();
+                        uploadSuccess = true;
+                        deleteFile.setVisibility(View.VISIBLE);
+                        fileUrl = response.body().fileName;
+                        Log.d(TAG, "onResponse: uploaded fileKey: " + fileUrl);
+                    } else if (response.body() != null && !response.body().result) {
                         Toast.makeText(getContext(), response.body().error, Toast.LENGTH_SHORT).show();
+                        uploadSuccess = false;
+                    }
                     progressDialog.dismiss();
                 }
 
                 @Override
                 public void onFailure(Call<UploadResponse> call, Throwable t) {
                     Toast.makeText(getContext(), getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "onFailure: " + t.getMessage());
+                    Log.e(TAG, "onFailure: uploading failed. message: " + t.getMessage());
                     progressDialog.dismiss();
+                    uploadSuccess = false;
                 }
             });
         }

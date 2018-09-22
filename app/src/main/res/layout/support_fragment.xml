@@ -42,28 +42,53 @@
         android:padding="10dp"
         android:scrollbars="vertical" />
 
-    <Button
-        android:id="@+id/gallery"
+
+    <RelativeLayout
+        android:id="@+id/file_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/question"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="80dp"
-        android:layout_marginRight="80dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/ripple_effect"
-        android:clickable="true"
-        android:gravity="center"
-        android:padding="17dp"
-        android:text="@string/select_file"
-        android:textAlignment="center"
-        android:textColor="@color/black" />
+        android:layout_below="@id/question">
+
+        <Button
+            android:id="@+id/gallery"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/ripple_effect"
+            android:clickable="true"
+            android:gravity="center"
+            android:padding="17dp"
+            android:text="@string/select_file"
+            android:textAlignment="center"
+            android:textColor="@color/black" />
+
+        <ImageView
+            android:id="@+id/delete_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/gallery"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="520dp"
+            android:src="@mipmap/delete"
+            android:visibility="gone"/>
+
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/delete_file"-->
+            <!--android:textColor="@color/darkGreen"-->
+            <!--android:layout_below="@id/delete_file"/>-->
+
+    </RelativeLayout>
 
     <Button
         android:id="@+id/send"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/gallery"
+        android:layout_below="@id/file_layout"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
