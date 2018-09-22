@@ -2,11 +2,15 @@ package com.usermanual.auth;
 
 import android.content.Context;
 
+import com.usermanual.R;
+import com.usermanual.helper.StorageHelper;
 import com.usermanual.helper.dbmodels.LoginResponse;
 import com.usermanual.helper.dbmodels.Token;
 
 import static com.usermanual.helper.Consts.LOGED_IN;
 import static com.usermanual.helper.Consts.TOKEN;
+import static com.usermanual.helper.Consts.USER_NAME;
+import static com.usermanual.helper.Consts.USER_PIC_URL;
 import static com.usermanual.helper.PrefHelper.getBoolean;
 import static com.usermanual.helper.PrefHelper.getString;
 import static com.usermanual.helper.PrefHelper.saveBoolean;
@@ -16,8 +20,10 @@ public class Auth {
     public static void login(Context context, LoginResponse loginResponse) {
         if (!loginResponse.token.equals("")) {
             saveBoolean(context, LOGED_IN, true);
-//            saveString(context, USER_PIC_URL, loginResponse.picUrl);
-//            saveString(context, USER_NAME, loginResponse.name);
+            if (!loginResponse.picFileKey.equals(""))
+                saveString(context, USER_PIC_URL, loginResponse.picFileKey);
+            if (!loginResponse.name.equals(""))
+                saveString(context, USER_NAME, loginResponse.name);
             saveString(context, TOKEN, loginResponse.token);
         }
     }
@@ -38,5 +44,13 @@ public class Auth {
         Token token = new Token();
         token.token = getToken(context);
         return token;
+    }
+
+    public static String getName(Context context) {
+        return getString(context, USER_NAME, context.getResources().getString(R.string.name));
+    }
+
+    public static String getUserPicUrl(Context context) {
+        return StorageHelper.getUrl(getString(context, USER_PIC_URL, ""));
     }
 }
