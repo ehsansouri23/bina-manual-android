@@ -73,7 +73,7 @@ public interface GetData {
     @Multipart
     @POST(UPDOAD_FILE)
     Call<UploadResponse> upload(
-            @Part("description")RequestBody description,
+            @Part("Token")RequestBody description,
             @Part MultipartBody.Part file
             );
 }
