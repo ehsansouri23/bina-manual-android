@@ -5,7 +5,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
-import com.usermanual.helper.dbmodels.TableSubTitle;
+import com.usermanual.dbmodels.TableSubTitle;
 
 import java.util.List;
 

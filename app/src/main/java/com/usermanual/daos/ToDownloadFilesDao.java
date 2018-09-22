@@ -6,7 +6,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
-import com.usermanual.helper.dbmodels.TableToDownloadFiles;
+import com.usermanual.dbmodels.TableToDownloadFiles;
 
 import java.util.List;
 
