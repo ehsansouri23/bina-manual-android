@@ -1,12 +1,17 @@
 package com.usermanual.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.transition.Explode;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -15,8 +20,8 @@ import android.widget.Toast;
 import com.eyalbira.loadingdots.LoadingDots;
 import com.usermanual.R;
 import com.usermanual.auth.Auth;
-import com.usermanual.helper.dbmodels.LoginModel;
-import com.usermanual.helper.dbmodels.LoginResponse;
+import com.usermanual.dbmodels.LoginModel;
+import com.usermanual.dbmodels.LoginResponse;
 import com.usermanual.network.GetData;
 import com.usermanual.network.RetrofitClientInstance;
 
@@ -45,7 +50,18 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         context = getApplicationContext();
 
-
+        final TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        Log.e(TAG, "imei: " + telephonyManager.getDeviceId());
 
 
         if (Auth.isLoggedIn(context)) {
@@ -75,6 +91,17 @@ public class LoginActivity extends AppCompatActivity {
                 LoginModel loginModel = new LoginModel();
                 loginModel.userName = String.valueOf(userName.getEditText().getText());
                 loginModel.password = String.valueOf(passWord.getEditText().getText());
+                if (ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                loginModel.imei = telephonyManager.getDeviceId();
 
                 Call<LoginResponse> loginCall = data.login(loginModel);
                 loginCall.enqueue(new Callback<LoginResponse>() {

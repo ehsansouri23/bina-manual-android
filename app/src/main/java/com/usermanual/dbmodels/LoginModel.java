@@ -1,4 +1,4 @@
-package com.usermanual.helper.dbmodels;
+package com.usermanual.dbmodels;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -9,4 +9,7 @@ public class LoginModel {
 
     @SerializedName("Password")
     public String password;
+
+    @SerializedName("IMEI")
+    public String imei;
 }
