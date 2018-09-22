@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.usermanual.R;
 import com.usermanual.helper.StorageHelper;
-import com.usermanual.helper.dbmodels.LoginResponse;
-import com.usermanual.helper.dbmodels.Token;
+import com.usermanual.dbmodels.LoginResponse;
+import com.usermanual.dbmodels.Token;
 
 import static com.usermanual.helper.Consts.LOGED_IN;
 import static com.usermanual.helper.Consts.TOKEN;
