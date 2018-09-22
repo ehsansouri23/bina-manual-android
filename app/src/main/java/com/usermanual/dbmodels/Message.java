@@ -1,4 +1,4 @@
-package com.usermanual.helper.dbmodels;
+package com.usermanual.dbmodels;
 
 import com.google.gson.annotations.SerializedName;
 

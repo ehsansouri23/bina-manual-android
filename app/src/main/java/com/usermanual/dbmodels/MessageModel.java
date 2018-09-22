@@ -1,4 +1,4 @@
-package com.usermanual.helper.dbmodels;
+package com.usermanual.dbmodels;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -15,7 +15,7 @@ public class MessageModel implements Parcelable, Serializable {
     @SerializedName("Text")
     public String text = "";
 
-    @SerializedName("FileName")
+    @SerializedName("FileAddress")
     public String url = "";
 
     protected MessageModel(Parcel in) {
