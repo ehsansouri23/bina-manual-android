@@ -1,16 +1,16 @@
 package com.usermanual.network;
 
-import com.usermanual.helper.dbmodels.LoginModel;
-import com.usermanual.helper.dbmodels.LoginResponse;
-import com.usermanual.helper.dbmodels.MessageModel;
-import com.usermanual.helper.dbmodels.MessageResponse;
-import com.usermanual.helper.dbmodels.NewsModel;
-import com.usermanual.helper.dbmodels.TableMedia;
-import com.usermanual.helper.dbmodels.TableSubMedia;
-import com.usermanual.helper.dbmodels.TableSubTitle;
-import com.usermanual.helper.dbmodels.TableTitle;
-import com.usermanual.helper.dbmodels.Token;
-import com.usermanual.helper.dbmodels.UploadResponse;
+import com.usermanual.dbmodels.LoginModel;
+import com.usermanual.dbmodels.LoginResponse;
+import com.usermanual.dbmodels.MessageModel;
+import com.usermanual.dbmodels.MessageResponse;
+import com.usermanual.dbmodels.NewsModel;
+import com.usermanual.dbmodels.TableMedia;
+import com.usermanual.dbmodels.TableSubMedia;
+import com.usermanual.dbmodels.TableSubTitle;
+import com.usermanual.dbmodels.TableTitle;
+import com.usermanual.dbmodels.Token;
+import com.usermanual.dbmodels.UploadResponse;
 
 import java.util.List;
 
