@@ -8,15 +8,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.usermanual.R;
 import com.usermanual.activities.MediaActivity;
 import com.usermanual.fragments.SearchFragment;
 import com.usermanual.helper.DataBaseHelper;
+import com.usermanual.helper.StorageHelper;
 import com.usermanual.helper.dbmodels.TableSubTitle;
 import com.usermanual.helper.dbmodels.TableTitle;
 
+import java.io.File;
 import java.util.List;
 
 import static com.usermanual.helper.Consts.PREF_SUBTITLE_ID;
@@ -41,12 +45,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-//        ImageView image;
+        ImageView image;
         TextView text;
 
         public ViewHolder(View itemView) {
             super(itemView);
-//            image = (ImageView) itemView.findViewById(R.id.image);
+            image = (ImageView) itemView.findViewById(R.id.image);
             text = (TextView) itemView.findViewById(R.id.title_text);
         }
     }
@@ -62,7 +66,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         if (position < tableTitles.size()) {
             holder.text.setText(tableTitles.get(position).title);
-//            Picasso.get().load(R.mipmap.car).into(holder.image);
+            File imageFile = StorageHelper.getFile(context, tableTitles.get(position).picUrl);
+            Picasso.get().load(imageFile).placeholder(R.mipmap.car).into(holder.image);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -72,6 +77,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         } else if (position >= tableTitles.size()) {
             final int pos = position - tableTitles.size();
             holder.text.setText(tableSubTitles.get(pos).subtitle);
+            File imageFile = StorageHelper.getFile(context, tableSubTitles.get(pos).picUrl);
+            Picasso.get().load(imageFile).placeholder(R.mipmap.car).into(holder.image);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

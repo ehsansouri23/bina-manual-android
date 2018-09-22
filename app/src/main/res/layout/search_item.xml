@@ -3,15 +3,16 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/gray_ripple_effect"
     android:layoutDirection="rtl"
     android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="115dp"
+        android:layout_height="115dp"
         android:src="@mipmap/car"
-        android:visibility="gone"/>
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/title_text"
@@ -20,7 +21,6 @@
         android:layout_gravity="center"
         android:layout_marginRight="20dp"
         android:layout_marginTop="5dp"
-        android:background="@drawable/gray_ripple_effect"
         android:text="عنوان"
         android:textColor="@color/black"
         android:textSize="20sp"
