@@ -1,5 +1,6 @@
 package com.usermanual.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,18 +8,25 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.usermanual.R;
+import com.usermanual.activities.VideoViewActivity;
 import com.usermanual.helper.DataBaseHelper;
 import com.usermanual.helper.PrefHelper;
 import com.usermanual.dbmodels.TableSubMedia;
+import com.usermanual.helper.StorageHelper;
 
 import java.util.List;
 
+import static com.usermanual.helper.Consts.IMAGE;
 import static com.usermanual.helper.Consts.MEDIA_KEY;
 import static com.usermanual.helper.Consts.PREF_FONT_SIZE;
+import static com.usermanual.helper.Consts.VIDEO;
+import static com.usermanual.helper.Consts.VIDEO_FILE_KEY;
 
 public class MediaFragment extends Fragment {
 
@@ -29,7 +37,7 @@ public class MediaFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.media_fragment, container, false);
         mainLayout = (LinearLayout) view.findViewById(R.id.main_layout);
         Bundle bundle = getArguments();
@@ -46,6 +54,26 @@ public class MediaFragment extends Fragment {
                 mainLayout.addView(textView);
                 textView.setText(tableSubMedia.text);
                 textView.setTextSize(PrefHelper.getInt(getContext(), PREF_FONT_SIZE, 10));
+            }
+            if (!tableSubMedia.url.equals("")) {
+                ImageView imageView = new ImageView(getContext());
+                imageView.setLayoutParams(layoutParams);
+                mainLayout.addView(imageView);
+                final String fileKey = tableSubMedia.url;
+                int fileType = DataBaseHelper.getFileType(getContext(), fileKey);
+                if (fileType == IMAGE) {
+                    Picasso.get().load(StorageHelper.getFile(getContext(), fileKey)).placeholder(R.mipmap.car).into(imageView);
+                } else if (fileType == VIDEO) {
+                    Picasso.get().load(StorageHelper.getFile(getContext(), fileKey)).placeholder(R.mipmap.ic_launcher).into(imageView);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getContext(), VideoViewActivity.class);
+                            intent.putExtra(VIDEO_FILE_KEY, StorageHelper.getFile(getContext(), fileKey));
+                            startActivity(intent);
+                        }
+                    });
+                }
             }
 //            if (tableMedia.mediaText != null) {
 //                TextView textView = new TextView(getContext());

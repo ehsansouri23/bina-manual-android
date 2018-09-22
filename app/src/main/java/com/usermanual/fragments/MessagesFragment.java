@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import com.usermanual.R;
 import com.usermanual.adapter.MessagedAdapter;
 import com.usermanual.auth.Auth;
-import com.usermanual.helper.dbmodels.MessageResponse;
+import com.usermanual.dbmodels.MessageResponse;
 import com.usermanual.network.GetData;
 import com.usermanual.network.RetrofitClientInstance;
 

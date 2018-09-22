@@ -22,10 +22,10 @@ public class TableSubMedia implements Parcelable, Serializable {
     public int parentSubMediaId;
 
     @SerializedName("Text")
-    public String text;
+    public String text = "";
 
     @SerializedName("Url")
-    public String url;
+    public String url = "";
 
     protected TableSubMedia(Parcel in) {
         id = in.readInt();

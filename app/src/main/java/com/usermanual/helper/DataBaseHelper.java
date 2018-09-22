@@ -2,11 +2,13 @@ package com.usermanual.helper;
 
 import android.content.Context;
 
-import com.usermanual.helper.dbmodels.TableMedia;
-import com.usermanual.helper.dbmodels.TableSubMedia;
-import com.usermanual.helper.dbmodels.TableSubTitle;
-import com.usermanual.helper.dbmodels.TableTitle;
-import com.usermanual.helper.dbmodels.TableToDownloadFiles;
+import com.usermanual.dbmodels.Favs;
+import com.usermanual.dbmodels.FileModel;
+import com.usermanual.dbmodels.TableMedia;
+import com.usermanual.dbmodels.TableSubMedia;
+import com.usermanual.dbmodels.TableSubTitle;
+import com.usermanual.dbmodels.TableTitle;
+import com.usermanual.dbmodels.TableToDownloadFiles;
 
 import java.util.List;
 
@@ -32,8 +34,21 @@ public class DataBaseHelper {
         AppDatabase.getInstance(context).toDownloadFilesDao().insertAll(toDownloadFiles);
     }
 
-    public static void savetoDownloadFile(Context context, TableToDownloadFiles toDownloadFiles) {
+    public static void saveToDownloadFile(Context context, TableToDownloadFiles toDownloadFiles) {
         AppDatabase.getInstance(context).toDownloadFilesDao().insert(toDownloadFiles);
+    }
+
+    public static void saveFileType(Context context, String fileKey, int fileType) {
+        FileModel fileModel = new FileModel();
+        fileModel.fileKey = fileKey;
+        fileModel.type = fileType;
+        AppDatabase.getInstance(context).fileModelDao().insert(fileModel);
+    }
+
+    public static void saveFav(Context context, int subtitleId) {
+        Favs favs = new Favs();
+        favs.subtitleId = subtitleId;
+        AppDatabase.getInstance(context).favsDao().insert(favs);
     }
 
     public static List<TableTitle> getTitlesList(Context context) {
@@ -76,6 +91,21 @@ public class DataBaseHelper {
         return AppDatabase.getInstance(context).toDownloadFilesDao().getAll();
     }
 
+    public static List<Favs> getAllFavs(Context context) {
+        return AppDatabase.getInstance(context).favsDao().getAll();
+    }
+
+    public static FileModel getFileModel(Context context, String fileKey) {
+        return AppDatabase.getInstance(context).fileModelDao().getFileModel(fileKey);
+    }
+
+    public static int getFileType(Context context, String fileKey) {
+        FileModel fileModel = getFileModel(context, fileKey);
+        if (fileModel != null)
+            return fileModel.type;
+        else return Consts.VIDEO;
+    }
+
     public static void deleteAllTitles(Context context) {
         AppDatabase.getInstance(context).titleDao().deleteAll();
     }
@@ -102,5 +132,9 @@ public class DataBaseHelper {
 
     public static void deleteToDownlaodFile(Context context, String fileKey) {
         AppDatabase.getInstance(context).toDownloadFilesDao().delete(fileKey);
+    }
+
+    public static void deleteFileModels(Context context) {
+        AppDatabase.getInstance(context).fileModelDao().deleteAll();
     }
 }

@@ -1,6 +1,10 @@
 package com.usermanual.helper;
 
 public class Consts {
+
+    public static final int IMAGE = 1;
+    public static final int VIDEO = 2;
+
     public static final String LOGED_IN = "loggedIn";
     public static final String TOKEN = "token";
     public static final String USER_PIC_URL = "userPicUrl";
@@ -35,6 +39,6 @@ public class Consts {
 
     public static final String PREF_FAV_SUBTITLES = "fav_subtitles";
 
-    public static final String VIDEO_FILE_NAME = "video_file_name";
+    public static final String VIDEO_FILE_KEY = "video_file_name";
 
 }

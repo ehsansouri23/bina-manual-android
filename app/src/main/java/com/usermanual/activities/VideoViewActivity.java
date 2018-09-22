@@ -8,7 +8,7 @@ import android.widget.MediaController;
 import android.widget.VideoView;
 
 import com.usermanual.R;
-import com.usermanual.helper.PrefHelper;
+import com.usermanual.helper.StorageHelper;
 
 import java.io.File;
 
@@ -17,7 +17,7 @@ import static com.usermanual.helper.Consts.*;
 public class VideoViewActivity extends AppCompatActivity {
     private static final String TAG = "VideoViewActivity";
 
-    String fileName;
+    String fileKey;
     VideoView videoView;
     MediaController mediaController;
 
@@ -26,11 +26,15 @@ public class VideoViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_videoview);
 
-        fileName = getIntent().getStringExtra(VIDEO_FILE_NAME);
-
-        File f  = new File(fileName);
+        fileKey = getIntent().getStringExtra(VIDEO_FILE_KEY);
+        if (fileKey == null)
+            fileKey = "";
+        File f = StorageHelper.getFile(getApplicationContext(), fileKey);
         mediaController = new MediaController(getApplicationContext());
-        videoView.setVideoURI(Uri.fromFile(f));
+        if (f == null)
+            videoView.setVideoURI(null);
+        else
+            videoView.setVideoURI(Uri.fromFile(f));
         videoView.setMediaController(mediaController);
         mediaController.setAnchorView(videoView);
         videoView.start();

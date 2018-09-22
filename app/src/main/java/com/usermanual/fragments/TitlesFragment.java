@@ -27,8 +27,8 @@ import com.usermanual.activities.MediaActivity;
 import com.usermanual.helper.DataBaseHelper;
 import com.usermanual.helper.PrefHelper;
 import com.usermanual.helper.StorageHelper;
-import com.usermanual.helper.dbmodels.TableSubTitle;
-import com.usermanual.helper.dbmodels.TableTitle;
+import com.usermanual.dbmodels.TableSubTitle;
+import com.usermanual.dbmodels.TableTitle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +72,7 @@ public class TitlesFragment extends Fragment {
         loading = (LoadingDots) view.findViewById(R.id.loading);
         noItems = (LinearLayout) view.findViewById(R.id.no_item);
         headerImage = (ImageView) view.findViewById(R.id.header_image);
-
+        Picasso.get().load(StorageHelper.getFile(context, "cdc7fc47")).into(headerImage);
         listView = (ListView) view.findViewById(R.id.titles_list_view);
 
         state = TITLES;
@@ -216,6 +216,7 @@ public class TitlesFragment extends Fragment {
             headerImage.setVisibility(View.GONE);
         } else {
             noItems.setVisibility(View.GONE);
+            headerImage.setVisibility(View.VISIBLE);
         }
         adapter.addAll(strings);
         adapter.notifyDataSetChanged();

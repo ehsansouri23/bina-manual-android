@@ -41,6 +41,7 @@
     <string name="no_item">آیتمی موجود نیست</string>
     <string name="sync_data">همگام سازی اطلاعات با سرور</string>
     <string name="download_files">دانلود فایل ها</string>
+    <string name="no_file_to_download">فایلی برای دانلود وجود ندارد</string>
     <string name="should_not_empty">نباید خالی باشد</string>
     <string name="select_file">آپلود فایل</string>
     <string name="download_files_from_slide_menu">برای دانلود فایل ها از منوی کناری دانلود فایل ها را انتخاب کنید</string>
