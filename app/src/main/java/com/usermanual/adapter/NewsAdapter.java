@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.usermanual.R;
 import com.usermanual.fragments.NewsFragment;
-import com.usermanual.helper.dbmodels.NewsModel;
+import com.usermanual.dbmodels.NewsModel;
 
 import java.util.List;
 
