@@ -15,12 +15,10 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.usermanual.R;
 import com.usermanual.adapter.MediaFragmentsAdapter;
+import com.usermanual.dbmodels.TableSubTitle;
 import com.usermanual.helper.DataBaseHelper;
-import com.usermanual.helper.PrefHelper;
 import com.usermanual.helper.StorageHelper;
-import com.usermanual.helper.dbmodels.TableSubTitle;
 
-import static com.usermanual.helper.Consts.PREF_FAV_SUBTITLES;
 import static com.usermanual.helper.Consts.PREF_SUBTITLE_ID;
 
 public class MediaActivity extends AppCompatActivity {
@@ -72,11 +70,7 @@ public class MediaActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home)
             finish();
         if (item.getItemId() == R.id.id_favs) {
-            String s = PrefHelper.getString(getApplicationContext(), PREF_FAV_SUBTITLES, "");
-            if (!s.equals(""))
-                s += ",";
-            s += subtitleId;
-            PrefHelper.saveString(getApplicationContext(), PREF_FAV_SUBTITLES, s);
+            DataBaseHelper.saveFav(getApplicationContext(), subtitleId);
             Toast.makeText(getApplicationContext(), getResources().getString(R.string.added_to_favs), Toast.LENGTH_SHORT).show();
         }
 

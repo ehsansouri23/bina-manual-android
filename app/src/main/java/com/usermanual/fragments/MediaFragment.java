@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.usermanual.R;
 import com.usermanual.helper.DataBaseHelper;
 import com.usermanual.helper.PrefHelper;
-import com.usermanual.helper.dbmodels.TableSubMedia;
+import com.usermanual.dbmodels.TableSubMedia;
 
 import java.util.List;
 
