@@ -17,8 +17,8 @@ import com.usermanual.activities.MediaActivity;
 import com.usermanual.fragments.SearchFragment;
 import com.usermanual.helper.DataBaseHelper;
 import com.usermanual.helper.StorageHelper;
-import com.usermanual.helper.dbmodels.TableSubTitle;
-import com.usermanual.helper.dbmodels.TableTitle;
+import com.usermanual.dbmodels.TableSubTitle;
+import com.usermanual.dbmodels.TableTitle;
 
 import java.io.File;
 import java.util.List;

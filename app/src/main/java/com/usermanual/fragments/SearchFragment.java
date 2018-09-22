@@ -14,9 +14,6 @@ import android.view.ViewGroup;
 import com.usermanual.R;
 import com.usermanual.activities.MainActivity;
 import com.usermanual.adapter.SearchAdapter;
-import com.usermanual.helper.dbmodels.SearchModel;
-
-import java.util.List;
 
 import static com.usermanual.helper.Consts.SEARCH_QUERY;
 
@@ -26,8 +23,6 @@ public class SearchFragment extends Fragment {
     RecyclerView searchList;
     SearchAdapter searchAdapter;
 
-    List<SearchModel> searchModelList;
-
     String searchQuery;
     MainActivity activity;
 
@@ -35,7 +30,7 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_fragment, container, false);
-        searchList = (RecyclerView) view.findViewById(R.id.search_list);
+        searchList = (RecyclerView) view.findViewById(R.id.list);
         Bundle args = getArguments();
         searchQuery = args.getString(SEARCH_QUERY);
         searchAdapter = new SearchAdapter(getContext(), searchQuery, new SearchDelegate());
