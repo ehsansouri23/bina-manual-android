@@ -18,7 +18,7 @@ import com.usermanual.R;
 import com.usermanual.activities.WebViewActivity;
 import com.usermanual.adapter.NewsAdapter;
 import com.usermanual.auth.Auth;
-import com.usermanual.helper.dbmodels.NewsModel;
+import com.usermanual.dbmodels.NewsModel;
 import com.usermanual.network.GetData;
 import com.usermanual.network.RetrofitClientInstance;
 

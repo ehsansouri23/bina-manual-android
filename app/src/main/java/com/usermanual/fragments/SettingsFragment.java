@@ -49,6 +49,10 @@ public class SettingsFragment extends Fragment implements OnSeekChangeListener, 
         return view;
     }
 
+    public static SettingsFragment newInstance() {
+        return new SettingsFragment();
+    }
+
     @Override
     public void onSeeking(SeekParams seekParams) {
         Log.e(TAG, "onSeeking: " + seekParams.progress);

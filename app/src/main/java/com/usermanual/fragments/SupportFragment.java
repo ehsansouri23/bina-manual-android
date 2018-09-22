@@ -20,14 +20,13 @@ import com.usermanual.R;
 import com.usermanual.auth.Auth;
 import com.usermanual.helper.FileUtils;
 import com.usermanual.helper.NetworkHelper;
-import com.usermanual.helper.dbmodels.MessageModel;
-import com.usermanual.helper.dbmodels.UploadResponse;
+import com.usermanual.dbmodels.MessageModel;
+import com.usermanual.dbmodels.UploadResponse;
 import com.usermanual.network.GetData;
 import com.usermanual.network.RetrofitClientInstance;
 
 import java.io.File;
 
-import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
