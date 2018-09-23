@@ -3,9 +3,9 @@ package com.usermanual.auth;
 import android.content.Context;
 
 import com.usermanual.R;
-import com.usermanual.helper.StorageHelper;
 import com.usermanual.dbmodels.LoginResponse;
 import com.usermanual.dbmodels.Token;
+import com.usermanual.helper.StorageHelper;
 
 import static com.usermanual.helper.Consts.LOGED_IN;
 import static com.usermanual.helper.Consts.TOKEN;
@@ -33,8 +33,8 @@ public class Auth {
     }
 
     public static boolean isLoggedIn(Context context) {
-        return true;
-//        return getBoolean(context, LOGED_IN, false);
+//        return true;
+        return getBoolean(context, LOGED_IN, false);
     }
 
     public static String getToken(Context context) {

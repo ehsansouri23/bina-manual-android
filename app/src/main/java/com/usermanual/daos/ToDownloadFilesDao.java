@@ -16,6 +16,9 @@ public interface ToDownloadFilesDao {
     @Query("SELECT * FROM TableToDownloadFiles")
     List<TableToDownloadFiles> getAll();
 
+    @Query("SELECT * FROM TableToDownloadFiles WHERE fileKey LIKE :fileKey")
+    TableToDownloadFiles get(String fileKey);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(TableToDownloadFiles tableToDownloadFiles);
 

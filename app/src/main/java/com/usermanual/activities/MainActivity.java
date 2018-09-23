@@ -21,7 +21,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,7 +33,13 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.usermanual.R;
 import com.usermanual.auth.Auth;
+import com.usermanual.dbmodels.TableMedia;
+import com.usermanual.dbmodels.TableSubMedia;
+import com.usermanual.dbmodels.TableSubTitle;
+import com.usermanual.dbmodels.TableTitle;
+import com.usermanual.dbmodels.TableToDownloadFiles;
 import com.usermanual.fragments.AboutUsFragment;
+import com.usermanual.fragments.DownloadFragment;
 import com.usermanual.fragments.FavsFragment;
 import com.usermanual.fragments.NewsFragment;
 import com.usermanual.fragments.SearchFragment;
@@ -43,14 +48,8 @@ import com.usermanual.fragments.SupportFragment;
 import com.usermanual.fragments.TitlesFragment;
 import com.usermanual.helper.BottomNavigationViewHelper;
 import com.usermanual.helper.DataBaseHelper;
-import com.usermanual.helper.DownloadFile;
 import com.usermanual.helper.NetworkHelper;
 import com.usermanual.helper.StorageHelper;
-import com.usermanual.dbmodels.TableMedia;
-import com.usermanual.dbmodels.TableSubMedia;
-import com.usermanual.dbmodels.TableSubTitle;
-import com.usermanual.dbmodels.TableTitle;
-import com.usermanual.dbmodels.TableToDownloadFiles;
 import com.usermanual.network.GetData;
 import com.usermanual.network.RetrofitClientInstance;
 
@@ -216,7 +215,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 syncData();
                 break;
             case R.id.id_download:
-                downloadFiles();
+//                downloadFiles();
+                fmanager.beginTransaction().replace(R.id.fragment_container, new DownloadFragment()).commit();
                 break;
             case R.id.id_about:
                 setToolbarTitle(getResources().getString(R.string.about));
@@ -309,9 +309,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     DataBaseHelper.saveSubtitles(context, response.body());
                     for (int i = 0; i < response.body().size(); i++) {
                         if (!response.body().get(i).picUrl.equals("")) {
-                            TableToDownloadFiles tableToDownloadFiles = new TableToDownloadFiles();
-                            tableToDownloadFiles.fileKey = response.body().get(i).picUrl;
-                            DataBaseHelper.saveToDownloadFile(context, tableToDownloadFiles);
+                            DataBaseHelper.saveToDownloadFile(context, response.body().get(i).picUrl);
                         }
                     }
                     progressDialog.dismiss();
@@ -365,9 +363,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (response.body() != null) {
                     DataBaseHelper.saveSubmedias(context, response.body());
                     for (int j = 0; j < response.body().size(); j++) {
-                        TableToDownloadFiles tableToDownloadFiles = new TableToDownloadFiles();
-                        tableToDownloadFiles.fileKey = /*response.body().get(j).url*/"cdc7fc47";
-                        DataBaseHelper.saveToDownloadFile(context, tableToDownloadFiles);
+                        DataBaseHelper.saveToDownloadFile(context, "cdc7fc47");
                     }
                     progressDialog.dismiss();
                     AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this)

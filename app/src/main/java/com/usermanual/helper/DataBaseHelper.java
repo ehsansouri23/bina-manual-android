@@ -38,6 +38,17 @@ public class DataBaseHelper {
         AppDatabase.getInstance(context).toDownloadFilesDao().insert(toDownloadFiles);
     }
 
+    public static void saveToDownloadFile(Context context, String fileKey) {
+        TableToDownloadFiles toDownloadFiles = AppDatabase.getInstance(context).toDownloadFilesDao().get(fileKey);
+        if (toDownloadFiles != null)
+            return;
+        else {
+            TableToDownloadFiles toDownloadFiles1 = new TableToDownloadFiles();
+            toDownloadFiles1.fileKey = fileKey;
+            saveToDownloadFile(context, toDownloadFiles1);
+        }
+    }
+
     public static void saveFileType(Context context, String fileKey, int fileType) {
         FileModel fileModel = new FileModel();
         fileModel.fileKey = fileKey;
