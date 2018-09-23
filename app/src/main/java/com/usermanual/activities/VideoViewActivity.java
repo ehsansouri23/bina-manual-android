@@ -25,16 +25,14 @@ public class VideoViewActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_videoview);
+        videoView = (VideoView) findViewById(R.id.video_view);
 
         fileKey = getIntent().getStringExtra(VIDEO_FILE_KEY);
         if (fileKey == null)
             fileKey = "";
-        File f = StorageHelper.getFile(getApplicationContext(), fileKey);
-        mediaController = new MediaController(getApplicationContext());
-        if (f == null)
-            videoView.setVideoURI(null);
-        else
-            videoView.setVideoURI(Uri.fromFile(f));
+        File f = StorageHelper.getFile(getApplicationContext(), "aaa");
+        mediaController = new MediaController(VideoViewActivity.this);
+        videoView.setVideoURI(Uri.fromFile(f));
         videoView.setMediaController(mediaController);
         mediaController.setAnchorView(videoView);
         videoView.start();
