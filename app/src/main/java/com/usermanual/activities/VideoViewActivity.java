@@ -30,7 +30,7 @@ public class VideoViewActivity extends AppCompatActivity {
         fileKey = getIntent().getStringExtra(VIDEO_FILE_KEY);
         if (fileKey == null)
             fileKey = "";
-        File f = StorageHelper.getFile(getApplicationContext(), "aaa");
+        File f = StorageHelper.getFile(getApplicationContext(), fileKey);
         mediaController = new MediaController(VideoViewActivity.this);
         videoView.setVideoURI(Uri.fromFile(f));
         videoView.setMediaController(mediaController);
