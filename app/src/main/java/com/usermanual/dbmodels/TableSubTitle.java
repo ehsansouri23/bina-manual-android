@@ -28,7 +28,7 @@ public class TableSubTitle implements Serializable, Parcelable {
     public String fileKey = "";
 
     @SerializedName("Type")
-    public String fileType;
+    public String fileType = "";
 
     public TableSubTitle() {
 

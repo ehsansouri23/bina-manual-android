@@ -103,6 +103,10 @@ public class DataBaseHelper {
         return AppDatabase.getInstance(context).favsDao().getAll();
     }
 
+    public static Favs getFav(Context context, int subtitleId) {
+        return AppDatabase.getInstance(context).favsDao().get(subtitleId);
+    }
+
     public static FileModel getFileModel(Context context, String fileKey) {
         return AppDatabase.getInstance(context).fileModelDao().getFileModel(fileKey);
     }
@@ -144,5 +148,9 @@ public class DataBaseHelper {
 
     public static void deleteFileModels(Context context) {
         AppDatabase.getInstance(context).fileModelDao().deleteAll();
+    }
+
+    public static void deleteFav(Context context, int subtitleId) {
+        AppDatabase.getInstance(context).favsDao().delete(subtitleId);
     }
 }

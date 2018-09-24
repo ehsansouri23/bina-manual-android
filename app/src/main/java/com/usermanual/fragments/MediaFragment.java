@@ -75,24 +75,16 @@ public class MediaFragment extends Fragment {
                     });
                 }
             }
-//            if (tableMedia.mediaText != null) {
-//                TextView textView = new TextView(getContext());
-//                textView.setLayoutParams(layoutParams);
-//                mainLayout.addView(textView);
-//                textView.setText(tableMedia.mediaText);
-//                textView.setTextSize(PrefHelper.getInt(getContext(), PREF_FONT_SIZE, 10));
-//            }
-//        }
         }
-            return view;
+        return view;
 
     }
 
-        public static MediaFragment newInstance (int mediaId){
-            MediaFragment mediaFragment = new MediaFragment();
-            Bundle bundle = new Bundle();
-            bundle.putInt(MEDIA_KEY, mediaId);
-            mediaFragment.setArguments(bundle);
-            return mediaFragment;
-        }
+    public static MediaFragment newInstance(int mediaId) {
+        MediaFragment mediaFragment = new MediaFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(MEDIA_KEY, mediaId);
+        mediaFragment.setArguments(bundle);
+        return mediaFragment;
     }
+}

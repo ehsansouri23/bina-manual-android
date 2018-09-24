@@ -13,8 +13,11 @@ public class Message {
     public String text;
 
     @SerializedName("FileAddress")
-    public String fileAddress;
+    public String fileKey;
 
     @SerializedName("Created")
     public String created;
+
+    @SerializedName("Type")
+    public String fileType;
 }

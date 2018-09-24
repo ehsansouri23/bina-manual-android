@@ -49,11 +49,11 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         // inside your activity (if you did not enable transitions in your theme)
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+//        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 
         // set an exit transition
-        getWindow().setExitTransition(new Explode());
-        getWindow().setEnterTransition(new Explode());
+//        getWindow().setExitTransition(new Explode());
+//        getWindow().setEnterTransition(new Explode());
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -71,12 +71,13 @@ public class LoginActivity extends AppCompatActivity {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        Log.e(TAG, "imei: " + telephonyManager.getDeviceId());
 
 
         if (Auth.isLoggedIn(context)) {
             startMainActivity();
         }
+
+        Toast.makeText(context, telephonyManager.getDeviceId(), Toast.LENGTH_SHORT).show();
 
         final GetData data = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
         userName = (TextInputLayout) findViewById(R.id.username);
@@ -125,6 +126,9 @@ public class LoginActivity extends AppCompatActivity {
                             } else {
                                 Toast.makeText(context, response.body().error, Toast.LENGTH_SHORT).show();
                             }
+                        } else if (response == null || response.body() == null) {
+                            Toast.makeText(context, getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
+                            loading.setVisibility(View.GONE);
                         }
                     }
 

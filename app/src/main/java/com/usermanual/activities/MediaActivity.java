@@ -1,5 +1,6 @@
 package com.usermanual.activities;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -16,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import com.usermanual.R;
 import com.usermanual.adapter.MediaFragmentsAdapter;
 import com.usermanual.dbmodels.TableSubTitle;
+import com.usermanual.fragments.MediaFragment;
 import com.usermanual.helper.DataBaseHelper;
 import com.usermanual.helper.StorageHelper;
 
@@ -23,6 +25,8 @@ import static com.usermanual.helper.Consts.PREF_SUBTITLE_ID;
 
 public class MediaActivity extends AppCompatActivity {
     private static final String TAG = "MediaActivity";
+
+    Context context;
 
     ImageView headerImage;
     TabLayout tabLayout;
@@ -34,6 +38,8 @@ public class MediaActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media);
+        context = getApplicationContext();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -48,13 +54,13 @@ public class MediaActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
 
         subtitleId = getIntent().getIntExtra(PREF_SUBTITLE_ID, -1);
-        TableSubTitle tableSubTitle = DataBaseHelper.getSubtitle(getApplicationContext(), subtitleId);
+        TableSubTitle tableSubTitle = DataBaseHelper.getSubtitle(context, subtitleId);
         if (tableSubTitle != null) {
-            StorageHelper.FileSpec imageFile = new StorageHelper.FileSpec(getApplicationContext(), tableSubTitle.fileKey, StorageHelper.FileType.SUBTITLES);
-            Picasso.get().load(imageFile.getFile()).placeholder(R.mipmap.car).into(headerImage);
+            Picasso.get().load(StorageHelper.getFile(context, tableSubTitle.fileKey)).placeholder(R.mipmap.car).into(headerImage);
+            getSupportActionBar().setTitle(tableSubTitle.subtitle);
         }
 
-        mediaFragmentsAdapter = new MediaFragmentsAdapter(getApplicationContext(), getSupportFragmentManager(), subtitleId);
+        mediaFragmentsAdapter = new MediaFragmentsAdapter(context, getSupportFragmentManager(), subtitleId);
         viewPager.setAdapter(mediaFragmentsAdapter);
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -70,9 +76,15 @@ public class MediaActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home)
             finish();
         if (item.getItemId() == R.id.id_favs) {
-            DataBaseHelper.saveFav(getApplicationContext(), subtitleId);
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.added_to_favs), Toast.LENGTH_SHORT).show();
+            if (DataBaseHelper.getFav(context, subtitleId) != null) {
+                DataBaseHelper.deleteFav(context, subtitleId);
+                Toast.makeText(context, getResources().getString(R.string.delete_from_favs), Toast.LENGTH_SHORT).show();
+            } else {
+                DataBaseHelper.saveFav(context, subtitleId);
+                Toast.makeText(context, getResources().getString(R.string.added_to_favs), Toast.LENGTH_SHORT).show();
+            }
         }
+
 
         return super.onOptionsItemSelected(item);
     }

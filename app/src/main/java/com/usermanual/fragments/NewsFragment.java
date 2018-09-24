@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.eyalbira.loadingdots.LoadingDots;
 import com.usermanual.R;
@@ -50,13 +51,15 @@ public class NewsFragment extends Fragment {
         newsListCall.enqueue(new Callback<List<NewsModel>>() {
             @Override
             public void onResponse(Call<List<NewsModel>> call, Response<List<NewsModel>> response) {
+                if (response == null || response.body() == null) {
+                    loading.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), getResources().getString(R.string.no_item), Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 loading.animate().alpha(0).setDuration(200);
                 loading.setVisibility(View.GONE);
                 newsList.setVisibility(View.VISIBLE);
                 List<NewsModel> newsModelList = response.body();
-                for (int i = 0; i < newsModelList.size(); i++) {
-                    Log.e(TAG, "onResponse: " + newsModelList.get(i).fullHtml);
-                }
                 newsAdapter = new NewsAdapter(getContext(), newsModelList, new NewsClickDelegate());
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
                 newsList.setAdapter(newsAdapter);

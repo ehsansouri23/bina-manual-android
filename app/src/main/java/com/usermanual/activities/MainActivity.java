@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.e(TAG, "file: " + files[i] + " fileType: " + DataBaseHelper.getFileType(context, files[i]));
         }
 
-        flushDataBase();
+//        flushDataBase();
 
 //        List<TableToDownloadFiles> toDownloadFiles = new ArrayList<>();
 //        TableToDownloadFiles tableToDownloadFiles = new TableToDownloadFiles();
@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 syncData();
                 break;
             case R.id.id_download:
-//                downloadFiles();
+                setToolbarTitle(getResources().getString(R.string.download_files));
                 fmanager.beginTransaction().replace(R.id.fragment_container, new DownloadFragment()).commit();
                 break;
             case R.id.id_about:
@@ -244,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onQueryTextSubmit(String query) {
         Log.e(TAG, "onQueryTextSubmit: " + query);
+        setToolbarTitle(getResources().getString(R.string.search));
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, SearchFragment.newInstance(query, MainActivity.this)).commit();
         if (mMenu != null) {
             (mMenu.findItem(R.id.action_search)).collapseActionView();
@@ -286,14 +287,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             DataBaseHelper.saveFileType(context, response.body().get(i).fileKey, response.body().get(i).fileType);
                         }
                     }
-                    progressDialog.dismiss();
                     getSubtitles();
+                } else if (response == null || response.body() == null) {
+                    Toast.makeText(context, getResources().getString(R.string.no_item), Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
                 }
             }
 
             @Override
             public void onFailure(Call<List<TableTitle>> call, Throwable t) {
                 Toast.makeText(context, getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
 //                finish();
             }
         });
@@ -317,14 +321,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             DataBaseHelper.saveFileType(context, response.body().get(i).fileKey, response.body().get(i).fileType);
                         }
                     }
-                    progressDialog.dismiss();
                     getMedias();
+                } else if (response == null || response.body() == null) {
+                    Toast.makeText(context, getResources().getString(R.string.no_item), Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
                 }
             }
 
             @Override
             public void onFailure(Call<List<TableSubTitle>> call, Throwable t) {
                 Toast.makeText(context, getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
 //                finish();
             }
         });
@@ -342,14 +349,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onResponse(Call<List<TableMedia>> call, Response<List<TableMedia>> response) {
                 if (response.body() != null) {
                     DataBaseHelper.saveMedias(context, response.body());
-                    progressDialog.dismiss();
                     getSubmedias();
+                } else if (response == null || response.body() == null) {
+                    Toast.makeText(context, getResources().getString(R.string.no_item), Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
                 }
             }
 
             @Override
             public void onFailure(Call<List<TableMedia>> call, Throwable t) {
                 Toast.makeText(context, getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
 //                finish();
             }
         });
@@ -377,7 +387,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             .setTitle(getResources().getString(R.string.download_files))
                             .setPositiveButton(getResources().getString(R.string.ok), null)
                             .show();
+                    fmanager.beginTransaction().replace(R.id.fragment_container, TitlesFragment.newInstance(TitlesFragment.TITLES)).commit();
 
+                } else if (response == null || response.body() == null) {
+                    Toast.makeText(context, getResources().getString(R.string.no_item), Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
                 }
             }
 

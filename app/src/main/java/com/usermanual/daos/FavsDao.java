@@ -15,6 +15,9 @@ public interface FavsDao {
     @Query("SELECT * FROM Favs")
     List<Favs> getAll();
 
+    @Query("SELECT * FROM Favs WHERE subtitleId LIKE :subtitleId")
+    Favs get(int subtitleId);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(Favs favs);
 

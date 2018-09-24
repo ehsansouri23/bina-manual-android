@@ -22,6 +22,7 @@
     <string name="retry">تلاش دوباره</string>
     <string name="search">جستجو</string>
     <string name="added_to_favs">به علاقه مندی ها اضافه شد</string>
+    <string name="delete_from_favs">از علاقه مندی ها حذف شد</string>
     <string name="font_size">اندازه متن</string>
     <string name="sample_string">توضیح این قسمت اینکه این بخش برای افزایش کارایی استفاده میشود.</string>
     <string name="animations">انیمیشن ها</string>

@@ -72,7 +72,6 @@ public class TitlesFragment extends Fragment {
         loading = (LoadingDots) view.findViewById(R.id.loading);
         noItems = (LinearLayout) view.findViewById(R.id.no_item);
         headerImage = (ImageView) view.findViewById(R.id.header_image);
-        Picasso.get().load(StorageHelper.getFile(context, "cdc7fc47")).into(headerImage);
         listView = (ListView) view.findViewById(R.id.titles_list_view);
 
         state = TITLES;
@@ -96,6 +95,7 @@ public class TitlesFragment extends Fragment {
                 loading.setVisibility(View.GONE);
                 listView.setVisibility(View.VISIBLE);
                 headerImage.setVisibility(View.VISIBLE);
+                Picasso.get().load(R.mipmap.car).into(headerImage);
             }
         };
         handler.postDelayed(runnable, 1400);
@@ -108,8 +108,7 @@ public class TitlesFragment extends Fragment {
                 selectedTitleId = args.getInt(PREF_TITLE_ID);
                 //showing image in header of list
                 TableTitle tableTitle = DataBaseHelper.getTitle(context, selectedTitleId);
-                StorageHelper.FileSpec imageFile = new StorageHelper.FileSpec(context, tableTitle.fileKey, StorageHelper.FileType.TITLES);
-                Picasso.get().load(imageFile.getFile()).placeholder(R.mipmap.car).into(headerImage);
+                Picasso.get().load(StorageHelper.getFile(context, tableTitle.fileKey)).placeholder(R.mipmap.car).into(headerImage);
                 subtitleList = DataBaseHelper.getSubtitlesList(context, selectedTitleId);
                 subtitlesString = getSubtitles(subtitleList);
                 showList(subtitlesString);
@@ -128,9 +127,8 @@ public class TitlesFragment extends Fragment {
                         state = SUBTITLES;
                         selectedTitleId = titleList.get(position).titleId;
                         TableTitle tableTitle = DataBaseHelper.getTitle(context, selectedTitleId);
-                        StorageHelper.FileSpec imageFile = new StorageHelper.FileSpec(context, tableTitle.fileKey, StorageHelper.FileType.TITLES);
-                        Picasso.get().load(imageFile.getFile()).placeholder(R.mipmap.car).into(headerImage);
-                        Log.e(TAG, "onItemClick: " + selectedTitleId + " title: " + titleList.get(position).title);
+                        Picasso.get().load(StorageHelper.getFile(context, tableTitle.fileKey)).placeholder(R.mipmap.car).into(headerImage);
+                        Log.d(TAG, "onItemClick: " + selectedTitleId + " title: [" + titleList.get(position).title + "] fileKey: [" + tableTitle.fileKey + "]");
                         ((MainActivity) (getActivity())).setToolbarTitle(titleList.get(position).title);
                         subtitleList = DataBaseHelper.getSubtitlesList(context, selectedTitleId);
                         subtitlesString = getSubtitles(subtitleList);
@@ -175,11 +173,10 @@ public class TitlesFragment extends Fragment {
         if (state == TITLES)
             return true;
         if (state == SUBTITLES) {
-            adapter.clear();
             titlesString = getTitles(DataBaseHelper.getTitlesList(context));
-            adapter.addAll(titlesString);
-            adapter.notifyDataSetChanged();
-            listView.setLayoutAnimation(listViewAnimation);
+            Picasso.get().load(R.mipmap.car).into(headerImage);
+            ((MainActivity) (getActivity())).setToolbarTitle(getResources().getString(R.string.home));
+            showList(titlesString);
             state = TITLES;
             return false;
         }

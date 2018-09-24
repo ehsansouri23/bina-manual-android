@@ -18,6 +18,7 @@ public class VideoViewActivity extends AppCompatActivity {
     private static final String TAG = "VideoViewActivity";
 
     String fileKey;
+    String videoUrl;
     VideoView videoView;
     MediaController mediaController;
 
@@ -28,13 +29,22 @@ public class VideoViewActivity extends AppCompatActivity {
         videoView = (VideoView) findViewById(R.id.video_view);
 
         fileKey = getIntent().getStringExtra(VIDEO_FILE_KEY);
-        if (fileKey == null)
-            fileKey = "";
-        File f = StorageHelper.getFile(getApplicationContext(), fileKey);
+        videoUrl = getIntent().getStringExtra(VIDEO_URL);
+
         mediaController = new MediaController(VideoViewActivity.this);
-        videoView.setVideoURI(Uri.fromFile(f));
         videoView.setMediaController(mediaController);
         mediaController.setAnchorView(videoView);
+
+        if (videoUrl != null) {
+            videoView.setVideoPath(videoUrl);
+        } else {
+            if (fileKey == null) {
+                    fileKey = "";
+            }
+            File f = StorageHelper.getFile(getApplicationContext(), fileKey);
+            videoView.setVideoURI(Uri.fromFile(f));
+        }
+
         videoView.start();
     }
 }
