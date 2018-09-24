@@ -10,7 +10,7 @@ public class LoginResponse extends BaseResponse {
     @SerializedName("Name")
     public String name= "";
 
-    @SerializedName("FileAddress")
+    @SerializedName("Pic")
     public String picFileKey = "";
 
 }

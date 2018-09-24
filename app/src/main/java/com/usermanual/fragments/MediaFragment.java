@@ -55,11 +55,11 @@ public class MediaFragment extends Fragment {
                 textView.setText(tableSubMedia.text);
                 textView.setTextSize(PrefHelper.getInt(getContext(), PREF_FONT_SIZE, 10));
             }
-            if (!tableSubMedia.url.equals("")) {
+            if (!tableSubMedia.fileKey.equals("")) {
                 ImageView imageView = new ImageView(getContext());
                 imageView.setLayoutParams(layoutParams);
                 mainLayout.addView(imageView);
-                final String fileKey = tableSubMedia.url;
+                final String fileKey = tableSubMedia.fileKey;
                 int fileType = DataBaseHelper.getFileType(getContext(), fileKey);
                 if (fileType == IMAGE) {
                     Picasso.get().load(StorageHelper.getFile(getContext(), fileKey)).placeholder(R.mipmap.car).into(imageView);

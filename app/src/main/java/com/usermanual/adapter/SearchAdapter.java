@@ -66,7 +66,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         if (position < tableTitles.size()) {
             holder.text.setText(tableTitles.get(position).title);
-            File imageFile = StorageHelper.getFile(context, tableTitles.get(position).picUrl);
+            File imageFile = StorageHelper.getFile(context, tableTitles.get(position).fileKey);
             Picasso.get().load(imageFile).placeholder(R.mipmap.car).into(holder.image);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -77,7 +77,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         } else if (position >= tableTitles.size()) {
             final int pos = position - tableTitles.size();
             holder.text.setText(tableSubTitles.get(pos).subtitle);
-            File imageFile = StorageHelper.getFile(context, tableSubTitles.get(pos).picUrl);
+            File imageFile = StorageHelper.getFile(context, tableSubTitles.get(pos).fileKey);
             Picasso.get().load(imageFile).placeholder(R.mipmap.car).into(holder.image);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

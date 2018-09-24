@@ -22,7 +22,10 @@ public class TableTitle implements Serializable, Parcelable {
     public String title;
 
     @SerializedName("Picture")
-    public String picUrl = "";
+    public String fileKey = "";
+
+    @SerializedName("Type")
+    public String fileType;
 
     public TableTitle() {
 
@@ -32,7 +35,8 @@ public class TableTitle implements Serializable, Parcelable {
         id = in.readInt();
         titleId = in.readInt();
         title = in.readString();
-        picUrl = in.readString();
+        fileKey = in.readString();
+        fileType = in.readString();
     }
 
     public static final Creator<TableTitle> CREATOR = new Creator<TableTitle>() {
@@ -57,6 +61,7 @@ public class TableTitle implements Serializable, Parcelable {
         dest.writeInt(id);
         dest.writeInt(titleId);
         dest.writeString(title);
-        dest.writeString(picUrl);
+        dest.writeString(fileKey);
+        dest.writeString(fileType);
     }
 }

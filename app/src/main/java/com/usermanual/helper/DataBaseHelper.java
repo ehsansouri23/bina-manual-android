@@ -43,16 +43,13 @@ public class DataBaseHelper {
         if (toDownloadFiles != null)
             return;
         else {
-            TableToDownloadFiles toDownloadFiles1 = new TableToDownloadFiles();
-            toDownloadFiles1.fileKey = fileKey;
+            TableToDownloadFiles toDownloadFiles1 = new TableToDownloadFiles(fileKey);
             saveToDownloadFile(context, toDownloadFiles1);
         }
     }
 
-    public static void saveFileType(Context context, String fileKey, int fileType) {
-        FileModel fileModel = new FileModel();
-        fileModel.fileKey = fileKey;
-        fileModel.type = fileType;
+    public static void saveFileType(Context context, String fileKey, String fileType) {
+        FileModel fileModel = new FileModel(fileKey, fileType);
         AppDatabase.getInstance(context).fileModelDao().insert(fileModel);
     }
 
@@ -113,7 +110,7 @@ public class DataBaseHelper {
     public static int getFileType(Context context, String fileKey) {
         FileModel fileModel = getFileModel(context, fileKey);
         if (fileModel != null)
-            return fileModel.type;
+            return fileModel.fileType;
         else return Consts.VIDEO;
     }
 
@@ -141,7 +138,7 @@ public class DataBaseHelper {
         AppDatabase.getInstance(context).toDownloadFilesDao().delete(toDownloadFiles);
     }
 
-    public static void deleteToDownlaodFile(Context context, String fileKey) {
+    public static void deleteToDownloadFile(Context context, String fileKey) {
         AppDatabase.getInstance(context).toDownloadFilesDao().delete(fileKey);
     }
 

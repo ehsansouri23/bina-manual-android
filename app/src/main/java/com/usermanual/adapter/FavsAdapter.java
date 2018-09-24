@@ -50,7 +50,7 @@ public class FavsAdapter extends RecyclerView.Adapter<FavsAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.text.setText(tableSubTitleList.get(position).subtitle);
-        File imageFile = StorageHelper.getFile(context, tableSubTitleList.get(position).picUrl);
+        File imageFile = StorageHelper.getFile(context, tableSubTitleList.get(position).fileKey);
         Picasso.get().load(imageFile).placeholder(R.mipmap.car).into(holder.image);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

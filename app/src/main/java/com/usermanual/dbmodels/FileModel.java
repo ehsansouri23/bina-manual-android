@@ -5,6 +5,8 @@ import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.usermanual.helper.StorageHelper;
+
 import java.io.Serializable;
 
 @Entity
@@ -15,16 +17,21 @@ public class FileModel implements Parcelable, Serializable {
 
     public String fileKey;
 
-    public int type;
+    public int fileType;
 
     protected FileModel(Parcel in) {
         id = in.readInt();
         fileKey = in.readString();
-        type = in.readInt();
+        fileType = in.readInt();
     }
 
     public FileModel() {
 
+    }
+
+    public FileModel(String fileKey, String fileType) {
+        this.fileKey = fileKey;
+        this.fileType = StorageHelper.getFileType(fileType);
     }
 
     public static final Creator<FileModel> CREATOR = new Creator<FileModel>() {
@@ -48,6 +55,6 @@ public class FileModel implements Parcelable, Serializable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(fileKey);
-        dest.writeInt(type);
+        dest.writeInt(fileType);
     }
 }

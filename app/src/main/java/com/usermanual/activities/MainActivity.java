@@ -1,20 +1,16 @@
 package com.usermanual.activities;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -59,7 +55,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -70,10 +65,6 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         SearchView.OnQueryTextListener {
     private static final String TAG = "MainActivity";
-    private static final String[] REQUIRED_SDK_PERMISSIONS = new String[]{
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.READ_PHONE_STATE};
 
     Context context;
     Toolbar toolbar;
@@ -92,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        checkPermissions();
 
         context = getApplicationContext();
 
@@ -101,8 +91,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String[] files = StorageHelper.getFile(context, "").list();
         Log.e(TAG, "file size: " + files.length);
         for (int i = 0; i < files.length; i++) {
-            Log.e(TAG, "file: " + files[i] + " type: " + DataBaseHelper.getFileType(context, files[i]));
+            Log.e(TAG, "file: " + files[i] + " fileType: " + DataBaseHelper.getFileType(context, files[i]));
         }
+
+        flushDataBase();
+
+//        List<TableToDownloadFiles> toDownloadFiles = new ArrayList<>();
+//        TableToDownloadFiles tableToDownloadFiles = new TableToDownloadFiles();
+//        tableToDownloadFiles.url = "https://hw15.cdn.asset.aparat.com/aparat-video/993690ee92cab49ca429f6a2e390341111864889-720p__55425.mp4";
+//        tableToDownloadFiles.fileKey = "aaa";
+//        toDownloadFiles.add(tableToDownloadFiles);
+////        DataBaseHelper.saveToDownloadFile(context, tableToDownloadFiles);
+//        TableToDownloadFiles t = new TableToDownloadFiles();
+//        t.url = "https://as2.cdn.asset.aparat.com/aparat-video/bc14ddc38678800c1e53f78bb1a25c327183777-360p__16953.mp4";
+//        t.fileKey = "bbb";
+//        toDownloadFiles.add(t);
+//        DataBaseHelper.saveToDownloadFiles(context, toDownloadFiles);
+//        DataBaseHelper.saveToDownloadFiles(context, toDownloadFiles);
 
         titlesFragment = TitlesFragment.newInstance(TitlesFragment.TITLES);
         fmanager = getSupportFragmentManager();
@@ -276,10 +281,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (response.body() != null) {
                     DataBaseHelper.saveTitles(context, response.body());
                     for (int i = 0; i < response.body().size(); i++) {
-                        if (!response.body().get(i).picUrl.equals("")) {
-                            TableToDownloadFiles tableToDownloadFiles = new TableToDownloadFiles();
-                            tableToDownloadFiles.fileKey = response.body().get(i).picUrl;
-                            DataBaseHelper.saveToDownloadFile(context, tableToDownloadFiles);
+                        if (!response.body().get(i).fileKey.equals("")) {
+                            DataBaseHelper.saveToDownloadFile(context, response.body().get(i).fileKey);
+                            DataBaseHelper.saveFileType(context, response.body().get(i).fileKey, response.body().get(i).fileType);
                         }
                     }
                     progressDialog.dismiss();
@@ -308,8 +312,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (response.body() != null) {
                     DataBaseHelper.saveSubtitles(context, response.body());
                     for (int i = 0; i < response.body().size(); i++) {
-                        if (!response.body().get(i).picUrl.equals("")) {
-                            DataBaseHelper.saveToDownloadFile(context, response.body().get(i).picUrl);
+                        if (!response.body().get(i).fileKey.equals("")) {
+                            DataBaseHelper.saveToDownloadFile(context, response.body().get(i).fileKey);
+                            DataBaseHelper.saveFileType(context, response.body().get(i).fileKey, response.body().get(i).fileType);
                         }
                     }
                     progressDialog.dismiss();
@@ -363,7 +368,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (response.body() != null) {
                     DataBaseHelper.saveSubmedias(context, response.body());
                     for (int j = 0; j < response.body().size(); j++) {
-                        DataBaseHelper.saveToDownloadFile(context, "cdc7fc47");
+                        DataBaseHelper.saveToDownloadFile(context, response.body().get(j).fileKey);
+                        DataBaseHelper.saveFileType(context, response.body().get(j).fileKey, response.body().get(j).fileType);
                     }
                     progressDialog.dismiss();
                     AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this)
@@ -387,13 +393,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-    }
-
-    /**
-     * downloading medias
-     */
-    private void downloadFiles() {
-        new DownloadFile(context).execute();
     }
 
     private void flushDataBase() {
@@ -435,165 +434,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar.setTitle(title);
     }
 
-    protected void checkPermissions() {
-        final List<String> missingPermissions = new ArrayList<String>();
-        for (final String permission : REQUIRED_SDK_PERMISSIONS) {
-            final int result = ContextCompat.checkSelfPermission(this, permission);
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                missingPermissions.add(permission);
-            }
-        }
-        if (!missingPermissions.isEmpty()) {
-            // request all missing permissions
-            final String[] permissions = missingPermissions
-                    .toArray(new String[missingPermissions.size()]);
-            ActivityCompat.requestPermissions(this, permissions, 112);
-        } else {
-            final int[] grantResults = new int[REQUIRED_SDK_PERMISSIONS.length];
-            Arrays.fill(grantResults, PackageManager.PERMISSION_GRANTED);
-            onRequestPermissionsResult(112, REQUIRED_SDK_PERMISSIONS,
-                    grantResults);
-        }
-    }
-
     private void setupNavigationHeader() {
         ImageView avatar = (ImageView) navigationHeader.findViewById(R.id.avatar);
         TextView name = (TextView) navigationHeader.findViewById(R.id.name);
         name.setText(Auth.getName(context));
         Picasso.get().load(Auth.getUserPicUrl(context)).placeholder(R.mipmap.avatar).into(avatar);
     }
-
-    public class DownloadFile extends AsyncTask<Void, Void, Boolean> {
-        private static final String TAG = "DownloadFile";
-
-        Context context;
-        List<TableToDownloadFiles> toDownloadFiles;
-        int num = 0;
-
-        public DownloadFile(Context context) {
-            this.context = context;
-            toDownloadFiles = DataBaseHelper.getToDownloadFiles(context);
-            printDownloadList(toDownloadFiles);
-        }
-
-        private void printDownloadList(List<TableToDownloadFiles> tableToDownloadFilesList) {
-            for (int i = 0; i < tableToDownloadFilesList.size(); i++) {
-                Log.d(TAG, "To Download list: key: [ " + tableToDownloadFilesList.get(i).fileKey + " ] " + " url:[ " + StorageHelper.getUrl(tableToDownloadFilesList.get(i).fileKey) + " ]");
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            if (!progressDialog.isShowing() && !toDownloadFiles.isEmpty())
-                progressDialog.show();
-            progressDialog.setMessage(getResources().getString(R.string.receiving_data));
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            if (toDownloadFiles.isEmpty()) {
-                Toast.makeText(context, getResources().getString(R.string.no_file_to_download), Toast.LENGTH_SHORT).show();
-                progressDialog.dismiss();
-                return true;
-            }
-            final boolean[] success = {true};
-            final GetData data = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
-            for (int i = 0; i < toDownloadFiles.size(); i++) {
-                progressDialog.setMessage(i + " th");
-                final File file = StorageHelper.getFile(context, toDownloadFiles.get(i).fileKey);
-                if (file.exists()) {
-                    Log.e(TAG, "file: " + file.getAbsolutePath() + " exists. not downloading");
-                    continue;
-                }
-                Call<ResponseBody> downloadCall = data.downloadFile(StorageHelper.getUrl(toDownloadFiles.get(i).fileKey));
-                final int finalI = i;
-                downloadCall.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        num++;
-                        if (response.body() == null) {
-                            Log.e(TAG, "file [ " + file.getAbsolutePath() + " ] cannot download");
-                        } else {
-                            String fileType = response.headers().get("Content-Type");
-                            Log.d(TAG, "file [ " + file.getAbsolutePath() + " ]. type [ " + fileType + " ]");
-                            success[0] = writeResponseBodyToDisk(response.body(), StorageHelper.getFile(context, toDownloadFiles.get(finalI).fileKey));
-                            Log.d(TAG, "download of file [ " + file.getAbsolutePath() + " ]. result [ " + success[0] + " ]");
-                            if (success[0]) {
-                                DataBaseHelper.saveFileType(context, toDownloadFiles.get(finalI).fileKey, StorageHelper.getFileType(fileType));
-                                DataBaseHelper.deleteToDownlaodFile(context, toDownloadFiles.get(finalI).fileKey);
-                            }
-                        }
-                        if (num == toDownloadFiles.size()) {
-                            progressDialog.dismiss();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        num++;
-                        Toast.makeText(context, context.getResources().getString(R.string.receiving_data_failed), Toast.LENGTH_SHORT).show();
-                        success[0] = false;
-                        if (num == toDownloadFiles.size()) {
-                            progressDialog.dismiss();
-                        }
-                    }
-                });
-            }
-            return true;
-        }
-
-        private boolean writeResponseBodyToDisk(ResponseBody body, File file) {
-            try {
-//            if (!file.exists())
-//                file.mkdirs();
-
-                InputStream inputStream = null;
-                OutputStream outputStream = null;
-
-                try {
-                    byte[] fileReader = new byte[4096];
-
-                    long fileSize = body.contentLength();
-                    Log.e(TAG, "writeResponseBodyToDisk: filesize: " + fileSize);
-                    long fileSizeDownloaded = 0;
-
-                    inputStream = body.byteStream();
-                    outputStream = new FileOutputStream(file);
-
-                    while (true) {
-                        int read = inputStream.read(fileReader);
-
-                        if (read == -1) {
-                            break;
-                        }
-
-                        outputStream.write(fileReader, 0, read);
-
-                        fileSizeDownloaded += read;
-
-                        Log.d(TAG, "file download: " + fileSizeDownloaded + " of " + fileSize);
-                    }
-
-                    outputStream.flush();
-
-                    return true;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return false;
-                } finally {
-                    if (inputStream != null) {
-                        inputStream.close();
-                    }
-
-                    if (outputStream != null) {
-                        outputStream.close();
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-    }
-
 }

@@ -39,7 +39,7 @@ public class DownloadFile extends AsyncTask<Void, Void, Boolean> {
 
     private void printDownloadList(List<TableToDownloadFiles> tableToDownloadFilesList) {
         for (int i = 0; i < tableToDownloadFilesList.size(); i++) {
-            Log.d(TAG, "To Download list: key: [ " + tableToDownloadFilesList.get(i).fileKey + " ] " + " url:[ " + StorageHelper.getUrl(tableToDownloadFilesList.get(i).fileKey) + " ]");
+            Log.d(TAG, "To Download list: key: [ " + tableToDownloadFilesList.get(i).fileKey + " ] " + " fileKey:[ " + StorageHelper.getUrl(tableToDownloadFilesList.get(i).fileKey) + " ]");
         }
     }
 
@@ -68,12 +68,12 @@ public class DownloadFile extends AsyncTask<Void, Void, Boolean> {
                     }
                     else {
                         String fileType = response.headers().get("Content-Type");
-                        Log.d(TAG, "file [ " + file.getAbsolutePath() + " ]. type [ " + fileType + " ]");
+                        Log.d(TAG, "file [ " + file.getAbsolutePath() + " ]. fileType [ " + fileType + " ]");
                         success[0] = writeResponseBodyToDisk(response.body(), StorageHelper.getFile(context, toDownloadFiles.get(finalI).fileKey));
                         Log.d(TAG, "download of file [ " + file.getAbsolutePath() + " ]. result [ " + success[0] + " ]");
                         if (success[0]) {
                             DataBaseHelper.saveFileType(context, toDownloadFiles.get(finalI).fileKey, StorageHelper.getFileType(fileType));
-                            DataBaseHelper.deleteToDownlaodFile(context, toDownloadFiles.get(finalI).fileKey);
+                            DataBaseHelper.deleteToDownloadFile(context, toDownloadFiles.get(finalI).fileKey);
                         }
                     }
                 }

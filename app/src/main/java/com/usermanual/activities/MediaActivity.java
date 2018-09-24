@@ -50,7 +50,7 @@ public class MediaActivity extends AppCompatActivity {
         subtitleId = getIntent().getIntExtra(PREF_SUBTITLE_ID, -1);
         TableSubTitle tableSubTitle = DataBaseHelper.getSubtitle(getApplicationContext(), subtitleId);
         if (tableSubTitle != null) {
-            StorageHelper.FileSpec imageFile = new StorageHelper.FileSpec(getApplicationContext(), tableSubTitle.picUrl, StorageHelper.FileType.SUBTITLES);
+            StorageHelper.FileSpec imageFile = new StorageHelper.FileSpec(getApplicationContext(), tableSubTitle.fileKey, StorageHelper.FileType.SUBTITLES);
             Picasso.get().load(imageFile.getFile()).placeholder(R.mipmap.car).into(headerImage);
         }
 

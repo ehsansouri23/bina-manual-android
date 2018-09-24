@@ -108,7 +108,7 @@ public class TitlesFragment extends Fragment {
                 selectedTitleId = args.getInt(PREF_TITLE_ID);
                 //showing image in header of list
                 TableTitle tableTitle = DataBaseHelper.getTitle(context, selectedTitleId);
-                StorageHelper.FileSpec imageFile = new StorageHelper.FileSpec(context, tableTitle.picUrl, StorageHelper.FileType.TITLES);
+                StorageHelper.FileSpec imageFile = new StorageHelper.FileSpec(context, tableTitle.fileKey, StorageHelper.FileType.TITLES);
                 Picasso.get().load(imageFile.getFile()).placeholder(R.mipmap.car).into(headerImage);
                 subtitleList = DataBaseHelper.getSubtitlesList(context, selectedTitleId);
                 subtitlesString = getSubtitles(subtitleList);
@@ -128,7 +128,7 @@ public class TitlesFragment extends Fragment {
                         state = SUBTITLES;
                         selectedTitleId = titleList.get(position).titleId;
                         TableTitle tableTitle = DataBaseHelper.getTitle(context, selectedTitleId);
-                        StorageHelper.FileSpec imageFile = new StorageHelper.FileSpec(context, tableTitle.picUrl, StorageHelper.FileType.TITLES);
+                        StorageHelper.FileSpec imageFile = new StorageHelper.FileSpec(context, tableTitle.fileKey, StorageHelper.FileType.TITLES);
                         Picasso.get().load(imageFile.getFile()).placeholder(R.mipmap.car).into(headerImage);
                         Log.e(TAG, "onItemClick: " + selectedTitleId + " title: " + titleList.get(position).title);
                         ((MainActivity) (getActivity())).setToolbarTitle(titleList.get(position).title);

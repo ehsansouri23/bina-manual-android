@@ -25,7 +25,10 @@ public class TableSubTitle implements Serializable, Parcelable {
     public String subtitle;
 
     @SerializedName("Picture")
-    public String picUrl = "";
+    public String fileKey = "";
+
+    @SerializedName("Type")
+    public String fileType;
 
     public TableSubTitle() {
 
@@ -36,7 +39,8 @@ public class TableSubTitle implements Serializable, Parcelable {
         parentTitleId = in.readInt();
         subtitleId = in.readInt();
         subtitle = in.readString();
-        picUrl = in.readString();
+        fileKey = in.readString();
+        fileType = in.readString();
     }
 
     public static final Creator<TableSubTitle> CREATOR = new Creator<TableSubTitle>() {
@@ -62,6 +66,7 @@ public class TableSubTitle implements Serializable, Parcelable {
         dest.writeInt(parentTitleId);
         dest.writeInt(subtitleId);
         dest.writeString(subtitle);
-        dest.writeString(picUrl);
+        dest.writeString(fileKey);
+        dest.writeString(fileType);
     }
 }
