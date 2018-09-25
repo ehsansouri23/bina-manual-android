@@ -18,10 +18,10 @@ import android.widget.Toast;
 
 import com.usermanual.R;
 import com.usermanual.auth.Auth;
-import com.usermanual.helper.FileUtils;
-import com.usermanual.helper.NetworkHelper;
 import com.usermanual.dbmodels.MessageModel;
 import com.usermanual.dbmodels.UploadResponse;
+import com.usermanual.helper.FileUtils;
+import com.usermanual.helper.NetworkHelper;
 import com.usermanual.network.GetData;
 import com.usermanual.network.RetrofitClientInstance;
 
@@ -49,7 +49,7 @@ public class SupportFragment extends Fragment {
 
     ProgressDialog progressDialog;
 
-    boolean uploadSuccess = false;
+    boolean uploadSuccess = true;
 
 
     @Nullable
@@ -93,6 +93,7 @@ public class SupportFragment extends Fragment {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.e(TAG, "onClick: " + uploadSuccess);
                 if (question.getText().toString().equals("")) {
                     Toast.makeText(getContext(), getResources().getString(R.string.should_not_empty), Toast.LENGTH_SHORT).show();
                     return;

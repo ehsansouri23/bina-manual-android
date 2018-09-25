@@ -19,7 +19,6 @@ import com.usermanual.helper.StorageHelper;
 
 import java.util.List;
 
-import static com.usermanual.helper.Consts.VIDEO_FILE_KEY;
 import static com.usermanual.helper.Consts.VIDEO_URL;
 
 public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.ViewHolder> {
@@ -27,7 +26,7 @@ public class MessagedAdapter extends RecyclerView.Adapter<MessagedAdapter.ViewHo
     Context context;
     List<Message> messageList;
 
-    MessagedAdapter(Context context, List<Message> messageList) {
+    public MessagedAdapter(Context context, List<Message> messageList) {
         this.context = context;
         this.messageList = messageList;
     }

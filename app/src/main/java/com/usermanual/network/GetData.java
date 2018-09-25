@@ -63,7 +63,7 @@ public interface GetData {
     @POST(GET_MESSAGE_URL)
     Call<MessageResponse> getMessages(@Body Token token);
 
-    @Headers("Content-fileType: application/json")
+    @Headers("Content-type: application/json")
     @POST(SEND_MESSAGE_URL)
     Call<UploadResponse> sendQuestion(@Body MessageModel messageModel);
 

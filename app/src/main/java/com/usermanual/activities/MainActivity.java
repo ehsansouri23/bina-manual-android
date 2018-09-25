@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -33,10 +32,10 @@ import com.usermanual.dbmodels.TableMedia;
 import com.usermanual.dbmodels.TableSubMedia;
 import com.usermanual.dbmodels.TableSubTitle;
 import com.usermanual.dbmodels.TableTitle;
-import com.usermanual.dbmodels.TableToDownloadFiles;
 import com.usermanual.fragments.AboutUsFragment;
 import com.usermanual.fragments.DownloadFragment;
 import com.usermanual.fragments.FavsFragment;
+import com.usermanual.fragments.MessagesFragment;
 import com.usermanual.fragments.NewsFragment;
 import com.usermanual.fragments.SearchFragment;
 import com.usermanual.fragments.SettingsFragment;
@@ -49,15 +48,8 @@ import com.usermanual.helper.StorageHelper;
 import com.usermanual.network.GetData;
 import com.usermanual.network.RetrofitClientInstance;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -206,6 +198,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.id_favs:
                 setToolbarTitle(getResources().getString(R.string.favorites));
                 fmanager.beginTransaction().replace(R.id.fragment_container, FavsFragment.newInstance()).commit();
+                break;
+            case R.id.id_answers:
+                setToolbarTitle(getResources().getString(R.string.answers));
+                fmanager.beginTransaction().replace(R.id.fragment_container, MessagesFragment.newInstance()).commit();
                 break;
             case R.id.id_settings:
                 setToolbarTitle(getResources().getString(R.string.settings));
