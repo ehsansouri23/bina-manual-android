@@ -60,10 +60,11 @@ public interface GetData {
     @GET(NEWS_URL)
     Call<List<NewsModel>> getNewsList(@Header("token") String token);
 
+    @Headers("Content-Type: application/json")
     @POST(GET_MESSAGE_URL)
     Call<MessageResponse> getMessages(@Body Token token);
 
-    @Headers("Content-type: application/json")
+    @Headers("content-type: application/json")
     @POST(SEND_MESSAGE_URL)
     Call<UploadResponse> sendQuestion(@Body MessageModel messageModel);
 
