@@ -39,6 +39,8 @@ public class DataBaseHelper {
     }
 
     public static void saveToDownloadFile(Context context, String fileKey) {
+        if (StorageHelper.getFile(context, fileKey).exists())
+            return;
         TableToDownloadFiles toDownloadFiles = AppDatabase.getInstance(context).toDownloadFilesDao().get(fileKey);
         if (toDownloadFiles != null)
             return;
