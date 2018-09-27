@@ -17,6 +17,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        archivesBaseName = "Bina-$versionName-$versionCode"
     }
     buildTypes {
         release {
@@ -51,7 +52,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
 
-//    implementation 'com.nbsp:library:1.8'
+    implementation 'com.mindorks.android:prdownloader:0.4.0'
 }
 
 
