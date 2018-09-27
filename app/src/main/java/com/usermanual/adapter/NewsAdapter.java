@@ -58,7 +58,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                delegate.onClick(newsModelList.get(position).fullHtml);
+                delegate.onClick(newsModelList.get(position).fullHtml, newsModelList.get(position).picUrl);
             }
         });
     }

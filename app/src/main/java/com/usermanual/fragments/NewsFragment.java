@@ -30,6 +30,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.usermanual.helper.Consts.NEWS_FULL_HTML;
+import static com.usermanual.helper.Consts.NEWS_IMAGE_KEY;
 
 public class NewsFragment extends Fragment {
     private static final String TAG = "NewsFragment";
@@ -81,9 +82,10 @@ public class NewsFragment extends Fragment {
     }
 
     public class NewsClickDelegate {
-        public void onClick(String fullHtml) {
+        public void onClick(String fullHtml, String fileKey) {
             Intent webViewIntent = new Intent(getActivity(), WebViewActivity.class);
             webViewIntent.putExtra(NEWS_FULL_HTML, fullHtml);
+            webViewIntent.putExtra(NEWS_IMAGE_KEY, fileKey);
             startActivity(webViewIntent);
         }
     }
