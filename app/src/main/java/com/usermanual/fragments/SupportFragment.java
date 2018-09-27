@@ -153,7 +153,7 @@ public class SupportFragment extends Fragment {
             File file = new File(filePath);
             if (!file.exists())
                 Log.e(TAG, "onActivityResult: file not exists");
-            final RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), filePath);
+            final RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), new File(filePath));
             MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
             RequestBody description = RequestBody.create(okhttp3.MultipartBody.FORM, Auth.getToken(getContext()));
             final Call<UploadResponse> uploadCall = retroData.upload(description, multipartBody);
