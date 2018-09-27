@@ -95,7 +95,6 @@ public class TitlesFragment extends Fragment {
                 loading.setVisibility(View.GONE);
                 listView.setVisibility(View.VISIBLE);
                 headerImage.setVisibility(View.VISIBLE);
-                Picasso.get().load(R.mipmap.car).into(headerImage);
             }
         };
         handler.postDelayed(runnable, 1400);
@@ -105,6 +104,7 @@ public class TitlesFragment extends Fragment {
         if (args != null) {
             int showingState = args.getInt(PREF_STATE);
             if (showingState == SUBTITLES) {
+                state = SUBTITLES;
                 selectedTitleId = args.getInt(PREF_TITLE_ID);
                 //showing image in header of list
                 TableTitle tableTitle = DataBaseHelper.getTitle(context, selectedTitleId);
@@ -113,6 +113,7 @@ public class TitlesFragment extends Fragment {
                 subtitlesString = getSubtitles(subtitleList);
                 showList(subtitlesString);
             } else if (showingState == TITLES) {
+                state = TITLES;
                 titleList = DataBaseHelper.getTitlesList(context);
                 titlesString = getTitles(titleList);
                 showList(titlesString);
@@ -137,6 +138,7 @@ public class TitlesFragment extends Fragment {
                     case SUBTITLES:
                         state = MEDIAS;
                         selectedSubtitleId = subtitleList.get(position).subtitleId;
+                        Log.d(TAG, "onItemClick: state: subtitle. subtitleId: " + selectedSubtitleId);
 
                     case MEDIAS:
                         Intent intent = new Intent(getActivity(), MediaActivity.class);
