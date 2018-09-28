@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
@@ -28,8 +29,10 @@ public class VideoViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_videoview);
         videoView = (VideoView) findViewById(R.id.video_view);
 
-        fileKey = getIntent().getStringExtra(VIDEO_FILE_KEY);
-        videoUrl = getIntent().getStringExtra(VIDEO_URL);
+        fileKey = getIntent().getExtras().getString(FILE_KEY);
+        videoUrl = getIntent().getExtras().getString(VIDEO_URL);
+
+        Log.e(TAG, "fileKey: " + fileKey + ". videoUrl: " + videoUrl);
 
         mediaController = new MediaController(VideoViewActivity.this);
         videoView.setMediaController(mediaController);
@@ -42,6 +45,7 @@ public class VideoViewActivity extends AppCompatActivity {
                     fileKey = "";
             }
             File f = StorageHelper.getFile(getApplicationContext(), fileKey);
+            Log.e(TAG, "onCreate: path: " + f.getAbsolutePath());
             videoView.setVideoURI(Uri.fromFile(f));
         }
 
