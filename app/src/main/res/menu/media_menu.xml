@@ -5,7 +5,7 @@
     <item
         android:title="@string/favorites"
         android:id="@+id/id_favs"
-        android:icon="@mipmap/bookmark_outlet"
+        android:icon="@mipmap/bookmark_no"
         app:showAsAction="always"
         android:iconTint="@color/white"/>
 

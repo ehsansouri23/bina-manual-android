@@ -27,6 +27,7 @@ public class MediaActivity extends AppCompatActivity {
     private static final String TAG = "MediaActivity";
 
     Context context;
+    Menu menu;
 
     ImageView headerImage;
     TabLayout tabLayout;
@@ -67,7 +68,12 @@ public class MediaActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         getMenuInflater().inflate(R.menu.media_menu, menu);
+        if (DataBaseHelper.getFav(context, subtitleId) != null)
+            menu.findItem(R.id.id_favs).setIcon(R.mipmap.bookmark_yes);
+        else
+            menu.findItem(R.id.id_favs).setIcon(R.mipmap.bookmark_no);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -77,9 +83,11 @@ public class MediaActivity extends AppCompatActivity {
             finish();
         if (item.getItemId() == R.id.id_favs) {
             if (DataBaseHelper.getFav(context, subtitleId) != null) {
+                menu.findItem(R.id.id_favs).setIcon(R.mipmap.bookmark_no);
                 DataBaseHelper.deleteFav(context, subtitleId);
                 Toast.makeText(context, getResources().getString(R.string.delete_from_favs), Toast.LENGTH_SHORT).show();
             } else {
+                menu.findItem(R.id.id_favs).setIcon(R.mipmap.bookmark_yes);
                 DataBaseHelper.saveFav(context, subtitleId);
                 Toast.makeText(context, getResources().getString(R.string.added_to_favs), Toast.LENGTH_SHORT).show();
             }
