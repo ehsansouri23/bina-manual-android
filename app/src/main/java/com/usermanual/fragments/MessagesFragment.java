@@ -38,11 +38,15 @@ public class MessagesFragment extends Fragment {
             @Override
             public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
                 if (response.body() != null && response.body().result) {
-                    messagedAdapter = new MessagedAdapter(getContext(), response.body().messages);
-                    list.setAdapter(messagedAdapter);
-                    messagedAdapter.notifyDataSetChanged();
-                    list.setLayoutManager(new LinearLayoutManager(getContext()));
-                } else if (!response.body().result) {
+                    if (response.body().messages != null) {
+                        messagedAdapter = new MessagedAdapter(getContext(), response.body().messages);
+                        list.setAdapter(messagedAdapter);
+                        messagedAdapter.notifyDataSetChanged();
+                        list.setLayoutManager(new LinearLayoutManager(getContext()));
+                    } else if (response.body().messages == null) {
+                        Toast.makeText(getContext(), getResources().getString(R.string.no_item), Toast.LENGTH_SHORT).show();
+                    }
+                } else if (response.body() != null && !response.body().result) {
                     Toast.makeText(getContext(), response.body().error, Toast.LENGTH_SHORT).show();
                 }
             }
