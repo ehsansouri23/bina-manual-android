@@ -40,7 +40,7 @@ public class Consts {
 
     public static final String PREF_FAV_SUBTITLES = "fav_subtitles";
 
-    public static final String VIDEO_FILE_KEY = "video_file_name";
+    public static final String FILE_KEY = "video_file_name";
     public static final String VIDEO_URL = "video_url";
 
 }

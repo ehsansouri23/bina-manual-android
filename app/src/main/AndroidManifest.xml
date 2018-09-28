@@ -38,6 +38,7 @@
         <activity android:name=".activities.VideoViewActivity" />
         <activity android:name=".activities.MediaActivity" />
         <activity android:name=".activities.WebViewActivity" />
+        <activity android:name=".activities.ImageViewActivity" />
     </application>
 
 </manifest>
