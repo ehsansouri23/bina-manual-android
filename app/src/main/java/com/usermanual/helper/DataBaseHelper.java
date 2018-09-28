@@ -2,6 +2,7 @@ package com.usermanual.helper;
 
 import android.content.Context;
 
+import com.usermanual.dbmodels.DownloadId;
 import com.usermanual.dbmodels.Favs;
 import com.usermanual.dbmodels.FileModel;
 import com.usermanual.dbmodels.TableMedia;
@@ -53,6 +54,25 @@ public class DataBaseHelper {
     public static void saveFileType(Context context, String fileKey, String fileType) {
         FileModel fileModel = new FileModel(fileKey, fileType);
         AppDatabase.getInstance(context).fileModelDao().insert(fileModel);
+    }
+
+    public static void saveDownloadId(Context context, String fileKey, int downloadId) {
+        DownloadId downloadId1 = AppDatabase.getInstance(context).downloadIdDao().getDownloadId(fileKey);
+        if (downloadId1 != null)
+            AppDatabase.getInstance(context).downloadIdDao().delete(fileKey);
+        DownloadId downloadId2 = new DownloadId(fileKey, downloadId);
+        AppDatabase.getInstance(context).downloadIdDao().insert(downloadId2);
+    }
+
+    public static int getDownloadId(Context context, String fileKey) {
+        DownloadId downloadId1 = AppDatabase.getInstance(context).downloadIdDao().getDownloadId(fileKey);
+        if (downloadId1 == null)
+            return 0;
+        return downloadId1.downloadId;
+    }
+
+    public static void deleteDownloadId(Context context, String fileKey) {
+        AppDatabase.getInstance(context).downloadIdDao().delete(fileKey);
     }
 
     public static void saveFav(Context context, int subtitleId) {
