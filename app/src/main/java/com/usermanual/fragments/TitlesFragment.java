@@ -95,30 +95,32 @@ public class TitlesFragment extends Fragment {
                 loading.setVisibility(View.GONE);
                 listView.setVisibility(View.VISIBLE);
                 headerImage.setVisibility(View.VISIBLE);
+
+                //show list base on state
+                Bundle args = getArguments();
+                if (args != null) {
+                    int showingState = args.getInt(PREF_STATE);
+                    if (showingState == SUBTITLES) {
+                        state = SUBTITLES;
+                        selectedTitleId = args.getInt(PREF_TITLE_ID);
+                        //showing image in header of list
+                        TableTitle tableTitle = DataBaseHelper.getTitle(context, selectedTitleId);
+                        Picasso.get().load(StorageHelper.getFile(context, tableTitle.fileKey)).placeholder(R.mipmap.car).into(headerImage);
+                        subtitleList = DataBaseHelper.getSubtitlesList(context, selectedTitleId);
+                        subtitlesString = getSubtitles(subtitleList);
+                        showList(subtitlesString);
+                    } else if (showingState == TITLES) {
+                        state = TITLES;
+                        titleList = DataBaseHelper.getTitlesList(context);
+                        titlesString = getTitles(titleList);
+                        showList(titlesString);
+                    }
+                }
             }
         };
-        handler.postDelayed(runnable, 1400);
 
-        //show list base on state
-        Bundle args = getArguments();
-        if (args != null) {
-            int showingState = args.getInt(PREF_STATE);
-            if (showingState == SUBTITLES) {
-                state = SUBTITLES;
-                selectedTitleId = args.getInt(PREF_TITLE_ID);
-                //showing image in header of list
-                TableTitle tableTitle = DataBaseHelper.getTitle(context, selectedTitleId);
-                Picasso.get().load(StorageHelper.getFile(context, tableTitle.fileKey)).placeholder(R.mipmap.car).into(headerImage);
-                subtitleList = DataBaseHelper.getSubtitlesList(context, selectedTitleId);
-                subtitlesString = getSubtitles(subtitleList);
-                showList(subtitlesString);
-            } else if (showingState == TITLES) {
-                state = TITLES;
-                titleList = DataBaseHelper.getTitlesList(context);
-                titlesString = getTitles(titleList);
-                showList(titlesString);
-            }
-        }
+        handler.postDelayed(runnable, 1300);
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
