@@ -121,6 +121,15 @@ public class DataBaseHelper {
         return AppDatabase.getInstance(context).toDownloadFilesDao().getAll();
     }
 
+    public static boolean isFileDownloaded(Context context, String fileKey) {
+        List<TableToDownloadFiles> toDownloadFiles = getToDownloadFiles(context);
+        for (int i = 0; i < toDownloadFiles.size(); i++) {
+            if (toDownloadFiles.get(i).fileKey.equals(fileKey))
+                return false;
+        }
+        return true;
+    }
+
     public static List<Favs> getAllFavs(Context context) {
         return AppDatabase.getInstance(context).favsDao().getAll();
     }

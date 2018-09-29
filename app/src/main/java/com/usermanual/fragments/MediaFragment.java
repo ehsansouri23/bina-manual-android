@@ -65,24 +65,27 @@ public class MediaFragment extends Fragment {
                 if (fileType == IMAGE) {
                     Picasso.get().load(StorageHelper.getFile(getContext(), fileKey)).placeholder(R.mipmap.car).into(imageView);
                 } else if (fileType == VIDEO) {
-                    Picasso.get().load(R.mipmap.video).into(imageView);
+                    if (DataBaseHelper.isFileDownloaded(getContext(), fileKey))
+                        Picasso.get().load(R.mipmap.play).into(imageView);
+                    else
+                        Picasso.get().load(R.mipmap.not_downloaded).into(imageView);
                 }
-                    imageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = null;
-                            if (fileType == IMAGE)
-                                intent = new Intent(getContext(), ImageViewActivity.class);
-                            else if (fileType == VIDEO)
-                                intent = new Intent(getContext(), VideoViewActivity.class);
-                            if (intent == null)
-                                return;
-                            intent.putExtra(FILE_KEY, fileKey);
-                            startActivity(intent);
-                        }
-                    });
-                }
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = null;
+                        if (fileType == IMAGE)
+                            intent = new Intent(getContext(), ImageViewActivity.class);
+                        else if (fileType == VIDEO)
+                            intent = new Intent(getContext(), VideoViewActivity.class);
+                        if (intent == null)
+                            return;
+                        intent.putExtra(FILE_KEY, fileKey);
+                        startActivity(intent);
+                    }
+                });
             }
+        }
 
         return view;
 
