@@ -1,10 +1,13 @@
 package com.usermanual.activities;
 
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -80,11 +83,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         StorageHelper.createFilesDataBase(context);
 
-        String[] files = StorageHelper.getFile(context, "").list();
+        String[] files = context.getDir("app", MODE_PRIVATE).list();
         Log.e(TAG, "file size: " + files.length);
         for (int i = 0; i < files.length; i++) {
             Log.e(TAG, "file: " + files[i] + " fileType: " + DataBaseHelper.getFileType(context, files[i]));
         }
+
+        Log.e(TAG, "token: " + Auth.getToken(context));
 
 //        flushDataBase();
 
@@ -126,7 +131,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                titlesVisible = false;
                 switch (item.getItemId()) {
                     case R.id.id_home:
                         titlesVisible = true;
@@ -155,15 +159,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    @Override
-    public void onBackPressed() {
-        if (titlesVisible) {
-            Log.e(TAG, "onBackPressed: titles are visible");
-            if (titlesFragment.onBackPressed())
-                super.onBackPressed();
-        } else
-            super.onBackPressed();
-    }
+//    @Override
+//    public void onBackPressed() {
+//        if (titlesVisible) {
+//            Log.e(TAG, "onBackPressed: titles are visible");
+//            if (titlesFragment.onBackPressed())
+//                super.onBackPressed();
+//        } else
+//            super.onBackPressed();
+//    }
 
     @Override
     protected void onDestroy() {
@@ -416,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void openTitlesFragment(int titleId) {
         TitlesFragment titlesFragment = TitlesFragment.newInstance(TitlesFragment.SUBTITLES, titleId);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, titlesFragment).commit();
+        fmanager.beginTransaction().replace(R.id.fragment_container, titlesFragment).commit();
     }
 
 //    public class DownFilesDelegate {

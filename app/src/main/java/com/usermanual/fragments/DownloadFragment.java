@@ -14,6 +14,7 @@ import com.usermanual.R;
 import com.usermanual.adapter.DownloadAdapter;
 
 public class DownloadFragment extends Fragment {
+    private static final String TAG = "DownloadFragment";
 
     RecyclerView list;
     DownloadAdapter downloadAdapter;

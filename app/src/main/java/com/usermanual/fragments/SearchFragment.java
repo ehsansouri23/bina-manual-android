@@ -35,6 +35,7 @@ public class SearchFragment extends Fragment {
         searchQuery = args.getString(SEARCH_QUERY);
         searchAdapter = new SearchAdapter(getContext(), searchQuery, new SearchDelegate());
         searchList.setAdapter(searchAdapter);
+        searchAdapter.notifyDataSetChanged();
         searchList.setLayoutManager(new LinearLayoutManager(getContext()));
         return view;
     }
@@ -50,7 +51,7 @@ public class SearchFragment extends Fragment {
 
     public class SearchDelegate {
         public void clicked(int titleId) {
-            Log.e(TAG, "clicked: " + titleId);
+            Log.e(TAG, "titleId: " + titleId);
             activity.openTitlesFragment(titleId);
         }
     }

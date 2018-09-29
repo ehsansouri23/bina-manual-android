@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +67,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         if (position < tableTitles.size()) {
             holder.text.setText(tableTitles.get(position).title);
+            Log.e(TAG, "position: " + position + " title. " + holder.text.getText() + ". titleId: " + tableTitles.get(position).titleId);
             File imageFile = StorageHelper.getFile(context, tableTitles.get(position).fileKey);
             Picasso.get().load(imageFile).placeholder(R.mipmap.car).into(holder.image);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -77,6 +79,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         } else if (position >= tableTitles.size()) {
             final int pos = position - tableTitles.size();
             holder.text.setText(tableSubTitles.get(pos).subtitle);
+            Log.e(TAG, "position: " + pos + " subtitles. " + holder.text.getText() + ". subtitleId: " + tableSubTitles.get(pos).subtitleId);
             File imageFile = StorageHelper.getFile(context, tableSubTitles.get(pos).fileKey);
             Picasso.get().load(imageFile).placeholder(R.mipmap.car).into(holder.image);
             holder.itemView.setOnClickListener(new View.OnClickListener() {

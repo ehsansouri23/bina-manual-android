@@ -18,6 +18,7 @@ import com.downloader.OnProgressListener;
 import com.downloader.OnStartOrResumeListener;
 import com.downloader.PRDownloader;
 import com.downloader.Progress;
+import com.downloader.Status;
 import com.usermanual.R;
 import com.usermanual.dbmodels.TableToDownloadFiles;
 import com.usermanual.helper.DataBaseHelper;
@@ -63,13 +64,18 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull final DownloadAdapter.ViewHolder holder, final int position) {
         holder.text.setText(toDownloadFiles.get(position).fileKey);
+        holder.text.setTextColor(Color.BLACK);
+        if (PRDownloader.getStatus(DataBaseHelper.getDownloadId(context, toDownloadFiles.get(position).fileKey)) == Status.RUNNING) {
+            holder.text.setText("downloading....");
+            holder.download.setEnabled(false);
+        }
         holder.download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.text.setText("downloading");
+                holder.text.setText("downloading....");
                 holder.download.setEnabled(false);
                 final TableToDownloadFiles downloadFiles = toDownloadFiles.get(position);
-                PRDownloader.download(StorageHelper.getUrl(downloadFiles.fileKey), context.getDir("app", Context.MODE_PRIVATE).getAbsolutePath(), downloadFiles.fileKey)
+                int id = PRDownloader.download(StorageHelper.getUrl(downloadFiles.fileKey), context.getDir("app", Context.MODE_PRIVATE).getAbsolutePath(), downloadFiles.fileKey)
                         .build()
                         .setOnStartOrResumeListener(new OnStartOrResumeListener() {
                             @Override
@@ -91,8 +97,6 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
                                 holder.text.setText("completed. " + downloadFiles.fileKey);
                                 holder.download.setEnabled(true);
                                 DataBaseHelper.deleteToDownloadFile(context, downloadFiles.fileKey);
-                                //todo handle fileType here
-//                                DataBaseHelper.saveFileType(context, downloadFiles.fileKey, ));
                             }
 
                             @Override
@@ -101,7 +105,9 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
                                 holder.text.setTextColor(Color.RED);
                                 holder.download.setEnabled(true);
                             }
+
                         });
+                DataBaseHelper.saveDownloadId(context, downloadFiles.fileKey, id);
             }
         });
     }

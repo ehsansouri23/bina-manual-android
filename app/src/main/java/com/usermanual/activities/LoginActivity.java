@@ -60,24 +60,10 @@ public class LoginActivity extends AppCompatActivity {
         context = getApplicationContext();
         checkPermissions();
 
-        final TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-
 
         if (Auth.isLoggedIn(context)) {
             startMainActivity();
         }
-
-        Toast.makeText(context, telephonyManager.getDeviceId(), Toast.LENGTH_SHORT).show();
 
         final GetData data = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
         userName = (TextInputLayout) findViewById(R.id.username);
@@ -102,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                 LoginModel loginModel = new LoginModel();
                 loginModel.userName = String.valueOf(userName.getEditText().getText());
                 loginModel.password = String.valueOf(passWord.getEditText().getText());
+                final TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
                 if (ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
@@ -112,6 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                     // for ActivityCompat#requestPermissions for more details.
                     return;
                 }
+                Toast.makeText(context, telephonyManager.getDeviceId(), Toast.LENGTH_SHORT).show();
                 loginModel.imei = telephonyManager.getDeviceId();
 
                 Call<LoginResponse> loginCall = data.login(loginModel);
