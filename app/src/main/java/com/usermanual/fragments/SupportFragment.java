@@ -62,6 +62,7 @@ public class SupportFragment extends Fragment {
         deleteFile = (ImageView) view.findViewById(R.id.delete_file);
         send = (Button) view.findViewById(R.id.send);
         progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setCancelable(false);
 
         if (!NetworkHelper.isNetworkConnected(getContext())) {
             noNet.setVisibility(View.VISIBLE);
@@ -118,6 +119,7 @@ public class SupportFragment extends Fragment {
                     @Override
                     public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
                         if (response.body() != null && response.body().result) {
+                            send.setText(getResources().getString(R.string.sent));
                             Toast.makeText(getContext(), getResources().getString(R.string.sent), Toast.LENGTH_SHORT).show();
                         } else if (response.body() != null && !response.body().result)
                             Toast.makeText(getContext(), response.body().error, Toast.LENGTH_SHORT).show();
