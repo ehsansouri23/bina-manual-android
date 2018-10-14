@@ -95,7 +95,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
                             @Override
                             public void onDownloadComplete() {
                                 holder.text.setText("completed. " + downloadFiles.fileKey);
-                                holder.download.setEnabled(true);
+                                holder.download.setEnabled(false);
                                 DataBaseHelper.deleteToDownloadFile(context, downloadFiles.fileKey);
                             }
 
