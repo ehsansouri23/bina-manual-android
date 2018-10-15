@@ -54,8 +54,8 @@ public interface GetData {
     @GET
     Call<List<TableSubMedia>> getSubMedia(@Header("token") String token, @Url String url);
 
-    @GET(SUBMEDIAS_URL)
-    Call<List<TableSubMedia>> getSubMedias(@Header("token") String token);
+    @GET
+    Call<List<TableSubMedia>> getSubMedias(@Url String url, @Header("token") String token);
 
     @GET(NEWS_URL)
     Call<List<NewsModel>> getNewsList(@Header("token") String token);

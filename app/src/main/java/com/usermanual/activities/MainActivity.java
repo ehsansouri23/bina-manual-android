@@ -45,6 +45,7 @@ import com.usermanual.fragments.SettingsFragment;
 import com.usermanual.fragments.SupportFragment;
 import com.usermanual.fragments.TitlesFragment;
 import com.usermanual.helper.BottomNavigationViewHelper;
+import com.usermanual.helper.Consts;
 import com.usermanual.helper.DataBaseHelper;
 import com.usermanual.helper.NetworkHelper;
 import com.usermanual.helper.StorageHelper;
@@ -73,6 +74,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Menu mMenu;
 
     boolean titlesVisible = true;
+
+    int biggestMediaId = 0;
+    int mediaId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -348,6 +352,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onResponse(Call<List<TableMedia>> call, Response<List<TableMedia>> response) {
                 if (response.body() != null) {
+                    for (int i = 0; i < response.body().size(); i++) {
+                        if (response.body().get(i).mediaId >= biggestMediaId)
+                            biggestMediaId = response.body().get(i).mediaId;
+                        Log.e(TAG, "onResponse: " + response.body().get(i).mediaId);
+                    }
                     DataBaseHelper.saveMedias(context, response.body());
                     getSubmedias();
                 } else if (response == null || response.body() == null) {
@@ -360,18 +369,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onFailure(Call<List<TableMedia>> call, Throwable t) {
                 Toast.makeText(context, getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
-//                finish();
             }
         });
     }
 
     private void getSubmedias() {
-        progressDialog.setMessage(getResources().getString(R.string.download_files));
-        if (!progressDialog.isShowing()) {
-            progressDialog.show();
+        if (mediaId > biggestMediaId) {
+            progressDialog.dismiss();
+            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this)
+                    .setMessage(getResources().getString(R.string.download_files_from_slide_menu))
+                    .setTitle(getResources().getString(R.string.download_files))
+                    .setPositiveButton(getResources().getString(R.string.ok), null)
+                    .show();
+            fmanager.beginTransaction().replace(R.id.fragment_container, TitlesFragment.newInstance(TitlesFragment.TITLES)).commit();
+            return;
         }
+
+        mediaId++;
         final GetData data = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
-        Call<List<TableSubMedia>> getSubmediaCall = data.getSubMedias(Auth.getToken(context));
+        String url = Consts.BASE_URL + Consts.API + Consts.SUBMEDIA_URL + mediaId;
+        Call<List<TableSubMedia>> getSubmediaCall = data.getSubMedias(url, Auth.getToken(context));
         getSubmediaCall.enqueue(new Callback<List<TableSubMedia>>() {
             @Override
             public void onResponse(Call<List<TableSubMedia>> call, Response<List<TableSubMedia>> response) {
@@ -381,29 +398,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         DataBaseHelper.saveToDownloadFile(context, response.body().get(j).fileKey);
                         DataBaseHelper.saveFileType(context, response.body().get(j).fileKey, response.body().get(j).fileType);
                     }
-                    progressDialog.dismiss();
-                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this)
-                            .setMessage(getResources().getString(R.string.download_files_from_slide_menu))
-                            .setTitle(getResources().getString(R.string.download_files))
-                            .setPositiveButton(getResources().getString(R.string.ok), null)
-                            .show();
-                    fmanager.beginTransaction().replace(R.id.fragment_container, TitlesFragment.newInstance(TitlesFragment.TITLES)).commit();
 
-                } else if (response == null || response.body() == null) {
-                    Toast.makeText(context, getResources().getString(R.string.no_item), Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
                 }
+                getSubmedias();
             }
 
             @Override
             public void onFailure(Call<List<TableSubMedia>> call, Throwable t) {
                 Toast.makeText(context, getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
-                progressDialog.dismiss();
-                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this)
-                        .setMessage(getResources().getString(R.string.download_files_from_slide_menu))
-                        .setTitle(getResources().getString(R.string.download_files))
-                        .setPositiveButton(getResources().getString(R.string.ok), null)
-                        .show();
+                getSubmedias();
             }
         });
 
