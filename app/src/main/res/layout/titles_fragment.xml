@@ -45,21 +45,22 @@
         app:LoadingDots_loop_start_delay="50" />
 
     <ImageView
-        android:id="@+id/header_image"
+        android:id="@+id/parent_image"
         android:layout_width="match_parent"
-        android:layout_height="225dp"
-        android:src="@mipmap/car"
-        android:visibility="gone"/>
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/car" />
 
-
-    <ListView
-        android:id="@+id/titles_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/header_image"
-        android:layout_marginTop="3dp"
-        android:layoutAnimation="@anim/list_anim"
-        android:persistentDrawingCache="animation|scrolling"
-        android:visibility="gone" />
+    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+        android:id="@+id/data_list"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        app:shimmer_demo_angle="20"
+        app:shimmer_demo_layout="@layout/layout_demo_grid"
+        app:shimmer_demo_layout_manager_type="grid" />
 
 </RelativeLayout>
