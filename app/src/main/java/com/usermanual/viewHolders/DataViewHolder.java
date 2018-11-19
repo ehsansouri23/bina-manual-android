@@ -7,14 +7,16 @@ import android.widget.TextView;
 
 import com.usermanual.R;
 
+import butterknife.BindView;
+
 public class DataViewHolder extends RecyclerView.ViewHolder {
 
+    @BindView(R.id.data_image)
     public ImageView dataImage;
+    @BindView(R.id.data_text)
     public TextView dataText;
 
     public DataViewHolder(View itemView) {
         super(itemView);
-        dataImage = (ImageView) itemView.findViewById(R.id.data_image);
-        dataText = (TextView) itemView.findViewById(R.id.data_text);
     }
 }
