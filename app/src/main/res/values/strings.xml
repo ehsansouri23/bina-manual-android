@@ -51,5 +51,9 @@
     <string name="sent">ارسال شد</string>
     <string name="uploaded">آپلود شد</string>
     <string name="file_deleted">فایل پاک شد</string>
+    <string name="toolbar_title">سوال</string>
+    <string name="select">انتخاب کنید</string>
+    <string name="send_video">ارسال فیلم</string>
+    <string name="send_pic">ارسال عکس</string>
     <string name="about_bina">این برنامه متعلق به شرکت بینا میباشد</string>
 </resources>
