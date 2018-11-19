@@ -54,6 +54,7 @@ import com.usermanual.network.RetrofitClientInstance;
 
 import java.util.List;
 
+import butterknife.BindView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -63,10 +64,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String TAG = "MainActivity";
 
     Context context;
-    Toolbar toolbar;
     FragmentManager fmanager;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+    @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigation;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
     View navigationHeader;
     TitlesFragment titlesFragment;
     ProgressDialog progressDialog;
@@ -114,15 +121,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fmanager = getSupportFragmentManager();
         fmanager.beginTransaction().replace(R.id.fragment_container, titlesFragment).commit();
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationHeader = navigationView.getHeaderView(0);
         setupNavigationHeader();
         navigationView.setNavigationItemSelectedListener(this);
@@ -130,35 +133,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setCancelable(false);
 
-        bottomNavigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         BottomNavigationViewHelper.removeShiftMode(bottomNavigation);
-        bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.id_home:
-                        titlesVisible = true;
-                        setToolbarTitle(getResources().getString(R.string.home));
-                        fmanager.beginTransaction().replace(R.id.fragment_container, TitlesFragment.newInstance(TitlesFragment.TITLES)).commit();
-                        break;
-                    case R.id.id_news:
-                        setToolbarTitle(getResources().getString(R.string.news));
-                        titlesVisible = false;
-                        fmanager.beginTransaction().replace(R.id.fragment_container, NewsFragment.newInstance()).commit();
-                        break;
-                    case R.id.id_support:
-                        setToolbarTitle(getResources().getString(R.string.support));
-                        titlesVisible = false;
-                        fmanager.beginTransaction().replace(R.id.fragment_container, SupportFragment.newInstance()).commit();
-                        break;
-                    case R.id.id_about:
-                        setToolbarTitle(getResources().getString(R.string.about));
-                        titlesVisible = false;
-                        fmanager.beginTransaction().replace(R.id.fragment_container, AboutUsFragment.newInstance()).commit();
-                        break;
-                }
-                return true;
+        bottomNavigation.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.id_home:
+                    titlesVisible = true;
+                    setToolbarTitle(getResources().getString(R.string.home));
+                    fmanager.beginTransaction().replace(R.id.fragment_container, TitlesFragment.newInstance(TitlesFragment.TITLES)).commit();
+                    break;
+                case R.id.id_news:
+                    setToolbarTitle(getResources().getString(R.string.news));
+                    titlesVisible = false;
+                    fmanager.beginTransaction().replace(R.id.fragment_container, NewsFragment.newInstance()).commit();
+                    break;
+                case R.id.id_support:
+                    setToolbarTitle(getResources().getString(R.string.support));
+                    titlesVisible = false;
+                    fmanager.beginTransaction().replace(R.id.fragment_container, SupportFragment.newInstance()).commit();
+                    break;
+                case R.id.id_about:
+                    setToolbarTitle(getResources().getString(R.string.about));
+                    titlesVisible = false;
+                    fmanager.beginTransaction().replace(R.id.fragment_container, AboutUsFragment.newInstance()).commit();
+                    break;
             }
+            return true;
         });
 
     }
@@ -240,7 +239,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
