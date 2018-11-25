@@ -12,31 +12,28 @@ import java.io.Serializable;
 @Entity
 public class TableSubMedia implements Parcelable, Serializable {
 
-    @PrimaryKey(autoGenerate = true)
-    public int id;
-
-    @SerializedName("Id")
+    @PrimaryKey
+    @SerializedName("id")
     public int subMediaId;
 
-    @SerializedName("Pid")
+    @SerializedName("pid")
     public int parentSubMediaId;
 
-    @SerializedName("Text")
+    @SerializedName("txt")
     public String text = "";
 
-    @SerializedName("Url")
+    @SerializedName("url")
     public String fileKey = "";
 
-    @SerializedName("Type")
-    public String fileType;
+    @SerializedName("type")
+    public int fileType;
 
     protected TableSubMedia(Parcel in) {
-        id = in.readInt();
         subMediaId = in.readInt();
         parentSubMediaId = in.readInt();
         text = in.readString();
         fileKey = in.readString();
-        fileType = in.readString();
+        fileType = in.readInt();
     }
     public TableSubMedia() {
 
@@ -61,11 +58,10 @@ public class TableSubMedia implements Parcelable, Serializable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeInt(subMediaId);
         dest.writeInt(parentSubMediaId);
         dest.writeString(text);
         dest.writeString(fileKey);
-        dest.writeString(fileType);
+        dest.writeInt(fileType);
     }
 }

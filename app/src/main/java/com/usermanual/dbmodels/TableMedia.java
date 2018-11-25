@@ -12,20 +12,15 @@ import java.io.Serializable;
 @Entity
 public class TableMedia implements Parcelable, Serializable {
 
-    @PrimaryKey(autoGenerate = true)
-    public int id;
-
-    @SerializedName("Id")
+    @PrimaryKey
+    @SerializedName("id")
     public int mediaId;
 
-    @SerializedName("Pid")
+    @SerializedName("pid")
     public int parentSubtitleId;
 
-    @SerializedName("Title")
+    @SerializedName("txt")
     public String mediaTitle;
-
-    @SerializedName("Picture")
-    public String picUrl;
 
     public TableMedia() {
 
@@ -33,11 +28,9 @@ public class TableMedia implements Parcelable, Serializable {
 
 
     protected TableMedia(Parcel in) {
-        id = in.readInt();
         mediaId = in.readInt();
         parentSubtitleId = in.readInt();
         mediaTitle = in.readString();
-        picUrl = in.readString();
     }
 
     public static final Creator<TableMedia> CREATOR = new Creator<TableMedia>() {
@@ -59,10 +52,8 @@ public class TableMedia implements Parcelable, Serializable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeInt(mediaId);
         dest.writeInt(parentSubtitleId);
         dest.writeString(mediaTitle);
-        dest.writeString(picUrl);
     }
 }

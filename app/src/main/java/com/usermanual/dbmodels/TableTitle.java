@@ -12,31 +12,24 @@ import java.io.Serializable;
 @Entity
 public class TableTitle implements Serializable, Parcelable {
 
-    @PrimaryKey(autoGenerate = true)
-    public int id;
-
-    @SerializedName("Id")
+    @PrimaryKey
+    @SerializedName("id")
     public int titleId;
 
-    @SerializedName("Title")
+    @SerializedName("txt")
     public String title;
 
-    @SerializedName("Picture")
+    @SerializedName("url")
     public String fileKey = "";
-
-    @SerializedName("Type")
-    public String fileType;
 
     public TableTitle() {
 
     }
 
     protected TableTitle(Parcel in) {
-        id = in.readInt();
         titleId = in.readInt();
         title = in.readString();
         fileKey = in.readString();
-        fileType = in.readString();
     }
 
     public static final Creator<TableTitle> CREATOR = new Creator<TableTitle>() {
@@ -58,10 +51,8 @@ public class TableTitle implements Serializable, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeInt(titleId);
         dest.writeString(title);
         dest.writeString(fileKey);
-        dest.writeString(fileType);
     }
 }
