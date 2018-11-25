@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.usermanual.R;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class DataViewHolder extends RecyclerView.ViewHolder {
 
@@ -18,5 +19,6 @@ public class DataViewHolder extends RecyclerView.ViewHolder {
 
     public DataViewHolder(View itemView) {
         super(itemView);
+        ButterKnife.bind(this, itemView);
     }
 }
