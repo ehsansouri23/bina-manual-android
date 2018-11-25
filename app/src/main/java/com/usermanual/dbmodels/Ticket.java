@@ -7,8 +7,12 @@ public class Ticket {
     @SerializedName("id")
     public int id;
 
-    @SerializedName("ticketName")
+    @SerializedName("ticket_name")
     public String ticketName;
 
-    public boolean isOpen;
+    @SerializedName("done")
+    public int isDone;
+
+//    @SerializedName("created_at")
+//    public String creationDate;
 }
