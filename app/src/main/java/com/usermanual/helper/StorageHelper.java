@@ -9,7 +9,7 @@ import static com.usermanual.helper.Consts.*;
 public class StorageHelper {
 
     public static String getUrl(String fileKey) {
-        return BASE_URL + FILE_URL + fileKey;
+        return BASE_URL + fileKey;
     }
 
     public static File getFile(Context context, String fileKey) {
