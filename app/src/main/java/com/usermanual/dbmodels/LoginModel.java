@@ -4,12 +4,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class LoginModel {
 
-    @SerializedName("Username")
+    @SerializedName("username")
     public String userName;
 
-    @SerializedName("Password")
+    @SerializedName("password")
     public String password;
 
-    @SerializedName("IMEI")
+    @SerializedName("imei")
     public String imei;
 }
