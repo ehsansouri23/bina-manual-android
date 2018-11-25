@@ -7,30 +7,31 @@
     android:layout_marginRight="5dp"
     android:layout_marginTop="15dp"
     android:elevation="20dp"
-    app:cardCornerRadius="12dp">
+    app:cardCornerRadius="7dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/state_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/data_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
             android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
-            android:src="@mipmap/car"/>
+            android:src="@mipmap/car" />
 
         <TextView
-            android:id="@+id/ticket_title"
+            android:id="@+id/data_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/state_image"
             android:layout_marginRight="10dp"
-            android:text="این تایتل تیکت است"/>
+            android:layout_toLeftOf="@id/data_image"
+            android:text="این تایتل تیکت است"
+            android:textSize="14pt" />
 
     </RelativeLayout>
 
