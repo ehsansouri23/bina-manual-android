@@ -2,15 +2,21 @@ package com.usermanual.dbmodels;
 
 import com.google.gson.annotations.SerializedName;
 
-public class LoginResponse extends BaseResponse {
+public class LoginResponse {
 
-    @SerializedName("Token")
+    @SerializedName("id")
     public String token;
 
-    @SerializedName("Name")
+    @SerializedName("name")
     public String name= "";
 
-    @SerializedName("Pic")
-    public String picFileKey = "";
+    @SerializedName("url")
+    public String picFileUrl = "";
 
+    @Override
+    public String toString() {
+        return "token=" + token +
+                "\nname=" + name +
+                "\nfileKey=" + picFileUrl;
+    }
 }
