@@ -55,4 +55,9 @@ public class TableTitle implements Serializable, Parcelable {
         dest.writeString(title);
         dest.writeString(fileKey);
     }
+
+    @Override
+    public String toString() {
+        return "id=" + titleId + "    title=" + title + "    url=" + fileKey;
+    }
 }
