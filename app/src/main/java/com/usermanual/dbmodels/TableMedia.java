@@ -56,4 +56,9 @@ public class TableMedia implements Parcelable, Serializable {
         dest.writeInt(parentSubtitleId);
         dest.writeString(mediaTitle);
     }
+
+    @Override
+    public String toString() {
+        return "id=" + mediaId + "    pid=" + parentSubtitleId + "    media=" + mediaTitle;
+    }
 }
