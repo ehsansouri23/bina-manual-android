@@ -29,9 +29,10 @@ public class TableToDownloadFiles implements Serializable, Parcelable {
     public TableToDownloadFiles() {
     }
 
-    public TableToDownloadFiles(String fileKey, int type) {
+    public TableToDownloadFiles(String fileKey, int type, int downloaded) {
         this.fileKey = fileKey;
         this.type = type;
+        this.downloaded = downloaded;
     }
 
     public TableToDownloadFiles(String fileKey) {
@@ -60,5 +61,10 @@ public class TableToDownloadFiles implements Serializable, Parcelable {
         dest.writeString(fileKey);
         dest.writeInt(type);
         dest.writeInt(downloaded);
+    }
+
+    @Override
+    public String toString() {
+        return "key=" + fileKey + "    type=" + type + "    downloaded=" + downloaded;
     }
 }
