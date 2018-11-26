@@ -4,24 +4,34 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 
 @Entity
 public class TableToDownloadFiles implements Serializable, Parcelable {
-    @PrimaryKey(autoGenerate = true)
-    public int id;
 
+    @PrimaryKey
+    @NonNull
     public String fileKey;
+
+    public int type;
+
+    public int downloaded;
 
 
     protected TableToDownloadFiles(Parcel in) {
-        id = in.readInt();
         fileKey = in.readString();
+        type = in.readInt();
+        downloaded = in.readInt();
     }
 
     public TableToDownloadFiles() {
+    }
 
+    public TableToDownloadFiles(String fileKey, int type) {
+        this.fileKey = fileKey;
+        this.type = type;
     }
 
     public TableToDownloadFiles(String fileKey) {
@@ -47,7 +57,8 @@ public class TableToDownloadFiles implements Serializable, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeString(fileKey);
+        dest.writeInt(type);
+        dest.writeInt(downloaded);
     }
 }
