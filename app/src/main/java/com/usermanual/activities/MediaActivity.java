@@ -55,11 +55,6 @@ public class MediaActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
 
         subtitleId = getIntent().getIntExtra(PREF_SUBTITLE_ID, -1);
-        TableSubTitle tableSubTitle = DataBaseHelper.getSubtitle(context, subtitleId);
-        if (tableSubTitle != null) {
-            Picasso.get().load(StorageHelper.getFile(context, tableSubTitle.fileKey)).placeholder(R.mipmap.car).into(headerImage);
-            getSupportActionBar().setTitle(tableSubTitle.subtitle);
-        }
 
         mediaFragmentsAdapter = new MediaFragmentsAdapter(context, getSupportFragmentManager(), subtitleId);
         viewPager.setAdapter(mediaFragmentsAdapter);
