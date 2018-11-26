@@ -14,12 +14,13 @@ import com.usermanual.fragments.MediaFragment;
 import com.usermanual.helper.Consts;
 import com.usermanual.viewHolders.DataViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TicketMessagesAdapter extends RecyclerView.Adapter<DataViewHolder> {
 
     Context context;
-    List<TicketMessageModel> messageModels;
+    List<TicketMessageModel> messageModels = new ArrayList<>();
     MediaFragment.OnClick onClick;
 
     public TicketMessagesAdapter(Context context, MediaFragment.OnClick onClick) {
@@ -41,7 +42,7 @@ public class TicketMessagesAdapter extends RecyclerView.Adapter<DataViewHolder> 
             dataViewHolder.dataText.setText(messageModels.get(i).message);
         } else dataViewHolder.dataText.setVisibility(View.GONE);
 
-        if (!messageModels.get(i).url.equals("")) {
+        if (messageModels.get(i).url != null && !messageModels.get(i).url.equals("")) {
             dataViewHolder.dataImage.setVisibility(View.VISIBLE);
             if (messageModels.get(i).type == Consts.IMAGE)
                 Picasso.get().load(messageModels.get(i).url).into(dataViewHolder.dataImage);
