@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.squareup.picasso.Picasso;
+import com.usermanual.ItemClickListener;
 import com.usermanual.R;
 import com.usermanual.dbmodels.Ticket;
 import com.usermanual.viewHolders.DataViewHolder;
@@ -18,22 +20,38 @@ public class TicketsAdapter extends RecyclerView.Adapter<DataViewHolder> {
 
     Context context;
     List<Ticket> tickets;
-    public TicketsAdapter(Context context, List<Ticket> tickets) {
+    ItemClickListener itemClickListener;
+
+    public TicketsAdapter(Context context, List<Ticket> tickets, ItemClickListener itemClickListener) {
         this.context = context;
         this.tickets = tickets;
+        this.itemClickListener = itemClickListener;
     }
 
     @NonNull
     @Override
     public DataViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.data_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.ticket_item, parent, false);
         return new DataViewHolder(v);
 
     }
 
     @Override
     public void onBindViewHolder(@NonNull DataViewHolder holder, int position) {
-//todo handle here
+        if (tickets.get(position).isDone == 0)
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (tickets.get(position).isDone == 0)
+                        itemClickListener.onItemClick(view, tickets.get(position).id, "");
+                }
+            });
+
+        holder.dataText.setText(tickets.get(position).ticketName);
+        if (tickets.get(position).isDone == 0)
+            Picasso.get().load(R.mipmap.ticket_open).into(holder.dataImage);
+        else
+            Picasso.get().load(R.mipmap.ticket_closed).into(holder.dataImage);
     }
 
     @Override
