@@ -40,25 +40,4 @@ public class MediaFragmentsAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return tableMediaList.get(position).mediaTitle;
     }
-
-//    private HashMap<Integer, List<TableMedia>> prepareMedias(List<TableMedia> tableMediaList) {
-//        HashMap<Integer, List<TableMedia>> mediasMap = new HashMap<>();
-//        String title = tableMediaList.get(0).title;
-//        List<TableMedia> tableMedia = new ArrayList<>();
-//        tableMedia.add(tableMediaList.get(0));
-//        int index = 0;
-//        if (tableMedia.size() == 1)
-//            mediasMap.put(index, tableMediaList);
-//        for (int i = 1; i < tableMediaList.size(); i++) {
-//            if (tableMediaList.get(i).title.equals(title)) {
-//                tableMedia.add(tableMediaList.get(i));
-//            } else {
-//                mediasMap.put(index, tableMedia);
-//                index++;
-//                tableMedia.clear();
-//                tableMedia.add(tableMediaList.get(i));
-//            }
-//        }
-//        return mediasMap;
-//    }
 }
