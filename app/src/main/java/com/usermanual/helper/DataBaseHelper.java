@@ -42,6 +42,15 @@ public class DataBaseHelper {
         saveToDownloadFile(context, tableToDownloadFiles);
     }
 
+    public static boolean isFileDownloaded(Context context, String fileKey) {
+        TableToDownloadFiles toDownloadFiles = AppDatabase.getInstance(context).toDownloadFilesDao().get(fileKey);
+        if (toDownloadFiles == null)
+            return false;
+        else if (toDownloadFiles.downloaded == 0)
+            return false;
+        else return true;
+    }
+
     public static void saveFav(Context context, int subtitleId) {
         Favs favs = new Favs();
         favs.subtitleId = subtitleId;
@@ -86,15 +95,6 @@ public class DataBaseHelper {
 
     public static List<TableToDownloadFiles> getToDownloadFiles(Context context) {
         return AppDatabase.getInstance(context).toDownloadFilesDao().getAll();
-    }
-
-    public static boolean isFileDownloaded(Context context, String fileKey) {
-        List<TableToDownloadFiles> toDownloadFiles = getToDownloadFiles(context);
-        for (int i = 0; i < toDownloadFiles.size(); i++) {
-            if (toDownloadFiles.get(i).fileKey.equals(fileKey))
-                return false;
-        }
-        return true;
     }
 
     public static List<Favs> getAllFavs(Context context) {
