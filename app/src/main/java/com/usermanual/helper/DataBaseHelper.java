@@ -2,9 +2,7 @@ package com.usermanual.helper;
 
 import android.content.Context;
 
-import com.usermanual.dbmodels.DownloadId;
 import com.usermanual.dbmodels.Favs;
-import com.usermanual.dbmodels.FileModel;
 import com.usermanual.dbmodels.TableMedia;
 import com.usermanual.dbmodels.TableSubMedia;
 import com.usermanual.dbmodels.TableSubTitle;
@@ -39,40 +37,9 @@ public class DataBaseHelper {
         AppDatabase.getInstance(context).toDownloadFilesDao().insert(toDownloadFiles);
     }
 
-    public static void saveToDownloadFile(Context context, String fileKey) {
-        if (StorageHelper.getFile(context, fileKey).exists())
-            return;
-        TableToDownloadFiles toDownloadFiles = AppDatabase.getInstance(context).toDownloadFilesDao().get(fileKey);
-        if (toDownloadFiles != null)
-            return;
-        else {
-            TableToDownloadFiles toDownloadFiles1 = new TableToDownloadFiles(fileKey);
-            saveToDownloadFile(context, toDownloadFiles1);
-        }
-    }
-
-    public static void saveFileType(Context context, String fileKey, String fileType) {
-        FileModel fileModel = new FileModel(fileKey, fileType);
-        AppDatabase.getInstance(context).fileModelDao().insert(fileModel);
-    }
-
-    public static void saveDownloadId(Context context, String fileKey, int downloadId) {
-        DownloadId downloadId1 = AppDatabase.getInstance(context).downloadIdDao().getDownloadId(fileKey);
-        if (downloadId1 != null)
-            AppDatabase.getInstance(context).downloadIdDao().delete(fileKey);
-        DownloadId downloadId2 = new DownloadId(fileKey, downloadId);
-        AppDatabase.getInstance(context).downloadIdDao().insert(downloadId2);
-    }
-
-    public static int getDownloadId(Context context, String fileKey) {
-        DownloadId downloadId1 = AppDatabase.getInstance(context).downloadIdDao().getDownloadId(fileKey);
-        if (downloadId1 == null)
-            return 0;
-        return downloadId1.downloadId;
-    }
-
-    public static void deleteDownloadId(Context context, String fileKey) {
-        AppDatabase.getInstance(context).downloadIdDao().delete(fileKey);
+    public static void saveToDownloadFile(Context context, String fileKey, int type) {
+        TableToDownloadFiles tableToDownloadFiles = new TableToDownloadFiles(fileKey, type, 0);
+        saveToDownloadFile(context, tableToDownloadFiles);
     }
 
     public static void saveFav(Context context, int subtitleId) {
@@ -138,17 +105,6 @@ public class DataBaseHelper {
         return AppDatabase.getInstance(context).favsDao().get(subtitleId);
     }
 
-    public static FileModel getFileModel(Context context, String fileKey) {
-        return AppDatabase.getInstance(context).fileModelDao().getFileModel(fileKey);
-    }
-
-    public static int getFileType(Context context, String fileKey) {
-        FileModel fileModel = getFileModel(context, fileKey);
-        if (fileModel != null)
-            return fileModel.fileType;
-        else return Consts.VIDEO;
-    }
-
     public static void deleteAllTitles(Context context) {
         AppDatabase.getInstance(context).titleDao().deleteAll();
     }
@@ -175,10 +131,6 @@ public class DataBaseHelper {
 
     public static void deleteToDownloadFile(Context context, String fileKey) {
         AppDatabase.getInstance(context).toDownloadFilesDao().delete(fileKey);
-    }
-
-    public static void deleteFileModels(Context context) {
-        AppDatabase.getInstance(context).fileModelDao().deleteAll();
     }
 
     public static void deleteFav(Context context, int subtitleId) {
