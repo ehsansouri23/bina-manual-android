@@ -28,7 +28,7 @@ public class WebViewActivity extends AppCompatActivity {
         image = (ImageView) findViewById(R.id.news_image);
         fullHtml = getIntent().getStringExtra(NEWS_FULL_HTML);
         imageKey = getIntent().getStringExtra(NEWS_IMAGE_KEY);
-        Picasso.get().load(BASE_URL + FILE_URL + imageKey).placeholder(R.mipmap.new_place).into(image);
+        Picasso.get().load(BASE_URL + imageKey).placeholder(R.mipmap.new_place).into(image);
         webView = (WebView) findViewById(R.id.webview);
         webView.loadDataWithBaseURL("", fullHtml, mimeType, encoding, "");
     }

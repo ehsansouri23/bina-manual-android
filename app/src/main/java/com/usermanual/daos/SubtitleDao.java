@@ -15,11 +15,14 @@ public interface SubtitleDao {
     @Query("SELECT * FROM tablesubtitle WHERE parentTitleId LIKE :titleId")
     List<TableSubTitle> getSubtitles(int titleId);
 
-    @Query("SELECT * FROM TableSubTitle WHERE subtitleId LIKE :subtitleId")
+    @Query("SELECT * FROM TableSubTitle WHERE subtitleId = :subtitleId")
     TableSubTitle getSubtitle(int subtitleId);
 
     @Query("SELECT * FROM tablesubtitle")
     List<TableSubTitle> getAll();
+
+    @Query("SELECT * FROM tablesubtitle WHERE saved = 1")
+    List<TableSubTitle> getSaved();
 
     @Query("SELECT * FROM tablesubtitle WHERE subtitle LIKE :subtitle")
     List<TableSubTitle> search(String subtitle);

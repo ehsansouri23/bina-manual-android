@@ -11,12 +11,14 @@ import com.usermanual.R;
 import com.usermanual.helper.StorageHelper;
 
 import static com.usermanual.helper.Consts.FILE_KEY;
+import static com.usermanual.helper.Consts.FILE_URL;
 
 public class ImageViewActivity extends AppCompatActivity {
     private static final String TAG = "ImageViewActivity";
 
     Context context;
     String fileKey;
+    String fileUrl;
     WebView image;
 
     @Override
@@ -27,8 +29,14 @@ public class ImageViewActivity extends AppCompatActivity {
         image = (WebView) findViewById(R.id.image);
 
         fileKey = getIntent().getExtras().getString(FILE_KEY);
-        Uri imageUri = Uri.fromFile(StorageHelper.getFile(context, fileKey));
-        image.getSettings().setBuiltInZoomControls(true);
-        image.loadUrl(imageUri.toString());
+        fileUrl = getIntent().getExtras().getString(FILE_URL);
+        if (fileKey != null) {
+            Uri imageUri = Uri.fromFile(StorageHelper.getFile(context, fileKey));
+            image.getSettings().setBuiltInZoomControls(true);
+            image.loadUrl(imageUri.toString());
+        } else if (fileUrl != null) {
+            image.getSettings().setBuiltInZoomControls(true);
+            image.loadUrl(fileUrl);
+        }
     }
 }

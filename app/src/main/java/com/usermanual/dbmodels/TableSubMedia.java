@@ -22,6 +22,9 @@ public class TableSubMedia implements Parcelable, Serializable {
     @SerializedName("txt")
     public String text = "";
 
+    @SerializedName("caption")
+    public String caption;
+
     @SerializedName("url")
     public String fileKey = "";
 
@@ -32,6 +35,7 @@ public class TableSubMedia implements Parcelable, Serializable {
         subMediaId = in.readInt();
         parentSubMediaId = in.readInt();
         text = in.readString();
+        caption = in.readString();
         fileKey = in.readString();
         fileType = in.readInt();
     }
@@ -61,7 +65,14 @@ public class TableSubMedia implements Parcelable, Serializable {
         dest.writeInt(subMediaId);
         dest.writeInt(parentSubMediaId);
         dest.writeString(text);
+        dest.writeString(caption);
         dest.writeString(fileKey);
         dest.writeInt(fileType);
+    }
+
+    @Override
+    public String toString() {
+        return "id=" + subMediaId + "    pid=" + parentSubMediaId
+         + "    text=" + text + "    caption=" + caption + "    key=" + fileKey + "    type=" + fileType;
     }
 }

@@ -9,12 +9,14 @@ import static com.usermanual.helper.Consts.*;
 public class StorageHelper {
 
     public static String getUrl(String fileKey) {
-        return BASE_URL + fileKey;
+        return BASE_SIMPLE_URL + fileKey;
     }
 
     public static File getFile(Context context, String fileKey) {
         File baseFile = context.getDir("app", Context.MODE_PRIVATE);
-        return new File(baseFile, fileKey);
+        if (fileKey.lastIndexOf("/") >= 0)
+            fileKey = fileKey.substring(fileKey.lastIndexOf("/"));
+        return new File(baseFile, fileKey + "/" + fileKey);
     }
 
     public static int getFileType(String fileType) {
@@ -32,6 +34,10 @@ public class StorageHelper {
         File baseFile = context.getDir("app", Context.MODE_PRIVATE);
         if (!baseFile.exists())
             baseFile.mkdirs();
+    }
+
+    public static File getBaseFile(Context context) {
+        return context.getDir("app", Context.MODE_PRIVATE);
     }
 
     public enum FileType {

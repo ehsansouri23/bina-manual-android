@@ -4,9 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class BaseResponse {
 
-    @SerializedName("Result")
-    public boolean result;
-
-    @SerializedName("Error")
+    @SerializedName("error")
     public String error;
 }

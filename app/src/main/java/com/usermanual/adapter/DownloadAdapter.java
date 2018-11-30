@@ -24,32 +24,25 @@ import com.usermanual.dbmodels.TableToDownloadFiles;
 import com.usermanual.helper.DataBaseHelper;
 import com.usermanual.helper.StorageHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHolder> {
     private static final String TAG = "DownloadAdapter";
 
     Context context;
-    List<TableToDownloadFiles> toDownloadFiles;
+    List<TableToDownloadFiles> toDownloadFiles = new ArrayList<>();
 
     public DownloadAdapter(Context context) {
         this.context = context;
-        toDownloadFiles = DataBaseHelper.getToDownloadFiles(context);
-        for (int i = 0; i < toDownloadFiles.size(); i++) {
-            Log.d(TAG, "file: [" + toDownloadFiles.get(i).fileKey + "]. url: [ " + StorageHelper.getUrl(toDownloadFiles.get(i).fileKey) + " ]");
-        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        Button download;
         TextView text;
-        ProgressBar progressBar;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            download = (Button) itemView.findViewById(R.id.download);
             text = (TextView) itemView.findViewById(R.id.text);
-            progressBar = (ProgressBar) itemView.findViewById(R.id.progressbar);
         }
     }
 
@@ -63,57 +56,15 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull final DownloadAdapter.ViewHolder holder, final int position) {
-        holder.text.setText(toDownloadFiles.get(position).fileKey);
-        holder.text.setTextColor(Color.BLACK);
-        if (PRDownloader.getStatus(DataBaseHelper.getDownloadId(context, toDownloadFiles.get(position).fileKey)) == Status.RUNNING) {
-            holder.text.setText("downloading....");
-            holder.download.setEnabled(false);
-        }
-        holder.download.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.text.setText("downloading....");
-                holder.download.setEnabled(false);
-                final TableToDownloadFiles downloadFiles = toDownloadFiles.get(position);
-                int id = PRDownloader.download(StorageHelper.getUrl(downloadFiles.fileKey), context.getDir("app", Context.MODE_PRIVATE).getAbsolutePath(), downloadFiles.fileKey)
-                        .build()
-                        .setOnStartOrResumeListener(new OnStartOrResumeListener() {
-                            @Override
-                            public void onStartOrResume() {
-                                holder.progressBar.setIndeterminate(false);
-                            }
-                        })
-                        .setOnProgressListener(new OnProgressListener() {
-                            @Override
-                            public void onProgress(Progress progress) {
-                                long progressPercent = progress.currentBytes * 100 / progress.totalBytes;
-                                holder.progressBar.setProgress((int) progressPercent);
-                                holder.progressBar.setIndeterminate(false);
-                            }
-                        })
-                        .start(new OnDownloadListener() {
-                            @Override
-                            public void onDownloadComplete() {
-                                holder.text.setText("completed. " + downloadFiles.fileKey);
-                                holder.download.setEnabled(false);
-                                DataBaseHelper.deleteToDownloadFile(context, downloadFiles.fileKey);
-                            }
-
-                            @Override
-                            public void onError(Error error) {
-                                holder.text.setText("Error");
-                                holder.text.setTextColor(Color.RED);
-                                holder.download.setEnabled(true);
-                            }
-
-                        });
-                DataBaseHelper.saveDownloadId(context, downloadFiles.fileKey, id);
-            }
-        });
+        holder.text.setText(toDownloadFiles.get(position).fileKey.substring(toDownloadFiles.get(position).fileKey.length() - 5));
     }
 
     @Override
     public int getItemCount() {
         return toDownloadFiles.size();
+    }
+
+    public void setToDownloadFiles(List<TableToDownloadFiles> toDownloadFiles) {
+        this.toDownloadFiles = toDownloadFiles;
     }
 }

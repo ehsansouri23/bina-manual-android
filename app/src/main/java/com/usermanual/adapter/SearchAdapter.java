@@ -41,8 +41,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         this.context = context;
         this.query = query;
         this.searchDelegate = SearchDelegate;
-        tableTitles = DataBaseHelper.searchTitles(context, query);
-        tableSubTitles = DataBaseHelper.searchSubtitles(context, query);
+//        tableTitles = DataBaseHelper.searchTitles(context, query);
+//        tableSubTitles = DataBaseHelper.searchSubtitles(context, query);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

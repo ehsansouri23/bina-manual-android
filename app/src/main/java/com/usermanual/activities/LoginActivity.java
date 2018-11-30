@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -97,21 +98,19 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 //                Toast.makeText(context, telephonyManager.getDeviceId(), Toast.LENGTH_SHORT).show();
-                loginModel.imei = telephonyManager.getDeviceId();
+                loginModel.imei = /*telephonyManager.getDeviceId()*/ "356377085365247";
 
                 Call<LoginResponse> loginCall = data.login(loginModel);
                 loginCall.enqueue(new Callback<LoginResponse>() {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                         if (response.body() != null) {
+                            Log.d(TAG, "login response: " + response.body());
                             loading.setVisibility(View.GONE);
-                            if (response.body().result) {
-                                Auth.login(context, response.body());
-                                startMainActivity();
-                            } else {
-                                Toast.makeText(context, response.body().error, Toast.LENGTH_SHORT).show();
-                            }
-                        } else if (response == null || response.body() == null) {
+                            Auth.login(context, response.body());
+                            startMainActivity();
+
+                        } else if (response == null) {
                             Toast.makeText(context, getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
                             loading.setVisibility(View.GONE);
                         }

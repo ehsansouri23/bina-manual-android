@@ -45,7 +45,7 @@ public class SubmediaAdapter extends RecyclerView.Adapter<SubmediaViewHolder> {
         if (!submedias.get(i).fileKey.equals("")) {
             submediaViewHolder.pic.setVisibility(View.VISIBLE);
             if (submedias.get(i).fileType == Consts.IMAGE) {
-                Picasso.get().load(StorageHelper.getFile(context, submedias.get(i).fileKey)).into(submediaViewHolder.pic);
+                Picasso.get().load(StorageHelper.getFile(context, submedias.get(i).fileKey)).placeholder(R.mipmap.car).into(submediaViewHolder.pic);
                 submediaViewHolder.pic.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -65,9 +65,11 @@ public class SubmediaAdapter extends RecyclerView.Adapter<SubmediaViewHolder> {
                 } else Picasso.get().load(R.mipmap.not_downloaded).into(submediaViewHolder.pic);
             }
         } else submediaViewHolder.pic.setVisibility(View.GONE);
-        if (!submedias.get(i).caption.equals("")) {
-            submediaViewHolder.caption.setVisibility(View.VISIBLE);
-            submediaViewHolder.caption.setText(submedias.get(i).caption);
+        if (submedias.get(i).caption != null) {
+            if (!submedias.get(i).caption.equals("")) {
+                submediaViewHolder.caption.setVisibility(View.VISIBLE);
+                submediaViewHolder.caption.setText(submedias.get(i).caption);
+            } else submediaViewHolder.caption.setVisibility(View.GONE);
         } else submediaViewHolder.caption.setVisibility(View.GONE);
     }
 

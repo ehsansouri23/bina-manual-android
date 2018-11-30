@@ -8,24 +8,24 @@
         android:icon="@mipmap/support"
         app:showAsAction="always"/>
 
-    <item
-        android:id="@+id/id_answers"
-        android:title="@string/answers"
-        android:icon="@mipmap/answers"
-        app:showAsAction="always" />
+    <!--<item-->
+        <!--android:id="@+id/id_answers"-->
+        <!--android:title="@string/answers"-->
+        <!--android:icon="@mipmap/answers"-->
+        <!--app:showAsAction="always" />-->
 
 
-    <item
-        android:id="@+id/id_favs"
-        android:title="@string/favorites"
-        android:icon="@mipmap/favorites"
-        app:showAsAction="always"/>
+    <!--<item-->
+        <!--android:id="@+id/id_favs"-->
+        <!--android:title="@string/favorites"-->
+        <!--android:icon="@mipmap/favorites"-->
+        <!--app:showAsAction="always"/>-->
 
-    <item
-        android:id="@+id/id_settings"
-        android:title="@string/settings"
-        android:icon="@mipmap/settings"
-        app:showAsAction="always"/>
+    <!--<item-->
+        <!--android:id="@+id/id_settings"-->
+        <!--android:title="@string/settings"-->
+        <!--android:icon="@mipmap/settings"-->
+        <!--app:showAsAction="always"/>-->
 
     <item
         android:id="@+id/id_sync"

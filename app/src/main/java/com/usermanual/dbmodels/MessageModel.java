@@ -9,23 +9,28 @@ import java.io.Serializable;
 
 public class MessageModel implements Parcelable, Serializable {
 
-    @SerializedName("Token")
-    public String token = "";
+    @SerializedName("pid")
+    public int ticketId;
 
-    @SerializedName("Text")
+    @SerializedName("txt")
     public String text = "";
 
-    @SerializedName("FileAddress")
-    public String url = "";
+    @SerializedName("type")
+    public int type;
 
     protected MessageModel(Parcel in) {
-        token = in.readString();
+        ticketId = in.readInt();
         text = in.readString();
-        url = in.readString();
+        type = in.readInt();
     }
 
     public MessageModel() {
+    }
 
+    public MessageModel(int ticketId, String text, int type) {
+        this.ticketId = ticketId;
+        this.text = text;
+        this.type = type;
     }
 
     public static final Creator<MessageModel> CREATOR = new Creator<MessageModel>() {
@@ -47,8 +52,8 @@ public class MessageModel implements Parcelable, Serializable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(token);
+        dest.writeInt(ticketId);
         dest.writeString(text);
-        dest.writeString(url);
+        dest.writeInt(type);
     }
 }

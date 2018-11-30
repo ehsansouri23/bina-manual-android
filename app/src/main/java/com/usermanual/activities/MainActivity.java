@@ -1,15 +1,11 @@
 package com.usermanual.activities;
 
 import android.app.AlertDialog;
-import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -38,13 +34,11 @@ import com.usermanual.dbmodels.TableTitle;
 import com.usermanual.fragments.AboutUsFragment;
 import com.usermanual.fragments.DownloadFragment;
 import com.usermanual.fragments.FavsFragment;
-import com.usermanual.fragments.MessagesFragment;
 import com.usermanual.fragments.NewsFragment;
 import com.usermanual.fragments.SearchFragment;
 import com.usermanual.fragments.SettingsFragment;
 import com.usermanual.fragments.SupportFragment;
 import com.usermanual.fragments.TitlesFragment;
-import com.usermanual.helper.BottomNavigationViewHelper;
 import com.usermanual.helper.Consts;
 import com.usermanual.helper.DataBaseHelper;
 import com.usermanual.helper.NetworkHelper;
@@ -52,6 +46,8 @@ import com.usermanual.helper.StorageHelper;
 import com.usermanual.network.GetData;
 import com.usermanual.network.RetrofitClientInstance;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -83,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     boolean titlesVisible = true;
 
-    int biggestMediaId = 0;
+    List<Integer> mediaIds = new ArrayList<>();
     int mediaId = 0;
 
     @Override
@@ -96,28 +92,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         StorageHelper.createFilesDataBase(context);
 
-        String[] files = context.getDir("app", MODE_PRIVATE).list();
-        Log.e(TAG, "file size: " + files.length);
-        for (int i = 0; i < files.length; i++) {
-            Log.e(TAG, "file: " + files[i] + " fileType: " + DataBaseHelper.getFileType(context, files[i]));
-        }
-
-        Log.e(TAG, "token: " + Auth.getToken(context));
-
-//        flushDataBase();
-
-//        List<TableToDownloadFiles> toDownloadFiles = new ArrayList<>();
-//        TableToDownloadFiles tableToDownloadFiles = new TableToDownloadFiles();
-//        tableToDownloadFiles.url = "https://hw15.cdn.asset.aparat.com/aparat-video/993690ee92cab49ca429f6a2e390341111864889-720p__55425.mp4";
-//        tableToDownloadFiles.fileKey = "aaa";
-//        toDownloadFiles.add(tableToDownloadFiles);
-////        DataBaseHelper.saveToDownloadFile(context, tableToDownloadFiles);
-//        TableToDownloadFiles t = new TableToDownloadFiles();
-//        t.url = "https://as2.cdn.asset.aparat.com/aparat-video/bc14ddc38678800c1e53f78bb1a25c327183777-360p__16953.mp4";
-//        t.fileKey = "bbb";
-//        toDownloadFiles.add(t);
-//        DataBaseHelper.saveToDownloadFiles(context, toDownloadFiles);
-//        DataBaseHelper.saveToDownloadFiles(context, toDownloadFiles);
+        File f = context.getDir("app", MODE_PRIVATE);
+        String[] files = new File(f, "1daaec24a1ba881e15ebae65ec12089f/").list();
+//        for (int i = 0; i < files.length; i++) {
+//            Log.d(TAG, "files: " + files[i]);
+//        }
+        Log.d(TAG, "token=" + Auth.getToken(context));
 
         titlesFragment = TitlesFragment.newInstance(TitlesFragment.TITLES);
         fmanager = getSupportFragmentManager();
@@ -135,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setCancelable(false);
 
-        BottomNavigationViewHelper.removeShiftMode(bottomNavigation);
+//        BottomNavigationViewHelper.removeShiftMode(bottomNavigation);
         bottomNavigation.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.id_home:
@@ -185,16 +165,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main_menu, menu);
-        this.mMenu = menu;
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-
-        SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
-
-        SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setQueryHint(getResources().getString(R.string.search));
-        searchView.setOnQueryTextListener(this);
+//        MenuInflater menuInflater = getMenuInflater();
+//        menuInflater.inflate(R.menu.main_menu, menu);
+//        this.mMenu = menu;
+//        MenuItem searchItem = menu.findItem(R.id.action_search);
+//
+//        SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
+//
+//        SearchView searchView = (SearchView) searchItem.getActionView();
+//        searchView.setQueryHint(getResources().getString(R.string.search));
+//        searchView.setOnQueryTextListener(this);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -202,38 +182,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        Log.e(TAG, "onNavigationItemSelected: " + id);
         switch (id) {
             case R.id.id_favs:
+                Log.d(TAG, "onNavigationItemSelected: favs");
                 setToolbarTitle(getResources().getString(R.string.favorites));
                 fmanager.beginTransaction().replace(R.id.fragment_container, FavsFragment.newInstance()).commit();
                 break;
-            case R.id.id_answers:
-                setToolbarTitle(getResources().getString(R.string.answers));
-                fmanager.beginTransaction().replace(R.id.fragment_container, MessagesFragment.newInstance()).commit();
-                break;
-            case R.id.id_settings:
-                setToolbarTitle(getResources().getString(R.string.settings));
-                fmanager.beginTransaction().replace(R.id.fragment_container, SettingsFragment.newInstance()).commit();
-                break;
+//            case R.id.id_answers:
+//                Log.d(TAG, "onNavigationItemSelected: answers");
+//                break;
+//            case R.id.id_settings:
+//                Log.d(TAG, "onNavigationItemSelected: settings");
+//                setToolbarTitle(getResources().getString(R.string.settings));
+//                fmanager.beginTransaction().replace(R.id.fragment_container, SettingsFragment.newInstance()).commit();
+//                break;
             case R.id.id_support:
+                Log.d(TAG, "onNavigationItemSelected: support");
                 setToolbarTitle(getResources().getString(R.string.support));
                 bottomNavigation.getMenu().findItem(R.id.id_support).setChecked(true);
                 fmanager.beginTransaction().replace(R.id.fragment_container, SupportFragment.newInstance()).commit();
                 break;
             case R.id.id_sync:
+                Log.d(TAG, "onNavigationItemSelected: sync");
                 syncData();
                 break;
             case R.id.id_download:
+                Log.d(TAG, "onNavigationItemSelected: download");
                 setToolbarTitle(getResources().getString(R.string.download_files));
                 fmanager.beginTransaction().replace(R.id.fragment_container, new DownloadFragment()).commit();
                 break;
             case R.id.id_about:
+                Log.d(TAG, "onNavigationItemSelected: about");
                 setToolbarTitle(getResources().getString(R.string.about));
                 bottomNavigation.getMenu().findItem(R.id.id_about).setChecked(true);
                 fmanager.beginTransaction().replace(R.id.fragment_container, AboutUsFragment.newInstance()).commit();
                 break;
             case R.id.id_logout:
+                Log.d(TAG, "onNavigationItemSelected: logout");
                 Auth.logout(context);
                 Intent intent = new Intent(context, LoginActivity.class);
                 startActivity(intent);
@@ -286,13 +271,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (response.body() != null) {
                     DataBaseHelper.saveTitles(context, response.body());
                     for (int i = 0; i < response.body().size(); i++) {
+                        Log.d(TAG, "getting titles: " + response.body().get(i));
                         if (!response.body().get(i).fileKey.equals("")) {
-                            DataBaseHelper.saveToDownloadFile(context, response.body().get(i).fileKey);
-                            DataBaseHelper.saveFileType(context, response.body().get(i).fileKey, response.body().get(i).fileType);
+                            DataBaseHelper.saveToDownloadFile(context, response.body().get(i).fileKey, Consts.IMAGE);
                         }
                     }
                     getSubtitles();
-                } else if (response == null || response.body() == null) {
+                } else {
                     Toast.makeText(context, getResources().getString(R.string.no_item), Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
                 }
@@ -302,7 +287,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onFailure(Call<List<TableTitle>> call, Throwable t) {
                 Toast.makeText(context, getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
-//                finish();
             }
         });
     }
@@ -320,13 +304,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (response.body() != null) {
                     DataBaseHelper.saveSubtitles(context, response.body());
                     for (int i = 0; i < response.body().size(); i++) {
+                        Log.d(TAG, "getting subtitles: " + response.body().get(i));
                         if (!response.body().get(i).fileKey.equals("")) {
-                            DataBaseHelper.saveToDownloadFile(context, response.body().get(i).fileKey);
-                            DataBaseHelper.saveFileType(context, response.body().get(i).fileKey, response.body().get(i).fileType);
+                            DataBaseHelper.saveToDownloadFile(context, response.body().get(i).fileKey, Consts.IMAGE);
                         }
                     }
                     getMedias();
-                } else if (response == null || response.body() == null) {
+                } else {
                     Toast.makeText(context, getResources().getString(R.string.no_item), Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
                 }
@@ -336,7 +320,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onFailure(Call<List<TableSubTitle>> call, Throwable t) {
                 Toast.makeText(context, getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
-//                finish();
             }
         });
     }
@@ -353,13 +336,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onResponse(Call<List<TableMedia>> call, Response<List<TableMedia>> response) {
                 if (response.body() != null) {
                     for (int i = 0; i < response.body().size(); i++) {
-                        if (response.body().get(i).mediaId >= biggestMediaId)
-                            biggestMediaId = response.body().get(i).mediaId;
-                        Log.e(TAG, "onResponse: " + response.body().get(i).mediaId);
+                        Log.d(TAG, "getting medias: " + response.body().get(i));
+                        mediaIds.add(response.body().get(i).mediaId);
                     }
                     DataBaseHelper.saveMedias(context, response.body());
                     getSubmedias();
-                } else if (response == null || response.body() == null) {
+                } else {
                     Toast.makeText(context, getResources().getString(R.string.no_item), Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
                 }
@@ -374,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void getSubmedias() {
-        if (mediaId > biggestMediaId) {
+        if (mediaIds.isEmpty()) {
             progressDialog.dismiss();
             AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this)
                     .setMessage(getResources().getString(R.string.download_files_from_slide_menu))
@@ -387,7 +369,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mediaId++;
         final GetData data = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
-        String url = Consts.BASE_URL + Consts.API + Consts.SUBMEDIA_URL + mediaId;
+        String url = Consts.BASE_URL + Consts.SUBMEDIA_URL + mediaIds.get(0);
         Call<List<TableSubMedia>> getSubmediaCall = data.getSubMedias(url, Auth.getToken(context));
         getSubmediaCall.enqueue(new Callback<List<TableSubMedia>>() {
             @Override
@@ -395,8 +377,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (response.body() != null) {
                     DataBaseHelper.saveSubmedias(context, response.body());
                     for (int j = 0; j < response.body().size(); j++) {
-                        DataBaseHelper.saveToDownloadFile(context, response.body().get(j).fileKey);
-                        DataBaseHelper.saveFileType(context, response.body().get(j).fileKey, response.body().get(j).fileType);
+                        mediaIds.remove(0);
+                        Log.d(TAG, "getting sub medias: " + response.body().get(j));
+                        DataBaseHelper.saveToDownloadFile(context, response.body().get(j).fileKey, response.body().get(j).fileType);
                     }
 
                 }
@@ -414,38 +397,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void flushDataBase() {
         DataBaseHelper.deleteAllTitles(context);
-        DataBaseHelper.deleteAllSubtitles(context);
         DataBaseHelper.deleteAllMedias(context);
         DataBaseHelper.deleteAllSubmedias(context);
         DataBaseHelper.deleteAllToDownloadFiles(context);
-        DataBaseHelper.deleteFileModels(context);
     }
 
     public void openTitlesFragment(int titleId) {
         TitlesFragment titlesFragment = TitlesFragment.newInstance(TitlesFragment.SUBTITLES, titleId);
         fmanager.beginTransaction().replace(R.id.fragment_container, titlesFragment).commit();
     }
-
-//    public class DownFilesDelegate {
-//        public void finished(boolean success) {
-//            if (!success) {
-//                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this)
-//                        .setMessage(getResources().getString(R.string.receiving_data_failed))
-//                        .setTitle(getResources().getString(R.string.receiving_data))
-//                        .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialogInterface, int i) {
-//                                finish();
-//                            }
-//                        })
-//                        .show();
-//            }
-//            if (success) {
-//                titlesFragment = new TitlesFragment();
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, titlesFragment).commit();
-//            }
-//        }
-//    }
 
     public void setToolbarTitle(String title) {
         toolbar.setTitle(title);

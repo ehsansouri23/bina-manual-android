@@ -4,14 +4,19 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,7 +34,15 @@ import com.usermanual.helper.Consts;
 import com.usermanual.network.GetData;
 import com.usermanual.network.RetrofitClientInstance;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -73,21 +86,34 @@ public class TicketActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     TicketMessagesAdapter ticketMessagesAdapter;
 
+    String imageFilePath;
+
     @OnClick(R.id.send_file)
     void openSendFileDialog() {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle(selectItems);
-        String[] s = {sendPicString, sendVideoString};
-        dialogBuilder.setItems(s, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if (i == 0)
-                    dispatchTakePictureIntent();
-                if (i == 1)
-                    dispatchTakeVideoIntent();
-            }
-        });
-        dialogBuilder.show();
+//        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+//        dialogBuilder.setTitle(selectItems);
+//        String[] s = {sendPicString, sendVideoString};
+//        dialogBuilder.setItems(s, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                if (i == 0) {
+//                    try {
+//                        dispatchTakePictureIntent();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                if (i == 1)
+//                    dispatchTakeVideoIntent();
+//            }
+//        });
+//        dialogBuilder.show();
+
+        try {
+            dispatchTakePictureIntent();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @OnClick(R.id.send_message)
@@ -131,7 +157,9 @@ public class TicketActivity extends AppCompatActivity {
                     imageActivityIntent.putExtra(Consts.FILE_URL, key);
                     startActivity(imageActivityIntent);
                 } else if (type == Consts.VIDEO) {
-
+                    Intent videoActivityIntent = new Intent(TicketActivity.this, VideoViewActivity.class);
+                    videoActivityIntent.putExtra(Consts.FILE_URL, key);
+                    startActivity(videoActivityIntent);
                 }
             }
         });
@@ -171,10 +199,18 @@ public class TicketActivity extends AppCompatActivity {
         });
     }
 
-    private void dispatchTakePictureIntent() {
+    private void dispatchTakePictureIntent() throws IOException {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            //Create a file to store the image
+            File photoFile = null;
+            photoFile = createImageFile();
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this, "com.usermanual.provider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
         }
     }
 
@@ -185,10 +221,86 @@ public class TicketActivity extends AppCompatActivity {
         }
     }
 
+    private File createImageFile() throws IOException {
+        String timeStamp =
+                new SimpleDateFormat("yyyyMMdd_HHmmss",
+                        Locale.getDefault()).format(new Date());
+        String imageFileName = "IMG_" + timeStamp + "_";
+        File storageDir =
+                getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        imageFilePath = image.getAbsolutePath();
+        return image;
+    }
+
+    private static byte[] loadFile(File file) throws IOException {
+        InputStream is = new FileInputStream(file);
+
+        long length = file.length();
+        if (length > Integer.MAX_VALUE) {
+            return null;
+        }
+        byte[] bytes = new byte[(int)length];
+
+        int offset = 0;
+        int numRead = 0;
+        while (offset < bytes.length
+                && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
+            offset += numRead;
+        }
+
+        if (offset < bytes.length) {
+            throw new IOException("Could not completely read file "+file.getName());
+        }
+
+        is.close();
+        return bytes;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Log.e(TAG, "onActivityResult: " + data.getExtras().get("data"));
+//            Log.e(TAG, "onActivityResult: " + data.getExtras().get("data"));
+//            Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
+//            Log.d(TAG, "onActivityResult: sizes=" + imageBitmap.getByteCount());
+//
+//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+//            byte[] byteArray = byteArrayOutputStream .toByteArray();
+//            String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+//            Log.e(TAG, "onActivityResult: " + encoded);
+            File imageFile = new File(imageFilePath);
+            Log.e(TAG, "onActivityResult: size=" + imageFile.getAbsolutePath() + "   " + imageFile.isDirectory());
+            try {
+                String en = Base64.encodeToString(loadFile(imageFile), Base64.DEFAULT);
+                Log.e(TAG, "onActivityResult: "+ en);
+
+                MessageModel messageModel = new MessageModel(ticketId, en, Consts.IMAGE);
+                this.data.sendMessage(Auth.getToken(getApplicationContext()), messageModel).enqueue(new Callback<BaseResponse>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                        if (response.body().error == null || response.body().error.equals("")) {
+                            Log.d(TAG, "sending message: successful");
+                            fetchMessages();
+                        } else {
+                            Log.e(TAG, "sending message: error");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
         if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
         }

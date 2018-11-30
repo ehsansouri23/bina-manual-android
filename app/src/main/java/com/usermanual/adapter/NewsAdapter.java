@@ -53,7 +53,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         if (!newsModelList.get(position).title.equals(""))
             holder.newsTitle.setText(newsModelList.get(position).title);
-        String imageUrl = BASE_URL + FILE_URL + newsModelList.get(position).picUrl;
+        String imageUrl = BASE_URL + newsModelList.get(position).picUrl;
         Picasso.get().load(imageUrl).placeholder(R.mipmap.new_place).into(holder.newsImage);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

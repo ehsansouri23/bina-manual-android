@@ -7,17 +7,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.squareup.picasso.Picasso;
+import com.usermanual.ItemClickListener;
 import com.usermanual.R;
-import com.usermanual.fragments.TitlesFragment;
+import com.usermanual.dbmodels.TitleData;
+import com.usermanual.helper.StorageHelper;
 import com.usermanual.viewHolders.DataViewHolder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DataListAdapter extends RecyclerView.Adapter<DataViewHolder> {
     private static final String TAG = "DataListAdapter";
-//todo complete here
-    Context context;
-    TitlesFragment.ItemClickListener itemClickListener;
 
-    public DataListAdapter(Context context, TitlesFragment.ItemClickListener itemClickListener) {
+    Context context;
+    List<TitleData> titles = new ArrayList<>();
+    ItemClickListener itemClickListener;
+
+    public DataListAdapter(Context context, ItemClickListener itemClickListener) {
         this.context = context;
         this.itemClickListener = itemClickListener;
     }
@@ -25,22 +32,28 @@ public class DataListAdapter extends RecyclerView.Adapter<DataViewHolder> {
     @NonNull
     @Override
     public DataViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.sample, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.data_item, parent, false);
         return new DataViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull DataViewHolder holder, final int position) {
+        holder.dataText.setText(titles.get(position).text);
+        Picasso.get().load(StorageHelper.getFile(context, titles.get(position).fileKey)).placeholder(R.mipmap.carr).into(holder.dataImage);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                itemClickListener.onItemClick(view, position);
+                itemClickListener.onItemClick(view, titles.get(position).id, titles.get(position).fileKey);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return 50;
+        return titles.size();
+    }
+
+    public void setTitles(List<TitleData> titles) {
+        this.titles = titles;
     }
 }

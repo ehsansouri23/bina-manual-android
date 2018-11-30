@@ -2,7 +2,6 @@ package com.usermanual.helper;
 
 import android.content.Context;
 
-import com.usermanual.dbmodels.Favs;
 import com.usermanual.dbmodels.TableMedia;
 import com.usermanual.dbmodels.TableSubMedia;
 import com.usermanual.dbmodels.TableSubTitle;
@@ -51,10 +50,18 @@ public class DataBaseHelper {
         else return true;
     }
 
+    public static void fileDownloaded(Context context, String fileKey) {
+        TableToDownloadFiles toDownloadFiles = AppDatabase.getInstance(context).toDownloadFilesDao().get(fileKey);
+        if (toDownloadFiles != null) {
+            toDownloadFiles.downloaded = 1;
+            AppDatabase.getInstance(context).toDownloadFilesDao().insert(toDownloadFiles);
+        }
+    }
+
     public static void saveFav(Context context, int subtitleId) {
-        Favs favs = new Favs();
-        favs.subtitleId = subtitleId;
-        AppDatabase.getInstance(context).favsDao().insert(favs);
+        TableSubTitle subTitle = AppDatabase.getInstance(context).subtitleDao().getSubtitle(subtitleId);
+        subTitle.saved = 1;
+        AppDatabase.getInstance(context).subtitleDao().insert(subTitle);
     }
 
     public static List<TableTitle> getTitlesList(Context context) {
@@ -94,15 +101,21 @@ public class DataBaseHelper {
     }
 
     public static List<TableToDownloadFiles> getToDownloadFiles(Context context) {
-        return AppDatabase.getInstance(context).toDownloadFilesDao().getAll();
+        return AppDatabase.getInstance(context).toDownloadFilesDao().getToDownload();
     }
 
-    public static List<Favs> getAllFavs(Context context) {
-        return AppDatabase.getInstance(context).favsDao().getAll();
+    public static List<TableSubTitle> getAllFavs(Context context) {
+        return AppDatabase.getInstance(context).subtitleDao().getSaved();
     }
 
-    public static Favs getFav(Context context, int subtitleId) {
-        return AppDatabase.getInstance(context).favsDao().get(subtitleId);
+    public static boolean saved(Context context, int subtitleId) {
+        TableSubTitle subTitle = AppDatabase.getInstance(context).subtitleDao().getSubtitle(subtitleId);
+        if (subTitle != null) {
+            if (subTitle.saved == 0)
+                return false;
+            else return true;
+        }
+        return false;
     }
 
     public static void deleteAllTitles(Context context) {
@@ -134,6 +147,8 @@ public class DataBaseHelper {
     }
 
     public static void deleteFav(Context context, int subtitleId) {
-        AppDatabase.getInstance(context).favsDao().delete(subtitleId);
+        TableSubTitle subTitle = AppDatabase.getInstance(context).subtitleDao().getSubtitle(subtitleId);
+        subTitle.saved = 0;
+        AppDatabase.getInstance(context).subtitleDao().insert(subTitle);
     }
 }
