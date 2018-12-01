@@ -56,4 +56,9 @@ public class MessageModel implements Parcelable, Serializable {
         dest.writeString(text);
         dest.writeInt(type);
     }
+
+    @Override
+    public String toString() {
+        return "pid=" + ticketId + "    txt=" + text + "    type=" + type;
+    }
 }

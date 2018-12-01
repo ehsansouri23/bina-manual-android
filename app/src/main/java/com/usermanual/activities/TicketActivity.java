@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -121,10 +122,12 @@ public class TicketActivity extends AppCompatActivity {
         if (!progressDialog.isShowing())
             progressDialog.show();
         String message = messageEditText.getText().toString();
-        MessageModel messageModel = new MessageModel(ticketId, message, Consts.VIDEO);
+        MessageModel messageModel = new MessageModel(ticketId, message, Consts.TEXT);
+        Log.d(TAG, "message model: " + messageModel);
         data.sendMessage(Auth.getToken(getApplicationContext()), messageModel).enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                Log.e(TAG, "sending text response: " + response.body());
                 if (response.body().error == null || response.body().error.equals("")) {
                     Log.d(TAG, "sending message: successful");
                     fetchMessages();
@@ -170,7 +173,10 @@ public class TicketActivity extends AppCompatActivity {
         if (extras != null) {
             toolbar.setTitle(extras.getString(Consts.TITLE));
             ticketId = extras.getInt(Consts.TICKET_ID);
-        } else toolbar.setTitle(toolbarTitle);
+        } else {
+            toolbar.setTitle(toolbarTitle);
+            ticketId = -1;
+        }
 
         fetchMessages();
     }
@@ -245,17 +251,17 @@ public class TicketActivity extends AppCompatActivity {
         if (length > Integer.MAX_VALUE) {
             return null;
         }
-        byte[] bytes = new byte[(int)length];
+        byte[] bytes = new byte[(int) length];
 
         int offset = 0;
         int numRead = 0;
         while (offset < bytes.length
-                && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
+                && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
             offset += numRead;
         }
 
         if (offset < bytes.length) {
-            throw new IOException("Could not completely read file "+file.getName());
+            throw new IOException("Could not completely read file " + file.getName());
         }
 
         is.close();
@@ -265,44 +271,75 @@ public class TicketActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-//            Log.e(TAG, "onActivityResult: " + data.getExtras().get("data"));
-//            Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
-//            Log.d(TAG, "onActivityResult: sizes=" + imageBitmap.getByteCount());
+//            if (!progressDialog.isShowing())
+//                progressDialog.show();
+//            new Base64ImageFile(new Completed() {
+//                @Override
+//                public void completed(String en) {
 //
-//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-//            byte[] byteArray = byteArrayOutputStream .toByteArray();
-//            String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
-//            Log.e(TAG, "onActivityResult: " + encoded);
+//                }
+//            }).execute();
             File imageFile = new File(imageFilePath);
-            Log.e(TAG, "onActivityResult: size=" + imageFile.getAbsolutePath() + "   " + imageFile.isDirectory());
+            String en = null;
             try {
-                String en = Base64.encodeToString(loadFile(imageFile), Base64.DEFAULT);
-                Log.e(TAG, "onActivityResult: "+ en);
-
-                MessageModel messageModel = new MessageModel(ticketId, en, Consts.IMAGE);
-                this.data.sendMessage(Auth.getToken(getApplicationContext()), messageModel).enqueue(new Callback<BaseResponse>() {
-                    @Override
-                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
-                        if (response.body().error == null || response.body().error.equals("")) {
-                            Log.d(TAG, "sending message: successful");
-                            fetchMessages();
-                        } else {
-                            Log.e(TAG, "sending message: error");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<BaseResponse> call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                en = Base64.encodeToString(loadFile(imageFile), Base64.DEFAULT);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            MessageModel messageModel = new MessageModel(ticketId, en, Consts.IMAGE);
+            Log.e(TAG, "sending image: " + messageModel.type);
+            GetData data2 = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
+            data2.sendMessage(Auth.getToken(getApplicationContext()), messageModel).enqueue(new Callback<BaseResponse>() {
+                @Override
+                public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                    Log.e(TAG, "image response: " + response.body());
+                    if (response.body().error == null || response.body().error.equals("")) {
+                        Log.d(TAG, "sending message: successful");
+                        fetchMessages();
+                    } else {
+                        Log.e(TAG, "sending message: error");
+                        progressDialog.dismiss();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<BaseResponse> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                }
+            });
+            Log.e(TAG, "completed: after!!" );
+
 
         }
         if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
         }
+    }
+
+    class Base64ImageFile extends AsyncTask<Void, Void, Void> {
+        Completed completed;
+
+        Base64ImageFile(Completed completed) {
+            this.completed = completed;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+//            if (!progressDialog.isShowing())
+//                progressDialog.show();
+            File imageFile = new File(imageFilePath);
+            String en = null;
+            try {
+                en = Base64.encodeToString(loadFile(imageFile), Base64.DEFAULT);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            completed.completed(en);
+            return null;
+        }
+    }
+
+    interface Completed {
+        void completed(String en);
     }
 }
