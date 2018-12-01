@@ -66,6 +66,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-rc2'
 
     implementation 'com.liulishuo.filedownloader:library:1.7.5'
+    implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
 }
 
 

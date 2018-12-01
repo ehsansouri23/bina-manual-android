@@ -13,52 +13,41 @@ import com.squareup.picasso.Picasso;
 import com.usermanual.R;
 import com.usermanual.fragments.NewsFragment;
 import com.usermanual.dbmodels.NewsModel;
+import com.usermanual.helper.StorageHelper;
+import com.usermanual.viewHolders.DataViewHolder;
 
 import java.util.List;
 
 import static com.usermanual.helper.Consts.*;
 
-public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
+public class NewsAdapter extends RecyclerView.Adapter<DataViewHolder> {
     private static final String TAG = "NewsAdapter";
 
     Context context;
     List<NewsModel> newsModelList;
-    NewsFragment.NewsClickDelegate delegate;
+    NewsFragment.OnClick onClick;
 
-    public NewsAdapter(Context context, List<NewsModel> newsModelList, NewsFragment.NewsClickDelegate delegate) {
+    public NewsAdapter(Context context, NewsFragment.OnClick onClick) {
         this.context = context;
-        this.newsModelList = newsModelList;
-        this.delegate = delegate;
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView newsImage;
-        TextView newsTitle;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            newsImage = (ImageView) itemView.findViewById(R.id.news_image);
-            newsTitle = (TextView) itemView.findViewById(R.id.news_title);
-        }
+        this.onClick = onClick;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_item, parent, false);
-        return new ViewHolder(v);
+    public DataViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.data_item, parent, false);
+        return new DataViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        if (!newsModelList.get(position).title.equals(""))
-            holder.newsTitle.setText(newsModelList.get(position).title);
-        String imageUrl = BASE_URL + newsModelList.get(position).picUrl;
-        Picasso.get().load(imageUrl).placeholder(R.mipmap.new_place).into(holder.newsImage);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+    public void onBindViewHolder(@NonNull DataViewHolder dataViewHolder, int i) {
+        if (!newsModelList.get(i).title.equals(""))
+            dataViewHolder.dataText.setText(newsModelList.get(i).title);
+        Picasso.get().load(StorageHelper.getUrl(newsModelList.get(i).fileKey)).placeholder(R.mipmap.new_place).into(dataViewHolder.dataImage);
+        dataViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                delegate.onClick(newsModelList.get(position).fullHtml, newsModelList.get(position).picUrl);
+                onClick.onClick(newsModelList.get(i).title, newsModelList.get(i).text, newsModelList.get(i).fileKey);
             }
         });
     }
@@ -66,5 +55,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return newsModelList.size();
+    }
+
+    public void setNewsModelList(List<NewsModel> newsModelList) {
+        this.newsModelList = newsModelList;
     }
 }

@@ -35,8 +35,9 @@ public class Consts {
     public static final String PREF_FONT_SIZE = "pref_font_size";
     public static final String PREF_ANIMATIONS = "pref_animations";
 
-    public static final String NEWS_FULL_HTML = "pref_news_id";
+    public static final String NEWS_TEXT = "pref_news_id";
     public static final String NEWS_IMAGE_KEY = "pref_image_key";
+    public static final String NEWS_TITLE = "news_title";
 
     public static final String PREF_STATE = "state";
     public static final String PREF_TITLE_ID = "title";

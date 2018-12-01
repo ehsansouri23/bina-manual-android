@@ -7,12 +7,12 @@ public class NewsModel {
     @SerializedName("Id")
     public int newsId;
 
-    @SerializedName("Title")
+    @SerializedName("title")
     public String title = "";
 
-    @SerializedName("FileName")
-    public String picUrl;
+    @SerializedName("url")
+    public String fileKey;
 
-    @SerializedName("Text")
-    public String fullHtml;
+    @SerializedName("txt")
+    public String text;
 }

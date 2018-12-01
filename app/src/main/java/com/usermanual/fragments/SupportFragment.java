@@ -59,6 +59,8 @@ public class SupportFragment extends Fragment implements ItemClickListener {
     ProgressDialog progressDialog;
     TicketsAdapter ticketsAdapter;
 
+    GetData data;
+
     boolean uploadSuccess = true;
 
     @OnClick(R.id.add_fab)
@@ -80,8 +82,7 @@ public class SupportFragment extends Fragment implements ItemClickListener {
                 @Override
                 public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                     if (response.body().error == null || response.body().error.equals("")) {
-                        tickets.add(ticket);
-                        ticketsAdapter.notifyDataSetChanged();
+                        fetchMessages();
                     } else {
                         Log.d(TAG, "onResponse: error occurred." + response.body().error);
                     }
@@ -102,29 +103,12 @@ public class SupportFragment extends Fragment implements ItemClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.support_fragment, container, false);
         ButterKnife.bind(this, view);
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
         ticketsList.showShimmerAdapter();
         ticketsList.setLayoutManager(new LinearLayoutManager(getContext()));
-        final GetData data = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
-        Call<List<Ticket>> call = data.getTickets(Auth.getToken(getContext()));
-        call.enqueue(new Callback<List<Ticket>>() {
-            @Override
-            public void onResponse(Call<List<Ticket>> call, Response<List<Ticket>> response) {
-                if (response.body() != null) {
-                    tickets = response.body();
-                    for (int i = 0; i < response.body().size(); i++) {
-                        Log.d(TAG, "getting tickets: id=" + response.body().get(i).id + " name=" + response.body().get(i).ticketName + " isDone=" + response.body().get(i).isDone);
-                    }
-                    ticketsAdapter = new TicketsAdapter(getContext(), response.body(), SupportFragment.this);
-                    ticketsList.hideShimmerAdapter();
-                    ticketsList.setAdapter(ticketsAdapter);
-                }
-            }
+        data = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
 
-            @Override
-            public void onFailure(Call<List<Ticket>> call, Throwable t) {
-
-            }
-        });
 //        progressDialog = new ProgressDialog(getActivity());
 //        progressDialog.setCancelable(false);
 
@@ -132,6 +116,8 @@ public class SupportFragment extends Fragment implements ItemClickListener {
         if (!NetworkHelper.isNetworkConnected(getContext())) {
             noNet.setVisibility(View.VISIBLE);
         }
+
+        fetchMessages();
 
         return view;
     }
@@ -147,5 +133,32 @@ public class SupportFragment extends Fragment implements ItemClickListener {
         Intent messageActivityIntent = new Intent(getActivity(), TicketActivity.class);
         messageActivityIntent.putExtra(Consts.TICKET_ID, id);
         startActivity(messageActivityIntent);
+    }
+
+    private void fetchMessages() {
+        if (!progressDialog.isShowing())
+            progressDialog.show();
+        Call<List<Ticket>> call = data.getTickets(Auth.getToken(getContext()));
+        call.enqueue(new Callback<List<Ticket>>() {
+            @Override
+            public void onResponse(Call<List<Ticket>> call, Response<List<Ticket>> response) {
+                if (response.body() != null) {
+                    tickets = response.body();
+                    for (int i = 0; i < response.body().size(); i++) {
+                        Log.d(TAG, "getting tickets: id=" + response.body().get(i).id + " name=" + response.body().get(i).ticketName + " isDone=" + response.body().get(i).isDone);
+                    }
+                    ticketsAdapter = new TicketsAdapter(getContext(), response.body(), SupportFragment.this);
+                    ticketsList.hideShimmerAdapter();
+                    ticketsList.setAdapter(ticketsAdapter);
+                    progressDialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Ticket>> call, Throwable t) {
+                Toast.makeText(getContext(), getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
+        });
     }
 }
