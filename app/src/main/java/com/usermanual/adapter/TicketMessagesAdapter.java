@@ -12,6 +12,7 @@ import com.usermanual.R;
 import com.usermanual.dbmodels.TicketMessageModel;
 import com.usermanual.fragments.MediaFragment;
 import com.usermanual.helper.Consts;
+import com.usermanual.helper.StorageHelper;
 import com.usermanual.viewHolders.DataViewHolder;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class TicketMessagesAdapter extends RecyclerView.Adapter<DataViewHolder> 
         if (messageModels.get(i).url != null && !messageModels.get(i).url.equals("")) {
             dataViewHolder.dataImage.setVisibility(View.VISIBLE);
             if (messageModels.get(i).type == Consts.IMAGE)//todo add complete url here
-                Picasso.get().load(messageModels.get(i).url).into(dataViewHolder.dataImage);
+                Picasso.get().load(StorageHelper.getUrl(messageModels.get(i).url)).placeholder(R.mipmap.not_downloaded).into(dataViewHolder.dataImage);
             else if (messageModels.get(i).type == Consts.VIDEO)
                 Picasso.get().load(R.mipmap.play).into(dataViewHolder.dataImage);
 

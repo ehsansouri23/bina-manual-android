@@ -308,9 +308,6 @@ public class TicketActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                 }
             });
-            Log.e(TAG, "completed: after!!" );
-
-
         }
         if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
         }

@@ -356,6 +356,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void getSubmedias() {
+        Log.e(TAG, "getSubmedias: ");
+        for (int i = 0; i < mediaIds.size(); i++) {
+            Log.e(TAG, "mediaId: " + mediaIds.get(i));
+        }
         if (mediaIds.isEmpty()) {
             progressDialog.dismiss();
             AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this)
@@ -370,6 +374,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mediaId++;
         final GetData data = RetrofitClientInstance.getRetrofitInstance().create(GetData.class);
         String url = Consts.BASE_URL + Consts.SUBMEDIA_URL + mediaIds.get(0);
+        Log.e(TAG, "url: " + url);
         Call<List<TableSubMedia>> getSubmediaCall = data.getSubMedias(url, Auth.getToken(context));
         getSubmediaCall.enqueue(new Callback<List<TableSubMedia>>() {
             @Override
@@ -377,11 +382,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (response.body() != null) {
                     DataBaseHelper.saveSubmedias(context, response.body());
                     for (int j = 0; j < response.body().size(); j++) {
-                        mediaIds.remove(0);
                         Log.d(TAG, "getting sub medias: " + response.body().get(j));
                         DataBaseHelper.saveToDownloadFile(context, response.body().get(j).fileKey, response.body().get(j).fileType);
                     }
-
+                    mediaIds.remove(0);
                 }
                 getSubmedias();
             }
