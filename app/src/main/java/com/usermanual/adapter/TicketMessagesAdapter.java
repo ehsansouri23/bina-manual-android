@@ -44,7 +44,7 @@ public class TicketMessagesAdapter extends RecyclerView.Adapter<DataViewHolder> 
 
         if (messageModels.get(i).url != null && !messageModels.get(i).url.equals("")) {
             dataViewHolder.dataImage.setVisibility(View.VISIBLE);
-            if (messageModels.get(i).type == Consts.IMAGE)
+            if (messageModels.get(i).type == Consts.IMAGE)//todo add complete url here
                 Picasso.get().load(messageModels.get(i).url).into(dataViewHolder.dataImage);
             else if (messageModels.get(i).type == Consts.VIDEO)
                 Picasso.get().load(R.mipmap.play).into(dataViewHolder.dataImage);
