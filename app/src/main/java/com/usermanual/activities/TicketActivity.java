@@ -32,6 +32,7 @@ import com.usermanual.dbmodels.TicketMessageModel;
 import com.usermanual.dbmodels.UploadResponse;
 import com.usermanual.fragments.MediaFragment;
 import com.usermanual.helper.Consts;
+import com.usermanual.helper.StorageHelper;
 import com.usermanual.network.GetData;
 import com.usermanual.network.RetrofitClientInstance;
 
@@ -157,11 +158,11 @@ public class TicketActivity extends AppCompatActivity {
             public void onClick(int type, String key) {
                 if (type == Consts.IMAGE) {
                     Intent imageActivityIntent = new Intent(TicketActivity.this, ImageViewActivity.class);
-                    imageActivityIntent.putExtra(Consts.FILE_URL, key);
+                    imageActivityIntent.putExtra(Consts.FILE_URL, StorageHelper.getUrl(key));
                     startActivity(imageActivityIntent);
                 } else if (type == Consts.VIDEO) {
                     Intent videoActivityIntent = new Intent(TicketActivity.this, VideoViewActivity.class);
-                    videoActivityIntent.putExtra(Consts.FILE_URL, key);
+                    videoActivityIntent.putExtra(Consts.FILE_URL, StorageHelper.getUrl(key));
                     startActivity(videoActivityIntent);
                 }
             }
