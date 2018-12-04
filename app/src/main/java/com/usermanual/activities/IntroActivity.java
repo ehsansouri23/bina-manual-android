@@ -15,9 +15,6 @@ import android.widget.TextView;
 
 import com.usermanual.R;
 import com.usermanual.auth.Auth;
-import com.usermanual.helper.Consts;
-
-import java.lang.invoke.ConstantCallSite;
 
 public class IntroActivity extends AppCompatActivity {
 
@@ -66,11 +63,8 @@ public class IntroActivity extends AppCompatActivity {
     }
 
     private void startMainActivity() {
-        Intent intent = new Intent(this, VideoViewActivity.class);
-        intent.putExtra(Consts.VIDEO_URL, "https://hw6.cdn.asset.aparat.com/aparat-video/c7281f0f19e968c503c22b888092d71512677223-144p__63733.mp4");
+        Intent intent = new Intent(context, MainActivity.class);
         startActivity(intent);
-//        Intent intent = new Intent(context, MainActivity.class);
-//        startActivity(intent);
         finish();
     }
 }
