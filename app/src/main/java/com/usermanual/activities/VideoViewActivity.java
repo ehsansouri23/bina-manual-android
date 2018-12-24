@@ -42,8 +42,9 @@ public class VideoViewActivity extends AppCompatActivity {
             videoView.setVideoPath(videoUrl);
         } else {
             if (fileKey == null) {
-                    fileKey = "";
-            }
+                fileKey = "";
+            }videoView = (VideoView) findViewById(R.id.video_view);
+
             File f = StorageHelper.getFile(getApplicationContext(), fileKey);
             Log.e(TAG, "onCreate: path: " + f.getAbsolutePath());
             videoView.setVideoURI(Uri.fromFile(f));
