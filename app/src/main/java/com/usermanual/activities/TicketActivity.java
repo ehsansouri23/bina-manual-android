@@ -162,7 +162,7 @@ public class TicketActivity extends AppCompatActivity {
                     startActivity(imageActivityIntent);
                 } else if (type == Consts.VIDEO) {
                     Intent videoActivityIntent = new Intent(TicketActivity.this, VideoViewActivity.class);
-                    videoActivityIntent.putExtra(Consts.FILE_URL, StorageHelper.getUrl(key));
+                    videoActivityIntent.putExtra(Consts.VIDEO_URL, StorageHelper.getUrl(key));
                     startActivity(videoActivityIntent);
                 }
             }
