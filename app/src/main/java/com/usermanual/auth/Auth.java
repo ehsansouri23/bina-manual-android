@@ -20,9 +20,9 @@ public class Auth {
     public static void login(Context context, LoginResponse loginResponse) {
         if (!loginResponse.token.equals("")) {
             saveBoolean(context, LOGED_IN, true);
-            if (!loginResponse.picFileUrl.equals(""))
+            if (loginResponse.picFileUrl != null && !loginResponse.picFileUrl.equals(""))
                 saveString(context, USER_PIC_URL, loginResponse.picFileUrl);
-            if (!loginResponse.name.equals(""))
+            if (loginResponse.name != null && !loginResponse.name.equals(""))
                 saveString(context, USER_NAME, loginResponse.name);
             saveString(context, TOKEN, loginResponse.token);
         }
@@ -33,13 +33,13 @@ public class Auth {
     }
 
     public static boolean isLoggedIn(Context context) {
-        return true;
-//        return getBoolean(context, LOGED_IN, false);
+//        return true;
+        return getBoolean(context, LOGED_IN, false);
     }
 
     public static String getToken(Context context) {
-//        return getString(context, TOKEN, "");
-        return "43e013b45432622a5413811c0a503136";
+        return getString(context, TOKEN, "");
+//        return "43e013b45432622a5413811c0a503136";
     }
 
     public static Token getTokenModel(Context context) {
