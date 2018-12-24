@@ -21,11 +21,11 @@
         <!--android:icon="@mipmap/favorites"-->
         <!--app:showAsAction="always"/>-->
 
-    <!--<item-->
-        <!--android:id="@+id/id_settings"-->
-        <!--android:title="@string/settings"-->
-        <!--android:icon="@mipmap/settings"-->
-        <!--app:showAsAction="always"/>-->
+    <item
+        android:id="@+id/id_settings"
+        android:title="@string/settings"
+        android:icon="@mipmap/settings"
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/id_sync"

@@ -191,11 +191,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            case R.id.id_answers:
 //                Log.d(TAG, "onNavigationItemSelected: answers");
 //                break;
-//            case R.id.id_settings:
-//                Log.d(TAG, "onNavigationItemSelected: settings");
-//                setToolbarTitle(getResources().getString(R.string.settings));
-//                fmanager.beginTransaction().replace(R.id.fragment_container, SettingsFragment.newInstance()).commit();
-//                break;
+            case R.id.id_settings:
+                Log.d(TAG, "onNavigationItemSelected: settings");
+                setToolbarTitle(getResources().getString(R.string.settings));
+                fmanager.beginTransaction().replace(R.id.fragment_container, SettingsFragment.newInstance()).commit();
+                break;
             case R.id.id_support:
                 Log.d(TAG, "onNavigationItemSelected: support");
                 setToolbarTitle(getResources().getString(R.string.support));
