@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 //                Toast.makeText(context, telephonyManager.getDeviceId(), Toast.LENGTH_SHORT).show();
-                loginModel.imei = /*telephonyManager.getDeviceId()*/ "356377085365247";
+                loginModel.imei = telephonyManager.getDeviceId();
 
                 Call<LoginResponse> loginCall = data.login(loginModel);
                 loginCall.enqueue(new Callback<LoginResponse>() {
@@ -118,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<LoginResponse> call, Throwable t) {
-                        Toast.makeText(context, getResources().getString(R.string.no_net), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, getResources().getString(R.string.retry_restart_again), Toast.LENGTH_SHORT).show();
                         loading.setVisibility(View.GONE);
                     }
                 });
