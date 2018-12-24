@@ -1,7 +1,6 @@
 package com.usermanual.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,11 +9,11 @@ import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
 import com.usermanual.R;
-import com.usermanual.activities.ImageViewActivity;
 import com.usermanual.dbmodels.TableSubMedia;
 import com.usermanual.fragments.MediaFragment;
 import com.usermanual.helper.Consts;
 import com.usermanual.helper.DataBaseHelper;
+import com.usermanual.helper.PrefHelper;
 import com.usermanual.helper.StorageHelper;
 import com.usermanual.viewHolders.SubmediaViewHolder;
 
@@ -41,7 +40,10 @@ public class SubmediaAdapter extends RecyclerView.Adapter<SubmediaViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull SubmediaViewHolder submediaViewHolder, int i) {
-        submediaViewHolder.text.setText(submedias.get(i).text);
+        if (submedias.get(i).text != null) {
+            submediaViewHolder.text.setText(submedias.get(i).text);
+            submediaViewHolder.text.setTextSize(PrefHelper.getInt(context, Consts.PREF_FONT_SIZE, 10));
+        }
         if (!submedias.get(i).fileKey.equals("")) {
             submediaViewHolder.pic.setVisibility(View.VISIBLE);
             if (submedias.get(i).fileType == Consts.IMAGE) {
@@ -67,6 +69,7 @@ public class SubmediaAdapter extends RecyclerView.Adapter<SubmediaViewHolder> {
         } else submediaViewHolder.pic.setVisibility(View.GONE);
         if (submedias.get(i).caption != null) {
             if (!submedias.get(i).caption.equals("")) {
+                submediaViewHolder.caption.setTextSize(PrefHelper.getInt(context, Consts.PREF_FONT_SIZE, 10) - 1);
                 submediaViewHolder.caption.setVisibility(View.VISIBLE);
                 submediaViewHolder.caption.setText(submedias.get(i).caption);
             } else submediaViewHolder.caption.setVisibility(View.GONE);
