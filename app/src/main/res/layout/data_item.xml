@@ -17,7 +17,7 @@
         <ImageView
             android:id="@+id/data_image"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="200dp"
             android:elevation="20dp"
             android:scaleType="centerCrop"
             android:src="@mipmap/carr" />
