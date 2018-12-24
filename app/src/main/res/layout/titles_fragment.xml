@@ -41,7 +41,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="50dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="7dp"
         app:shimmer_demo_angle="20"
         app:shimmer_demo_layout="@layout/layout_demo_grid"
         app:shimmer_demo_layout_manager_type="grid" />
