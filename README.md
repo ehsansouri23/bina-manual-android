@@ -1,0 +1,2 @@
+# bina-manual-android
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f48a2114bd344938b4eecc75eb074325)](https://app.codacy.com/app/ehsansouri23/bina-manual-android?utm_source=github.com&utm_medium=referral&utm_content=ehsansouri23/bina-manual-android&utm_campaign=Badge_Grade_Dashboard)
